@@ -92,7 +92,22 @@ export default function SubscriptionSelector({
       
       <RadioGroup 
         value={selectedLevel} 
-        onValueChange={(value) => onSelectLevel(value as SubscriptionLevel)}
+        onValueChange={(value) => async (value: string) => {
+  const level = value as SubscriptionLevel;
+  if (level === 'free') {
+    onSelectLevel(level);
+    return;
+  }
+  
+  try {
+    const result = await createSubscriptionCheckout(level);
+    if (result.error) {
+      console.error('Payment failed:', result.error);
+    }
+  } catch (error) {
+    console.error('Payment error:', error);
+  }
+}}
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
         {subscriptionOptions.map((option) => (

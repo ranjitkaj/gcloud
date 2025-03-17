@@ -38,12 +38,12 @@ function App() {
   );
 }
 
-export default App;
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "@/pages/home-page";
 import NotFound from "@/pages/not-found";
 import ProjectCategory from "@/pages/projects/project-category";
+import PaymentSuccess from "@/pages/payment-success"; // Added import
+import PaymentCancel from "@/pages/payment-cancel";   // Added import
 
 export default function App() {
   return (
@@ -51,6 +51,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/projects/:category" element={<ProjectCategory />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/cancel" element={<PaymentCancel />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
