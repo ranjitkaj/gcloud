@@ -15,10 +15,20 @@ declare global {
 
 const scryptAsync = promisify(scrypt);
 
+async function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
   const buf = (await scryptAsync(password, salt, 64)) as Buffer;
   return `${buf.toString("hex")}.${salt}`;
+}
+
+async function sendOTP(email: string, otp: string) {
+  // TODO: Implement actual email sending
+  console.log(`OTP for ${email}: ${otp}`);
+  return true;
 }
 
 async function comparePasswords(supplied: string, stored: string) {
@@ -68,6 +78,16 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
+      const otp = await generateOTP();
+      await storage.createOtp({
+        userId: -1, // Temporary ID until user is created
+        otp,
+        type: "email",
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      });
+      
+      await sendOTP(req.body.email, otp);
+
       const existingEmail = await storage.getUserByEmail(req.body.email);
       if (existingEmail) {
         return res.status(400).json({ message: "Email already in use" });
@@ -84,7 +104,11 @@ export function setupAuth(app: Express) {
         res.status(201).json(userWithoutPassword);
       });
     } catch (error) {
-      next(error);
+      console.error('Auth error:', error);
+      res.status(500).json({ 
+        message: "Authentication failed",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
@@ -117,5 +141,15 @@ export function setupAuth(app: Express) {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const { password, ...userWithoutPassword } = req.user;
     res.json(userWithoutPassword);
+  });
+
+  app.post("/api/verify-otp", async (req, res) => {
+    const { email, otp } = req.body;
+    const isValid = await storage.verifyOtp(email, otp);
+    if (isValid) {
+      res.json({ success: true });
+    } else {
+      res.status(400).json({ message: "Invalid OTP" });
+    }
   });
 }
