@@ -38,12 +38,13 @@ function App() {
   );
 }
 
+export default App;
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "@/pages/home-page";
 import NotFound from "@/pages/not-found";
 import ProjectCategory from "@/pages/projects/project-category";
-import PaymentSuccess from "@/pages/payment-success"; // Added import
-import PaymentCancel from "@/pages/payment-cancel";   // Added import
+import PaymentSuccess from "@/pages/payment-success"; 
+import PaymentCancel from "@/pages/payment-cancel";  
 
 export default function App() {
   return (
