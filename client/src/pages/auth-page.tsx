@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, useNavigate } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,9 +12,9 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -47,6 +47,7 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
   const [location, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
+  const navigation = useNavigate(); // Added useNavigate
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -85,6 +86,13 @@ export default function AuthPage() {
     registerMutation.mutate(registerData);
   };
 
+  useEffect(() => {
+    if (registerMutation.isSuccess) {
+      navigation('/dashboard'); // Redirect on successful registration
+    }
+  }, [registerMutation.isSuccess, navigation]);
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -97,7 +105,7 @@ export default function AuthPage() {
                   <TabsTrigger value="login">Login</TabsTrigger>
                   <TabsTrigger value="register">Register</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="login">
                   <Card>
                     <CardHeader>
@@ -151,7 +159,7 @@ export default function AuthPage() {
                     </form>
                   </Card>
                 </TabsContent>
-                
+
                 <TabsContent value="register">
                   <Card>
                     <CardHeader>
@@ -253,12 +261,12 @@ export default function AuthPage() {
                 </TabsContent>
               </Tabs>
             </div>
-            
+
             <div className="w-full md:w-1/2 p-6 hidden md:block">
               <div className="bg-gradient-to-br from-primary to-primary-700 rounded-xl p-8 text-white">
                 <h2 className="text-3xl font-bold mb-4">Welcome to HomeDirectly</h2>
                 <p className="text-lg mb-6">India's leading platform for direct property transactions without broker commissions.</p>
-                
+
                 <div className="space-y-4 mb-6">
                   <div className="flex items-start">
                     <div className="flex-shrink-0 bg-white bg-opacity-20 p-1 rounded-md mr-3">
@@ -269,7 +277,7 @@ export default function AuthPage() {
                       <p className="text-blue-100">No broker commission means better deals</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <div className="flex-shrink-0 bg-white bg-opacity-20 p-1 rounded-md mr-3">
                       <i className="ri-check-line"></i>
@@ -279,7 +287,7 @@ export default function AuthPage() {
                       <p className="text-blue-100">Connect directly with property owners or buyers</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <div className="flex-shrink-0 bg-white bg-opacity-20 p-1 rounded-md mr-3">
                       <i className="ri-check-line"></i>
@@ -290,7 +298,7 @@ export default function AuthPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="text-center">
                   <p className="text-sm">Join thousands of users who trust HomeDirectly</p>
                   <div className="flex justify-center mt-4 space-x-2">

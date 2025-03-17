@@ -50,10 +50,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error('Signup failed');
-      return response.json();
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Signup failed');
+      }
+      const userData = await response.json();
+      return userData;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['/api/user'], data);
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });
     },
   });
