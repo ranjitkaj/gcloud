@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "react-router-dom"; //Using react-router-dom as per edited code
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,17 +11,17 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { 
-  Building2, 
-  Users, 
-  Home, 
-  Building, 
-  MapPin, 
-  TrendingUp, 
-  Briefcase, 
-  Landmark, 
-  UserSquare2, 
-  Layers3, 
+import {
+  Building2,
+  Users,
+  Home,
+  Building,
+  MapPin,
+  TrendingUp,
+  Briefcase,
+  Landmark,
+  UserSquare2,
+  Layers3,
   Star,
   AreaChart,
   Medal,
@@ -309,18 +309,14 @@ const resourceMenuItems = [
   },
 ];
 
-interface MegaMenuProps {
-  isMobile?: boolean;
-}
-
 // Property mini card for menu
 function PropertyMiniCard({ property }: { property: Property }) {
   return (
     <div className="border rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="relative h-24">
-        <img 
-          src={property.imageUrls?.[0] || 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'} 
-          alt={property.title} 
+        <img
+          src={property.imageUrls?.[0] || 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}
+          alt={property.title}
           className="w-full h-full object-cover"
         />
         {property.premium && (
@@ -364,9 +360,9 @@ function AgentMiniCard({ agent }: { agent: Agent }) {
   return (
     <div className="border rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow p-2 flex items-center">
       <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-200 mr-2 flex-shrink-0">
-        <img 
-          src={`https://randomuser.me/api/portraits/men/${agent.id}.jpg`} 
-          alt="Agent" 
+        <img
+          src={`https://randomuser.me/api/portraits/men/${agent.id}.jpg`}
+          alt="Agent"
           className="w-full h-full object-cover"
         />
       </div>
@@ -408,8 +404,12 @@ function CompanyMiniCard({ company }: { company: Company }) {
   );
 }
 
+interface MegaMenuProps {
+  isMobile?: boolean;
+}
+
 export function MegaMenu({ isMobile = false }: MegaMenuProps) {
-  const [location] = useLocation();
+  const location = window.location.pathname; //Using window.location as per edited code
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   // Fetch featured properties
@@ -449,16 +449,16 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
     // Mobile view with simple list
     return (
       <div className="flex flex-col space-y-3 pt-2 pb-3">
-        <Link href="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Buy
         </Link>
-        <Link href="/agents" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/agents" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Agents
         </Link>
-        <Link href="/companies" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/companies" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Companies
         </Link>
-        <Link href="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Sell
         </Link>
         <NavigationMenuItem>
@@ -475,19 +475,19 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               <div className="space-y-3">
                 <h4 className="font-medium mb-1 text-sm">By Type</h4>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/residential" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/residential" className="block text-sm text-gray-500 hover:text-primary">
                     <Building2 className="inline-block w-4 h-4 mr-2" />
                     Residential Projects
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/commercial" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/commercial" className="block text-sm text-gray-500 hover:text-primary">
                     <Building className="inline-block w-4 h-4 mr-2" />
                     Commercial Projects
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/mixed-use" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/mixed-use" className="block text-sm text-gray-500 hover:text-primary">
                     <Layers3 className="inline-block w-4 h-4 mr-2" />
                     Mixed-Use Projects
                   </Link>
@@ -496,19 +496,19 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               <div className="space-y-3">
                 <h4 className="font-medium mb-1 text-sm">By Status</h4>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/under-construction" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/under-construction" className="block text-sm text-gray-500 hover:text-primary">
                     <Building2 className="inline-block w-4 h-4 mr-2" />
                     Under Construction
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/ready-to-move" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/ready-to-move" className="block text-sm text-gray-500 hover:text-primary">
                     <CheckCircle2 className="inline-block w-4 h-4 mr-2" />
                     Ready to Move
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/upcoming" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/upcoming" className="block text-sm text-gray-500 hover:text-primary">
                     <Clock className="inline-block w-4 h-4 mr-2" />
                     Upcoming Projects
                   </Link>
@@ -517,19 +517,19 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               <div className="space-y-3">
                 <h4 className="font-medium mb-1 text-sm">By Features</h4>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/luxury" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/luxury" className="block text-sm text-gray-500 hover:text-primary">
                     <Star className="inline-block w-4 h-4 mr-2" />
                     Luxury Projects
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/eco-friendly" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/eco-friendly" className="block text-sm text-gray-500 hover:text-primary">
                     <Landmark className="inline-block w-4 h-4 mr-2" />
                     Eco-Friendly
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/smart-homes" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/smart-homes" className="block text-sm text-gray-500 hover:text-primary">
                     <Shield className="inline-block w-4 h-4 mr-2" />
                     Smart Homes
                   </Link>
@@ -538,19 +538,19 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               <div className="space-y-3">
                 <h4 className="font-medium mb-1 text-sm">Featured</h4>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/featured" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/featured" className="block text-sm text-gray-500 hover:text-primary">
                     <Medal className="inline-block w-4 h-4 mr-2" />
                     Featured Projects
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/most-viewed" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/most-viewed" className="block text-sm text-gray-500 hover:text-primary">
                     <LineChart className="inline-block w-4 h-4 mr-2" />
                     Most Viewed
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="/projects/premium" className="block text-sm text-gray-500 hover:text-primary">
+                  <Link to="/projects/premium" className="block text-sm text-gray-500 hover:text-primary">
                     <Award className="inline-block w-4 h-4 mr-2" />
                     Premium Projects
                   </Link>
@@ -559,13 +559,13 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <Link href="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
-        <Link href="/about" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/about" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           About
         </Link>
-        <Link href="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Contact
         </Link>
       </div>
@@ -593,7 +593,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {buyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link href={item.href}>
+                        <Link to={item.href}> {/* Changed to react-router-dom Link */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -641,7 +641,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     <div className="grid grid-cols-2 gap-3">
                       {getFilteredProperties(buyMenuItems.find(item => item.title === activeCategory)).map((property) => (
                         <div key={property.id} className="col-span-1">
-                          <Link href={`/properties/${property.id}`}>
+                          <Link to={`/properties/${property.id}`}> {/* Changed to react-router-dom Link */}
                             <PropertyMiniCard property={property} />
                           </Link>
                         </div>
@@ -652,7 +652,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   <div className="grid grid-cols-2 gap-3">
                     {properties.slice(0, 4).map((property) => (
                       <div key={property.id} className="col-span-1">
-                        <Link href={`/properties/${property.id}`}>
+                        <Link to={`/properties/${property.id}`}> {/* Changed to react-router-dom Link */}
                           <PropertyMiniCard property={property} />
                         </Link>
                       </div>
@@ -681,7 +681,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {agentMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link href={item.href}>
+                        <Link to={item.href}> {/* Changed to react-router-dom Link */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -705,7 +705,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {agents.slice(0, 4).map((agent) => (
                     <div key={agent.id} className="col-span-1">
-                      <Link href={`/agents/${agent.id}`}>
+                      <Link to={`/agents/${agent.id}`}> {/* Changed to react-router-dom Link */}
                         <AgentMiniCard agent={agent} />
                       </Link>
                     </div>
@@ -733,7 +733,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {companyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link href={item.href}>
+                        <Link to={item.href}> {/* Changed to react-router-dom Link */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -747,7 +747,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                       </NavigationMenuLink>
                     </div>
                   ))}
-                </div>
+                </</div>
               </div>
               <div className="col-span-4 p-2">
                 <div className="mb-3 mt-1 text-base font-medium">
@@ -757,7 +757,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {companies.slice(0, 4).map((company) => (
                     <div key={company.id} className="col-span-1">
-                      <Link href={`/companies/${company.id}`}>
+                      <Link to={`/companies/${company.id}`}> {/* Changed to react-router-dom Link */}
                         <CompanyMiniCard company={company} />
                       </Link>
                     </div>
@@ -770,7 +770,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href="/add-property" className={cn(
+            <Link to="/add-property" className={cn(
               navigationMenuTriggerStyle(),
               location === "/add-property" && "text-primary font-medium"
             )}>
@@ -795,7 +795,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 {resourceMenuItems.map((item) => (
                   <div key={item.title}>
                     <NavigationMenuLink asChild>
-                      <Link href={item.href}>
+                      <Link to={item.href}> {/* Changed to react-router-dom Link */}
                         <div className="flex cursor-pointer items-start space-x-3 rounded-md p-3 hover:bg-muted">
                           {item.icon}
                           <div>
@@ -816,7 +816,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href="/about" className={cn(
+            <Link to="/about" className={cn(
               navigationMenuTriggerStyle(),
               location === "/about" && "text-primary font-medium"
             )}>
@@ -827,7 +827,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href="/contact" className={cn(
+            <Link to="/contact" className={cn(
               navigationMenuTriggerStyle(),
               location === "/contact" && "text-primary font-medium"
             )}>
