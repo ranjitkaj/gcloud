@@ -121,7 +121,35 @@ export default function AddProperty() {
 
   const onSubmit = (data: FormValues) => {
     setIsSubmitting(true);
-    propertyMutation.mutate(data);
+    
+    // Process uploaded files
+    let processedData = { ...data };
+    
+    // Handle direct file uploads and convert to URLs if needed
+    if (uploadedFiles.length > 0) {
+      // In a real application, you would upload these files to a storage service
+      // and get back URLs. For this demo, we'll use the preview URLs.
+      const fileUrls = uploadedFiles
+        .filter(file => file.status === 'success')
+        .map(file => file.preview || '');
+      
+      // Add these URLs to any existing image URLs
+      const existingUrls = processedData.imageUrlsInput 
+        ? processedData.imageUrlsInput.split(',').map(url => url.trim()).filter(url => url.length > 0) 
+        : [];
+      
+      processedData.imageUrlsInput = [...existingUrls, ...fileUrls].join(',');
+    }
+    
+    // Set premium status based on subscription level
+    if (subscriptionLevel === 'premium') {
+      processedData.premium = true;
+      processedData.featured = true;
+    } else if (subscriptionLevel === 'paid') {
+      processedData.featured = true;
+    }
+    
+    propertyMutation.mutate(processedData);
   };
 
   return (
@@ -351,38 +379,68 @@ export default function AddProperty() {
                         <Separator className="my-6" />
                         <h3 className="text-lg font-semibold mb-4">Property Images</h3>
 
+                        <div className="space-y-4">
+                          <FormField
+                            control={form.control}
+                            name="imageUrlsInput"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Image URLs</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="Enter image URLs separated by commas" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormDescription>
+                                  Add URLs to your property images, separated by commas
+                                </FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <div className="flex items-start">
+                              <Upload className="h-5 w-5 mr-2 text-gray-500 mt-0.5" />
+                              <div>
+                                <h4 className="font-medium text-gray-900">Upload Images & Videos</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                  Upload photos and videos of your property directly. Max file size: 20MB.
+                                </p>
+                                <FileUpload 
+                                  onFilesSelected={setUploadedFiles}
+                                  initialFiles={uploadedFiles}
+                                  maxFiles={25}
+                                  allowMultiple={true}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <Separator className="my-6" />
+                        <h3 className="text-lg font-semibold mb-4">Listing Type</h3>
+                        
                         <FormField
                           control={form.control}
-                          name="imageUrlsInput"
+                          name="subscriptionLevel"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Image URLs</FormLabel>
+                              <FormLabel>Choose Listing Type</FormLabel>
                               <FormControl>
-                                <Textarea 
-                                  placeholder="Enter image URLs separated by commas" 
-                                  {...field} 
+                                <SubscriptionSelector 
+                                  selectedLevel={field.value as SubscriptionLevel}
+                                  onSelectLevel={(level) => {
+                                    field.onChange(level);
+                                    setSubscriptionLevel(level);
+                                  }}
                                 />
                               </FormControl>
-                              <FormDescription>
-                                Add URLs to your property images, separated by commas
-                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-
-                        <div className="bg-gray-50 p-4 rounded-lg mt-2">
-                          <div className="flex items-start">
-                            <Upload className="h-5 w-5 mr-2 text-gray-500 mt-0.5" />
-                            <div>
-                              <h4 className="font-medium text-gray-900">Don't have image URLs?</h4>
-                              <p className="text-sm text-gray-600">
-                                You can use image hosting services like Imgur, Cloudinary, or ImgBB to upload your images, 
-                                then paste the direct image links above.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
                       </div>
 
                       <Button 
