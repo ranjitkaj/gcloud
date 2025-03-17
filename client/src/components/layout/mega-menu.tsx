@@ -461,6 +461,9 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         <Link href="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Sell
         </Link>
+        <Link href="/projects" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+          Projects
+        </Link>
         <Link href="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
