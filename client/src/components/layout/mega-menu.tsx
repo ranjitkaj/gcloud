@@ -225,6 +225,50 @@ const companyMenuItems = [
   },
 ];
 
+// Mega menu items for Projects
+const projectMenuItems = [
+  {
+    title: "New Launches",
+    href: "/projects/new-launches",
+    description: "Newly launched residential projects",
+    icon: <TrendingUp className="h-5 w-5 text-primary" />,
+    highlights: ["Pre-launch offers", "Early booking discounts", "Special schemes"],
+    features: ["Premium locations", "Modern architecture", "Smart home features"]
+  },
+  {
+    title: "Luxury Projects",
+    href: "/projects/luxury",
+    description: "Premium residential developments",
+    icon: <Star className="h-5 w-5 text-primary" />,
+    highlights: ["High-end amenities", "Exclusive locations", "Designer interiors"],
+    features: ["Concierge services", "Private pools", "Premium security"]
+  },
+  {
+    title: "Affordable Housing",
+    href: "/projects/affordable",
+    description: "Budget-friendly housing projects",
+    icon: <Home className="h-5 w-5 text-primary" />,
+    highlights: ["Cost-effective", "Good connectivity", "Essential amenities"],
+    features: ["Government schemes", "Easy financing", "Value for money"]
+  },
+  {
+    title: "Township Projects",
+    href: "/projects/townships",
+    description: "Self-contained residential townships",
+    icon: <Building2 className="h-5 w-5 text-primary" />,
+    highlights: ["All-inclusive living", "Multiple unit types", "Comprehensive facilities"],
+    features: ["Schools", "Shopping centers", "Healthcare facilities"]
+  },
+  {
+    title: "Commercial Projects",
+    href: "/projects/commercial",
+    description: "Office spaces and retail developments",
+    icon: <Briefcase className="h-5 w-5 text-primary" />,
+    highlights: ["Business hubs", "Strategic locations", "Modern infrastructure"],
+    features: ["Tech parks", "Corporate offices", "Retail spaces"]
+  }
+];
+
 // Mega menu items for Resources
 const resourceMenuItems = [
   {
