@@ -8,14 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut, Home, PlusCircle } from "lucide-react";
+import { Menu, User, LogOut, Home, PlusCircle, Bell } from "lucide-react";
+import { MegaMenu } from "./mega-menu";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logoutMutation } = useAuth();
   const [location] = useLocation();
-
-  const isActive = (path: string) => location === path;
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -32,49 +31,41 @@ export default function Navbar() {
           </Link>
 
           {/* Navigation (Desktop) */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/properties" className={`${isActive("/properties") ? "text-primary" : "text-gray-700"} hover:text-primary font-medium transition-colors`}>
-              Buy
-            </Link>
-            <Link href="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors">
-              Rent
-            </Link>
-            <Link href="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors">
-              Sell
-            </Link>
-            <Link href="/" className="text-gray-700 hover:text-primary font-medium transition-colors">
-              About
-            </Link>
-            <Link href="/" className="text-gray-700 hover:text-primary font-medium transition-colors">
-              Contact
-            </Link>
+          <div className="hidden md:flex items-center">
+            <MegaMenu />
           </div>
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-3">
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <User className="h-6 w-6" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="font-medium">{user.name}</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/dashboard"}>
-                    <Home className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/add-property"}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    <span>Add Property</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                      <User className="h-6 w-6" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem className="font-medium">{user.name}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.location.href = "/dashboard"}>
+                      <Home className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.location.href = "/add-property"}>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      <span>Add Property</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <>
                 <Link href="/auth" className="hidden md:inline-flex hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors">
@@ -98,28 +89,14 @@ export default function Navbar() {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-2">
-          <div className="flex flex-col space-y-3 pt-2 pb-3">
-            <Link href="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-              Buy
-            </Link>
-            <Link href="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-              Rent
-            </Link>
-            <Link href="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-              Sell
-            </Link>
-            <Link href="/" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-              About
-            </Link>
-            <Link href="/" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-              Contact
-            </Link>
-            {!user && (
-              <Link href="/auth" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+          <MegaMenu isMobile={true} />
+          {!user && (
+            <div className="pt-2 border-t border-gray-100 mt-2">
+              <Link href="/auth" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 block">
                 Login
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </nav>

@@ -110,6 +110,12 @@ export const propertyStatus = [
   "under_contract",
 ] as const;
 
+export const subscriptionLevels = [
+  "free",
+  "paid",
+  "premium",
+] as const;
+
 export const properties = pgTable("properties", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -128,13 +134,24 @@ export const properties = pgTable("properties", {
   userId: integer("user_id").notNull(), // Owner/seller
   agentId: integer("agent_id"), // Optional assigned agent
   companyId: integer("company_id"), // Optional company listing
+  
+  // Subscription and promotion fields
+  subscriptionLevel: text("subscription_level").notNull().default("free"),
+  subscriptionAmount: integer("subscription_amount").default(0), // In INR
+  subscriptionExpiresAt: timestamp("subscription_expires_at"),
+  
   featured: boolean("featured").default(false),
   verified: boolean("verified").default(false),
   premium: boolean("premium").default(false), // Premium listing (paid promotion)
+  
+  // Media and details
   amenities: text("amenities").array(),
   imageUrls: text("image_urls").array(),
+  videoUrls: text("video_urls").array(), // New field for video URLs
   virtualTourUrl: text("virtual_tour_url"),
   floorPlanUrl: text("floor_plan_url"),
+  
+  // Timestamps and geo
   createdAt: timestamp("created_at").defaultNow(),
   expiresAt: timestamp("expires_at"),
   latitude: doublePrecision("latitude"),
