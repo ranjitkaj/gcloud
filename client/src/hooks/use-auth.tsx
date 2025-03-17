@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { createContext, useContext } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface User {
   id: number;
@@ -12,7 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (credentials: { username: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
   signup: (data: any) => Promise<void>;
 }
@@ -20,56 +20,64 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const queryClient = useQueryClient();
 
-  const { data: currentUser, isLoading } = useQuery({
+  const { data: user, isLoading } = useQuery<User | null>({
     queryKey: ['/api/user'],
     retry: false,
+    staleTime: Infinity,
   });
 
-  useEffect(() => {
-    if (currentUser) {
-      setUser(currentUser);
-    }
-  }, [currentUser]);
+  const loginMutation = useMutation({
+    mutationFn: async (credentials: { username: string; password: string }) => {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+      });
+      if (!response.ok) throw new Error('Login failed');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+    },
+  });
 
-  const login = async (username: string, password: string) => {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
+  const signupMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Signup failed');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+    },
+  });
 
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
-
-    const userData = await response.json();
-    setUser(userData);
-  };
-
-  const signup = async (data: any) => {
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error('Signup failed');
-    }
-
-    const userData = await response.json();
-    setUser(userData);
-  };
-
-  const logout = async () => {
-    await fetch('/api/logout', { method: 'POST' });
-    setUser(null);
-  };
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/logout', { method: 'POST' });
+      if (!response.ok) throw new Error('Logout failed');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+    },
+  });
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, signup }}>
+    <AuthContext.Provider
+      value={{
+        user: user || null,
+        isLoading,
+        login: loginMutation.mutateAsync,
+        signup: signupMutation.mutateAsync,
+        logout: logoutMutation.mutateAsync,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
