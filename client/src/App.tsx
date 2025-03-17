@@ -39,3 +39,19 @@ function App() {
 }
 
 export default App;
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "@/pages/home-page";
+import NotFound from "@/pages/not-found";
+import ProjectCategory from "@/pages/projects/project-category";
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/projects/:category" element={<ProjectCategory />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
