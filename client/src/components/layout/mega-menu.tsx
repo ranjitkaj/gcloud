@@ -747,7 +747,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                       </NavigationMenuLink>
                     </div>
                   ))}
-                </</div>
+                </div>
               </div>
               <div className="col-span-4 p-2">
                 <div className="mb-3 mt-1 text-base font-medium">
