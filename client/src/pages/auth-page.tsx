@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'wouter';
+import { useLocation, navigate } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -47,7 +47,7 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
   const [location, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
-  const navigation = useNavigate(); // Added useNavigate
+  // Remove navigation hook since we use navigate function directly
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -88,7 +88,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (registerMutation.isSuccess) {
-      navigation('/dashboard'); // Redirect on successful registration
+      navigate('/dashboard'); // Redirect on successful registration
     }
   }, [registerMutation.isSuccess, navigation]);
 

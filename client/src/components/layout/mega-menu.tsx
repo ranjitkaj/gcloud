@@ -411,29 +411,29 @@ function CompanyMiniCard({ company }: { company: Company }) {
 export function MegaMenu({ isMobile = false }: MegaMenuProps) {
   const [location] = useLocation();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  
+
   // Fetch featured properties
   const { data: properties = [] } = useQuery<Property[]>({
     queryKey: ['/api/properties/featured'],
     enabled: !isMobile
   });
-  
+
   // Fetch featured agents
   const { data: agents = [] } = useQuery<Agent[]>({
     queryKey: ['/api/agents/featured'],
     enabled: !isMobile
   });
-  
+
   // Fetch featured companies
   const { data: companies = [] } = useQuery<Company[]>({
     queryKey: ['/api/companies/featured'],
     enabled: !isMobile
   });
-  
+
   // Filter properties based on the active category query
   const getFilteredProperties = (category: any) => {
     if (!category || !category.query) return [];
-    
+
     return properties.filter(property => {
       for (const [key, value] of Object.entries(category.query)) {
         if (key === 'propertyType' && property.propertyType !== value) return false;
@@ -444,7 +444,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
       return true;
     }).slice(0, 2); // Display only 2 properties per category
   };
-  
+
   if (isMobile) {
     // Mobile view with simple list
     return (
@@ -571,10 +571,10 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
       </div>
     );
   }
-  
+
   // Desktop view with complex mega menu
   return (
-    <NavigationMenu className="hidden md:block">
+    <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger
@@ -613,7 +613,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="mb-3 mt-1 text-base font-medium">
                   {activeCategory ? activeCategory : "Featured Properties"}
                 </div>
-                
+
                 {activeCategory ? (
                   <div>
                     <div className="mb-3">
@@ -626,7 +626,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="mb-4">
                       <h4 className="text-sm font-medium mb-1.5">Features</h4>
                       <div className="grid grid-cols-2 gap-1">
@@ -637,7 +637,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-3">
                       {getFilteredProperties(buyMenuItems.find(item => item.title === activeCategory)).map((property) => (
                         <div key={property.id} className="col-span-1">
@@ -663,7 +663,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
           <NavigationMenuTrigger
             className={cn(
@@ -701,7 +701,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="mb-3 mt-1 text-base font-medium">
                   Featured Agents
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-3">
                   {agents.slice(0, 4).map((agent) => (
                     <div key={agent.id} className="col-span-1">
@@ -715,7 +715,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
           <NavigationMenuTrigger
             className={cn(
@@ -753,7 +753,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="mb-3 mt-1 text-base font-medium">
                   Featured Companies
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-3">
                   {companies.slice(0, 4).map((company) => (
                     <div key={company.id} className="col-span-1">
@@ -767,7 +767,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link href="/add-property" className={cn(
@@ -778,7 +778,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
           <NavigationMenuTrigger
             className={cn(
@@ -813,7 +813,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link href="/about" className={cn(
@@ -824,7 +824,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link href="/contact" className={cn(
