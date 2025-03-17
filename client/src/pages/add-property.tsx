@@ -39,10 +39,13 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Loader2, Upload, Home, Check } from 'lucide-react';
+import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
+import SubscriptionSelector, { SubscriptionLevel } from '@/components/property/subscription-selector';
 
 // Extend the insert schema with additional validation and fields
 const addPropertyFormSchema = insertPropertySchema.extend({
   imageUrlsInput: z.string().optional(),
+  subscriptionLevel: z.enum(['free', 'paid', 'premium']).default('free'),
 }).omit({ imageUrls: true, userId: true });
 
 type FormValues = z.infer<typeof addPropertyFormSchema>;
@@ -52,6 +55,8 @@ export default function AddProperty() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<FileWithPreview[]>([]);
+  const [subscriptionLevel, setSubscriptionLevel] = useState<SubscriptionLevel>('free');
 
   // Initialize form with default values
   const form = useForm<FormValues>({
@@ -69,6 +74,7 @@ export default function AddProperty() {
       area: undefined,
       featured: false,
       imageUrlsInput: '',
+      subscriptionLevel: 'free',
     },
   });
 
