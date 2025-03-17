@@ -39,6 +39,7 @@ function App() {
 }
 
 export default App;
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "@/pages/home-page";
 import NotFound from "@/pages/not-found";
