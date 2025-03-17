@@ -1,11 +1,11 @@
 import { 
   users, properties, agents, companies, inquiries, 
   agentReviews, propertyRecommendations, propertyViews, 
-  savedProperties, type User, type InsertUser, type Property, 
-  type InsertProperty, type Agent, type InsertAgent, 
-  type Company, type InsertCompany, type Inquiry, 
-  type InsertInquiry, type AgentReview, type InsertAgentReview,
-  userRoles
+  savedProperties, otps, bookings, type User, type InsertUser, 
+  type Property, type InsertProperty, type Agent, type InsertAgent, 
+  type Company, type InsertCompany, type Inquiry, type InsertInquiry, 
+  type AgentReview, type InsertAgentReview, type Otp, type InsertOtp,
+  type Booking, type InsertBooking, userRoles
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -150,6 +150,8 @@ export class MemStorage implements IStorage {
     this.propertyViews = new Map();
     this.savedProps = new Map();
     this.recommendations = new Map();
+    this.otps = new Map();
+    this.bookings = new Map();
     
     this.userIdCounter = 1;
     this.propertyIdCounter = 1;
@@ -160,6 +162,8 @@ export class MemStorage implements IStorage {
     this.viewIdCounter = 1;
     this.savedIdCounter = 1;
     this.recommendationIdCounter = 1;
+    this.otpIdCounter = 1;
+    this.bookingIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -197,6 +201,8 @@ export class MemStorage implements IStorage {
       id, 
       createdAt: now, 
       verified: false,
+      emailVerified: false,
+      phoneVerified: false,
       role: insertUser.role || "buyer",
       avatar: insertUser.avatar || null,
       bio: insertUser.bio || null
@@ -212,6 +218,156 @@ export class MemStorage implements IStorage {
     const updatedUser = { ...user, ...userData };
     this.users.set(id, updatedUser);
     return updatedUser;
+  }
+  
+  async verifyUserEmail(id: number): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser = { 
+      ...user, 
+      emailVerified: true,
+      // If phone is already verified, mark user as fully verified
+      verified: user.phoneVerified ? true : user.verified
+    };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+  
+  async verifyUserPhone(id: number): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser = { 
+      ...user, 
+      phoneVerified: true,
+      // If email is already verified, mark user as fully verified
+      verified: user.emailVerified ? true : user.verified
+    };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+  
+  // OTP operations
+  async createOtp(otp: InsertOtp): Promise<Otp> {
+    const id = this.otpIdCounter++;
+    const now = new Date();
+    
+    const newOtp: Otp = {
+      ...otp,
+      id,
+      createdAt: now,
+      verified: false
+    };
+    this.otps.set(id, newOtp);
+    return newOtp;
+  }
+  
+  async getOtp(id: number): Promise<Otp | undefined> {
+    return this.otps.get(id);
+  }
+  
+  async getOtpByUserAndType(userId: number, type: string): Promise<Otp | undefined> {
+    return Array.from(this.otps.values()).find(
+      (otp) => otp.userId === userId && otp.type === type && !otp.verified && new Date(otp.expiresAt) > new Date()
+    );
+  }
+  
+  async verifyOtp(userId: number, otpCode: string, type: string): Promise<boolean> {
+    const otp = Array.from(this.otps.values()).find(
+      (o) => o.userId === userId && o.type === type && o.otp === otpCode && !o.verified && new Date(o.expiresAt) > new Date()
+    );
+    
+    if (!otp) return false;
+    
+    // Mark OTP as verified
+    const otpId = Array.from(this.otps.entries())
+      .find(([, o]) => o.userId === userId && o.type === type && o.otp === otpCode && !o.verified)?.[0];
+    
+    if (otpId) {
+      const updatedOtp = { ...otp, verified: true };
+      this.otps.set(otpId, updatedOtp);
+      
+      // If this is an email or phone OTP, update user verification status
+      if (type === "email") {
+        await this.verifyUserEmail(userId);
+      } else if (type === "sms" || type === "whatsapp") {
+        await this.verifyUserPhone(userId);
+      }
+      
+      return true;
+    }
+    
+    return false;
+  }
+  
+  async invalidateOtp(id: number): Promise<void> {
+    const otp = this.otps.get(id);
+    if (!otp) return;
+    
+    const updatedOtp = { ...otp, verified: true }; // Mark as verified to invalidate
+    this.otps.set(id, updatedOtp);
+  }
+  
+  // Booking operations
+  async createBooking(booking: InsertBooking): Promise<Booking> {
+    const id = this.bookingIdCounter++;
+    const now = new Date();
+    
+    // Generate a random 6-digit verification code
+    const verificationCode = randomInt(100000, 999999).toString();
+    
+    const newBooking: Booking = {
+      ...booking,
+      id,
+      createdAt: now,
+      isVerified: false,
+      verificationCode
+    };
+    this.bookings.set(id, newBooking);
+    return newBooking;
+  }
+  
+  async getBooking(id: number): Promise<Booking | undefined> {
+    return this.bookings.get(id);
+  }
+  
+  async getUserBookings(userId: number): Promise<Booking[]> {
+    return Array.from(this.bookings.values()).filter(
+      (booking) => booking.userId === userId
+    );
+  }
+  
+  async getPropertyBookings(propertyId: number): Promise<Booking[]> {
+    return Array.from(this.bookings.values()).filter(
+      (booking) => booking.propertyId === propertyId
+    );
+  }
+  
+  async getAgentBookings(agentId: number): Promise<Booking[]> {
+    return Array.from(this.bookings.values()).filter(
+      (booking) => booking.agentId === agentId
+    );
+  }
+  
+  async updateBookingStatus(id: number, status: string): Promise<Booking | undefined> {
+    const booking = this.bookings.get(id);
+    if (!booking) return undefined;
+    
+    const updatedBooking = { ...booking, status };
+    this.bookings.set(id, updatedBooking);
+    return updatedBooking;
+  }
+  
+  async verifyBooking(id: number, verificationCode: string): Promise<boolean> {
+    const booking = this.bookings.get(id);
+    if (!booking || booking.verificationCode !== verificationCode) {
+      return false;
+    }
+    
+    const updatedBooking = { ...booking, isVerified: true };
+    this.bookings.set(id, updatedBooking);
+    return true;
   }
   
   // Agent operations
