@@ -1,13 +1,12 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/hooks/use-auth';
 import HomePage from "@/pages/home-page";
 import NotFound from "@/pages/not-found";
 import ProjectCategory from "@/pages/projects/project-category";
-
-const queryClient = new QueryClient();
+import { queryClient } from '@/lib/query-client';
 
 function App() {
   return (
