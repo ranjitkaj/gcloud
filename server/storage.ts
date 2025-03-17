@@ -21,6 +21,24 @@ export interface IStorage {
   getUsersByRole(role: string): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, userData: Partial<User>): Promise<User | undefined>;
+  verifyUserEmail(id: number): Promise<User | undefined>;
+  verifyUserPhone(id: number): Promise<User | undefined>;
+  
+  // OTP operations
+  createOtp(otp: InsertOtp): Promise<Otp>;
+  getOtp(id: number): Promise<Otp | undefined>;
+  getOtpByUserAndType(userId: number, type: string): Promise<Otp | undefined>;
+  verifyOtp(userId: number, otpCode: string, type: string): Promise<boolean>;
+  invalidateOtp(id: number): Promise<void>;
+
+  // Booking operations
+  createBooking(booking: InsertBooking): Promise<Booking>;
+  getBooking(id: number): Promise<Booking | undefined>;
+  getUserBookings(userId: number): Promise<Booking[]>;
+  getPropertyBookings(propertyId: number): Promise<Booking[]>;
+  getAgentBookings(agentId: number): Promise<Booking[]>;
+  updateBookingStatus(id: number, status: string): Promise<Booking | undefined>;
+  verifyBooking(id: number, verificationCode: string): Promise<boolean>;
 
   // Agent operations
   getAgent(id: number): Promise<Agent | undefined>;
@@ -106,6 +124,8 @@ export class MemStorage implements IStorage {
   private propertyViews: Map<number, { userId: number, propertyId: number, viewedAt: Date }>;
   private savedProps: Map<number, { userId: number, propertyId: number, savedAt: Date }>;
   private recommendations: Map<number, { userId: number, propertyId: number, score: number, createdAt: Date }>;
+  private otps: Map<number, Otp>;
+  private bookings: Map<number, Booking>;
   
   sessionStore: any;
   userIdCounter: number;
@@ -117,6 +137,8 @@ export class MemStorage implements IStorage {
   viewIdCounter: number;
   savedIdCounter: number;
   recommendationIdCounter: number;
+  otpIdCounter: number;
+  bookingIdCounter: number;
 
   constructor() {
     this.users = new Map();

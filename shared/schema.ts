@@ -10,6 +10,13 @@ export const userRoles = [
   "company_admin",
 ] as const;
 
+// Verification methods
+export const verificationMethods = [
+  "email",
+  "sms",
+  "whatsapp",
+] as const;
+
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -21,7 +28,35 @@ export const users = pgTable("users", {
   avatar: text("avatar"),
   bio: text("bio"),
   verified: boolean("verified").default(false),
+  emailVerified: boolean("email_verified").default(false),
+  phoneVerified: boolean("phone_verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// OTP for verification
+export const otps = pgTable("otps", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  otp: text("otp").notNull(),
+  type: text("type").notNull(), // email, sms, whatsapp, property_booking
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  verified: boolean("verified").default(false),
+});
+
+// Property Bookings for site visits and follow-ups
+export const bookings = pgTable("bookings", {
+  id: serial("id").primaryKey(),
+  propertyId: integer("property_id").notNull(),
+  userId: integer("user_id").notNull(), // The user who booked
+  agentId: integer("agent_id"), // Optional agent assigned to handle this booking
+  bookingDate: timestamp("booking_date").notNull(),
+  status: text("status").notNull().default("pending"), // pending, confirmed, completed, cancelled
+  bookingType: text("booking_type").notNull(), // site_visit, video_tour, follow_up
+  notes: text("notes"),
+  verificationCode: text("verification_code"), // For on-site verification
+  createdAt: timestamp("created_at").defaultNow(),
+  isVerified: boolean("is_verified").default(false),
 });
 
 // Companies (Real Estate Agencies)
@@ -71,9 +106,7 @@ export const propertyTypes = [
 
 export const propertyStatus = [
   "for_sale",
-  "for_rent",
   "sold",
-  "rented",
   "under_contract",
 ] as const;
 
@@ -166,6 +199,18 @@ export const insertUserSchema = createInsertSchema(users).pick({
   bio: true,
 });
 
+export const insertOtpSchema = createInsertSchema(otps).omit({
+  id: true,
+  createdAt: true,
+  verified: true,
+});
+
+export const insertBookingSchema = createInsertSchema(bookings).omit({
+  id: true,
+  createdAt: true,
+  isVerified: true,
+});
+
 export const insertCompanySchema = createInsertSchema(companies).omit({
   id: true,
   createdAt: true,
@@ -195,6 +240,12 @@ export const insertAgentReviewSchema = createInsertSchema(agentReviews).omit({
 // Export types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+export type InsertOtp = z.infer<typeof insertOtpSchema>;
+export type Otp = typeof otps.$inferSelect;
+
+export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type Booking = typeof bookings.$inferSelect;
 
 export type InsertCompany = z.infer<typeof insertCompanySchema>;
 export type Company = typeof companies.$inferSelect;
