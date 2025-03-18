@@ -46,11 +46,43 @@ export default function PostPropertyFree() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const formTopRef = useRef<HTMLDivElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [propertyImages, setPropertyImages] = useState<FileWithPreview[]>([]);
+  
+  // Set up the mutation for submitting property data
+  const createPropertyMutation = useMutation({
+    mutationFn: (propertyData: any) => {
+      return apiRequest('POST', '/api/properties', propertyData);
+    },
+    onSuccess: () => {
+      // Invalidate queries to refresh property lists
+      queryClient.invalidateQueries({ queryKey: ['/api/properties'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/properties/featured'] });
+      
+      // Show success toast
+      toast({
+        title: "Property Listed Successfully",
+        description: "Your property has been posted for free. It will be visible once approved.",
+        variant: "default",
+      });
+      
+      // Navigate to dashboard after success
+      navigate('/dashboard');
+    },
+    onError: (error: Error) => {
+      console.error("Error submitting property:", error);
+      toast({
+        title: "Error",
+        description: `Failed to submit property: ${error.message}`,
+        variant: "destructive",
+      });
+      setFormSubmitted(false);
+    }
+  });
   
   // Form setup with validation
   const form = useForm<PropertyFormValues>({
@@ -111,27 +143,31 @@ export default function PostPropertyFree() {
     
     // Create a complete property object with form data and images
     const propertyData = {
-      ...data,
-      images: propertyImages,
-      userId: user.id,
-      createdAt: new Date(),
+      title: data.title,
+      description: data.description,
+      propertyType: data.propertyType,
+      rentOrSale: data.forSaleOrRent.toLowerCase(),
+      price: parseInt(data.price),
+      location: data.location,
+      city: data.location.split(',').pop()?.trim() || '',
+      pincode: data.pincode,
+      bedrooms: data.bedrooms ? parseInt(data.bedrooms) : undefined,
+      bathrooms: data.bathrooms ? parseInt(data.bathrooms) : undefined,
+      area: parseInt(data.area),
+      areaUnit: data.areaUnit,
+      imageUrls: propertyImages.map(img => img.preview || ''),
+      contactName: data.contactName,
+      contactPhone: data.contactPhone,
+      subscriptionLevel: 'free',
+      status: 'available',
+      approvalStatus: 'pending'
     };
     
     console.log("Property data submitted:", propertyData);
     setFormSubmitted(true);
     
-    // Show success notification
-    toast({
-      title: "Property Listed Successfully",
-      description: "Your property has been posted successfully.",
-      variant: "default",
-    });
-    
-    // In a real app, here we would send data to the backend
-    // For demo, we'll simulate success and redirect after 2 seconds
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 2000);
+    // Submit to the backend
+    createPropertyMutation.mutate(propertyData);
   };
 
   // Testimonials data
@@ -530,9 +566,19 @@ export default function PostPropertyFree() {
                 type="submit" 
                 onClick={form.handleSubmit(onSubmit)}
                 className="bg-primary hover:bg-primary/90 text-white"
-                disabled={formSubmitted}
+                disabled={formSubmitted || createPropertyMutation.isPending}
               >
-                {formSubmitted ? "Submitting..." : "Submit Property Listing"}
+                {createPropertyMutation.isPending ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit Property Listing"
+                )}
               </Button>
             </div>
           </div>
