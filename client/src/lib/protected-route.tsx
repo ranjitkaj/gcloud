@@ -1,37 +1,45 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { Redirect, Route } from "wouter";
+import { Navigate, Outlet } from "react-router-dom";
 
-export function ProtectedRoute({
-  path,
-  component: Component,
-}: {
-  path: string;
-  component: () => React.JSX.Element;
-}) {
+// Updated to work with react-router-dom v6
+export function ProtectedRoute() {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <Route path={path}>
-        <div className="flex items-center justify-center min-h-screen">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      </Route>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
 
   if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <Outlet />;
+}
+
+// For routes that need admin role
+export function AdminProtectedRoute() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
     return (
-      <Route path={path}>
-        <Redirect to="/auth" />
-      </Route>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
 
-  return (
-    <Route path={path}>
-      <Component />
-    </Route>
-  )
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (user.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Outlet />;
 }

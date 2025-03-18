@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import {
   Accordion,
@@ -17,7 +17,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Separator } from '@/components/ui/separator';
-import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare, Home, MapPin, Building, Camera, Upload } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare, 
+  Home, MapPin, Building, Camera, Upload, Clock, Users, BadgeCheck } from 'lucide-react';
 import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
 
 // Property type schema
@@ -541,7 +542,7 @@ export default function PostPropertyFree() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       
       {/* Login Modal */}
