@@ -107,26 +107,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Search properties
   app.get("/api/properties/search", asyncHandler(async (req, res) => {
     const { 
-      city, propertyType, minPrice, maxPrice, 
-      minBedrooms, maxBedrooms, minArea, maxArea,
-      rentOrSale, status, amenities
+      city, location, propertyType, minPrice, maxPrice, 
+      minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
+      minArea, maxArea, rentOrSale, forSaleOrRent, status, 
+      amenities, sortBy, page = '1', limit = '12'
     } = req.query;
 
+    // Build search query
     const query: any = {};
+    
+    // Handle location search (can be either city or location parameter)
     if (city) query.city = city as string;
+    if (location) query.city = location as string; // Alternative param name
+    
+    // Handle property type
     if (propertyType) query.propertyType = propertyType as string;
+    
+    // Handle price range
     if (minPrice) query.minPrice = parseInt(minPrice as string);
     if (maxPrice) query.maxPrice = parseInt(maxPrice as string);
+    
+    // Handle room counts
     if (minBedrooms) query.minBedrooms = parseInt(minBedrooms as string);
     if (maxBedrooms) query.maxBedrooms = parseInt(maxBedrooms as string);
+    if (minBathrooms) query.minBathrooms = parseInt(minBathrooms as string);
+    if (maxBathrooms) query.maxBathrooms = parseInt(maxBathrooms as string);
+    
+    // Handle area
     if (minArea) query.minArea = parseInt(minArea as string);
     if (maxArea) query.maxArea = parseInt(maxArea as string);
+    
+    // Handle property category (rent vs sale)
+    // Support both parameter names for backwards compatibility
     if (rentOrSale) query.rentOrSale = rentOrSale as string;
+    if (forSaleOrRent) query.rentOrSale = forSaleOrRent as string;
+    
+    // Handle property status
     if (status) query.status = status as string;
+    
+    // Handle amenities
     if (amenities) query.amenities = (amenities as string).split(',');
 
+    // Get properties based on search criteria
     const properties = await storage.searchProperties(query);
-    res.json(properties);
+    
+    // Apply sorting if needed
+    if (sortBy) {
+      let sortedProperties = [...properties];
+      
+      switch (sortBy) {
+        case 'price_low':
+          sortedProperties.sort((a, b) => parseInt(a.price) - parseInt(b.price));
+          break;
+        case 'price_high':
+          sortedProperties.sort((a, b) => parseInt(b.price) - parseInt(a.price));
+          break;
+        case 'area_low':
+          sortedProperties.sort((a, b) => parseInt(a.area) - parseInt(b.area));
+          break;
+        case 'area_high':
+          sortedProperties.sort((a, b) => parseInt(b.area) - parseInt(a.area));
+          break;
+        case 'newest':
+        default:
+          // Newest first (by createdAt date)
+          sortedProperties.sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return dateB.getTime() - dateA.getTime();
+          });
+          break;
+      }
+      
+      // Apply pagination
+      const pageNum = parseInt(page as string);
+      const limitNum = parseInt(limit as string);
+      const startIndex = (pageNum - 1) * limitNum;
+      const endIndex = startIndex + limitNum;
+      
+      const paginatedProperties = sortedProperties.slice(startIndex, endIndex);
+      
+      // Return paginated results with total count
+      return res.json({
+        properties: paginatedProperties,
+        total: sortedProperties.length,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(sortedProperties.length / limitNum)
+      });
+    }
+    
+    // If no sorting is specified, just apply pagination
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = startIndex + limitNum;
+    
+    const paginatedProperties = properties.slice(startIndex, endIndex);
+    
+    // Return paginated results
+    res.json({
+      properties: paginatedProperties,
+      total: properties.length,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(properties.length / limitNum)
+    });
   }));
 
   // Get properties by type
