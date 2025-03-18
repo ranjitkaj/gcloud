@@ -8,6 +8,7 @@ export const userRoles = [
   "seller",
   "agent",
   "company_admin",
+  "admin",
 ] as const;
 
 // Verification methods
@@ -110,6 +111,12 @@ export const propertyStatus = [
   "under_contract",
 ] as const;
 
+export const approvalStatus = [
+  "pending",
+  "approved",
+  "rejected",
+] as const;
+
 export const subscriptionLevels = [
   "free",
   "paid",
@@ -134,6 +141,12 @@ export const properties = pgTable("properties", {
   userId: integer("user_id").notNull(), // Owner/seller
   agentId: integer("agent_id"), // Optional assigned agent
   companyId: integer("company_id"), // Optional company listing
+  
+  // Approval workflow
+  approvalStatus: text("approval_status").notNull().default("pending"),
+  approvedBy: integer("approved_by"), // Admin user ID who approved
+  rejectionReason: text("rejection_reason"), // If rejected, reason provided by admin
+  approvalDate: timestamp("approval_date"), // When property was approved/rejected
   
   // Subscription and promotion fields
   subscriptionLevel: text("subscription_level").notNull().default("free"),

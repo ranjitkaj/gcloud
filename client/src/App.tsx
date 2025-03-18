@@ -10,6 +10,7 @@ import AddProperty from "@/pages/add-property";
 import PostPropertyFree from "./pages/post-property-free";
 import ProjectCategory from "@/pages/projects/project-category";
 import SearchResults from "@/pages/search-results";
+import AdminDashboard from "@/pages/admin/dashboard";
 import { queryClient } from '@/lib/query-client';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/post-property-free" element={<PostPropertyFree />} />
             <Route path="/search-results" element={<SearchResults />} />
             <Route path="/projects/:category" element={<ProjectCategory />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
