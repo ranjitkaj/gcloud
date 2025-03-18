@@ -562,12 +562,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
-        <Link to="/about" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-          About
-        </Link>
-        <Link to="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-          Contact
-        </Link>
+
       </div>
     );
   }
@@ -814,27 +809,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link to="/about" className={cn(
-              navigationMenuTriggerStyle(),
-              location === "/about" && "text-primary font-medium"
-            )}>
-              About
-            </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link to="/contact" className={cn(
-              navigationMenuTriggerStyle(),
-              location === "/contact" && "text-primary font-medium"
-            )}>
-              Contact
-            </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,7 +16,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Separator } from '@/components/ui/separator';
-import { Link } from 'react-router-dom';
 import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare } from 'lucide-react';
 
 export default function PostPropertyFree() {

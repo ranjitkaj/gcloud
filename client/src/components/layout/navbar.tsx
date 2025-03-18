@@ -13,11 +13,11 @@ import { MegaMenu } from "./mega-menu";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, logoutMutation } = useAuth();
+  const { user, logout } = useAuth();
   const [location] = useLocation();
 
   const handleLogout = () => {
-    logoutMutation.mutate();
+    logout();
   };
 
   return (
