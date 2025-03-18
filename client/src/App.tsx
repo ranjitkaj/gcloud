@@ -22,6 +22,7 @@ function App() {
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/add-property" element={<AddProperty />} />
             <Route path="/post-property-free" element={<PostPropertyFree />} />
+            <Route path="/search-results" element={<SearchResults />} />
             <Route path="/projects/:category" element={<ProjectCategory />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
