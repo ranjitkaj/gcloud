@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams, Link } from 'wouter';
+import { useParams, Link } from 'react-router-dom';
 import { Property } from '@shared/schema';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
@@ -111,9 +111,9 @@ export default function PropertyDetail() {
         <div className="container mx-auto px-4">
           {/* Breadcrumb */}
           <div className="mb-4 text-sm">
-            <Link href="/" className="text-gray-500 hover:text-primary">Home</Link>
+            <Link to="/" className="text-gray-500 hover:text-primary">Home</Link>
             <span className="mx-2 text-gray-400">/</span>
-            <Link href="/properties" className="text-gray-500 hover:text-primary">Properties</Link>
+            <Link to="/properties" className="text-gray-500 hover:text-primary">Properties</Link>
             <span className="mx-2 text-gray-400">/</span>
             <span className="text-gray-700">{property.title}</span>
           </div>
