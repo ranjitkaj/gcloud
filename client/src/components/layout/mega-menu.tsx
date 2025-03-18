@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; //Using react-router-dom as per edited code
+import { Link, useLocation } from "react-router-dom"; //Using react-router-dom as per edited code
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -409,7 +409,8 @@ interface MegaMenuProps {
 }
 
 export function MegaMenu({ isMobile = false }: MegaMenuProps) {
-  const location = window.location.pathname; //Using window.location as per edited code
+  const location = useLocation(); //Using react-router-dom's useLocation
+  const pathname = location.pathname;
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   // Fetch featured properties
@@ -465,7 +466,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/projects") && "text-primary font-medium"
+              pathname.startsWith("/projects") && "text-primary font-medium"
             )}
           >
             Projects
@@ -575,7 +576,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/properties") && "text-primary font-medium"
+              pathname.startsWith("/properties") && "text-primary font-medium"
             )}
           >
             Buy
@@ -663,7 +664,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/agents") && "text-primary font-medium"
+              pathname.startsWith("/agents") && "text-primary font-medium"
             )}
           >
             Agents
@@ -715,7 +716,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/companies") && "text-primary font-medium"
+              pathname.startsWith("/companies") && "text-primary font-medium"
             )}
           >
             Companies
@@ -767,7 +768,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuLink asChild>
             <Link to="/add-property" className={cn(
               navigationMenuTriggerStyle(),
-              location === "/add-property" && "text-primary font-medium"
+              pathname === "/add-property" && "text-primary font-medium"
             )}>
               Sell
             </Link>
@@ -778,7 +779,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/resources") && "text-primary font-medium"
+              pathname.startsWith("/resources") && "text-primary font-medium"
             )}
           >
             Resources

@@ -86,13 +86,17 @@ export default function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem className="font-medium">{user.name}</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigateTo("/dashboard")}>
-                      <Home className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard">
+                        <Home className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigateTo("/add-property")}>
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      <span>Add Property</span>
+                    <DropdownMenuItem asChild>
+                      <Link to="/add-property">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        <span>Add Property</span>
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
