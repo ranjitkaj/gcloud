@@ -69,12 +69,14 @@ export default function PostPropertyFree() {
     }
   });
   
-  // Show login modal if user is not logged in
+  // Setup login modal
   useEffect(() => {
-    if (!user) {
-      setShowLoginModal(true);
+    if (user) {
+      setShowLoginModal(false);
+      // Pre-fill user name if available
+      form.setValue("contactName", user.name || "");
     }
-  }, [user]);
+  }, [user, form]);
 
   // Function to scroll to top of form
   const scrollToForm = () => {
@@ -93,8 +95,34 @@ export default function PostPropertyFree() {
       return;
     }
     
-    console.log("Property data submitted:", data);
+    // Check if at least one image is uploaded
+    if (propertyImages.length === 0) {
+      toast({
+        title: "Images Required",
+        description: "Please upload at least one image of your property",
+        variant: "destructive",
+      });
+      setCurrentStep(4); // Go back to images step
+      return;
+    }
+    
+    // Create a complete property object with form data and images
+    const propertyData = {
+      ...data,
+      images: propertyImages,
+      userId: user.id,
+      createdAt: new Date(),
+    };
+    
+    console.log("Property data submitted:", propertyData);
     setFormSubmitted(true);
+    
+    // Show success notification
+    toast({
+      title: "Property Listed Successfully",
+      description: "Your property has been posted successfully.",
+      variant: "default",
+    });
     
     // In a real app, here we would send data to the backend
     // For demo, we'll simulate success and redirect after 2 seconds
@@ -401,6 +429,60 @@ export default function PostPropertyFree() {
         return (
           <div className="space-y-4">
             <div className="mb-6">
+              <h3 className="font-semibold text-lg mb-3">Images & Videos</h3>
+              <Separator />
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Upload Property Images & Videos</label>
+                <FileUpload
+                  onFilesSelected={setPropertyImages}
+                  initialFiles={propertyImages}
+                  maxFiles={10}
+                  allowMultiple={true}
+                />
+              </div>
+              <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mt-4">
+                <div className="flex items-start">
+                  <Camera className="h-5 w-5 text-amber-500 mt-0.5 mr-2" />
+                  <div>
+                    <p className="text-sm text-amber-800">
+                      <span className="font-medium">Pro Tip:</span> High-quality property images increase interest by up to 60%
+                    </p>
+                    <ul className="text-xs text-amber-700 list-disc pl-4 mt-1 space-y-1">
+                      <li>Include photos of all rooms, exterior, and surrounding areas</li>
+                      <li>Ensure good lighting and clear focus</li>
+                      <li>A short video walkthrough dramatically increases inquiries</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-between mt-6">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => setCurrentStep(3)}
+              >
+                Previous
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => setCurrentStep(5)}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                Next: Contact Information
+              </Button>
+            </div>
+          </div>
+        );
+        
+      case 5:
+        return (
+          <div className="space-y-4">
+            <div className="mb-6">
               <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
               <Separator />
             </div>
@@ -437,7 +519,7 @@ export default function PostPropertyFree() {
               <Button 
                 type="button" 
                 variant="outline"
-                onClick={() => setCurrentStep(3)}
+                onClick={() => setCurrentStep(4)}
               >
                 Previous
               </Button>
@@ -461,6 +543,48 @@ export default function PostPropertyFree() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      
+      {/* Login Modal */}
+      <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to login or create an account to post your property.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col space-y-3 py-4">
+            <p className="text-sm text-gray-600">Login to access these features:</p>
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2" />
+                <p className="text-sm">Post unlimited properties</p>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2" />
+                <p className="text-sm">Receive direct inquiries from potential buyers</p>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2" />
+                <p className="text-sm">Track property views and statistics</p>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2" />
+                <p className="text-sm">Edit your listings anytime</p>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="flex flex-col sm:flex-row sm:justify-between gap-3">
+            <Button variant="outline" onClick={() => setShowLoginModal(false)}>
+              Continue Browsing
+            </Button>
+            <Button className="sm:w-auto bg-primary hover:bg-primary/90" onClick={handleLoginClick}>
+              Login / Sign Up
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <main className="flex-grow">
         {/* Hero Section */}
         <div className="bg-primary/10 py-12 md:py-20">
