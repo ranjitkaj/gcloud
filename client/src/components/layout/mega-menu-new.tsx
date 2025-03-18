@@ -142,7 +142,7 @@ interface MegaMenuProps {
   isMobile?: boolean;
 }
 
-export function MegaMenu({ isMobile = false }: MegaMenuProps) {
+export default function MegaMenu({ isMobile = false }: MegaMenuProps) {
   const location = useLocation();
   const pathname = location.pathname;
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
