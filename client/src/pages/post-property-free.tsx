@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Separator } from '@/components/ui/separator';
-import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare, Home, MapPin, Building } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare, Home, MapPin, Building, Camera, Upload } from 'lucide-react';
+import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
 
 // Property type schema
 const propertySchema = z.object({
@@ -40,10 +42,12 @@ type PropertyFormValues = z.infer<typeof propertySchema>;
 export default function PostPropertyFree() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const formTopRef = useRef<HTMLDivElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [propertyImages, setPropertyImages] = useState<FileWithPreview[]>([]);
   
   // Form setup with validation
   const form = useForm<PropertyFormValues>({
@@ -387,7 +391,7 @@ export default function PostPropertyFree() {
                 onClick={() => setCurrentStep(4)}
                 className="bg-primary hover:bg-primary/90 text-white"
               >
-                Next: Contact Information
+                Next: Upload Images
               </Button>
             </div>
           </div>
