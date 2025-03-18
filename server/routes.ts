@@ -8,7 +8,8 @@ import {
   insertCompanySchema, 
   insertInquirySchema,
   insertAgentReviewSchema,
-  userRoles
+  userRoles,
+  approvalStatus
 } from "@shared/schema";
 import { z } from "zod";
 import * as express from 'express';
@@ -291,6 +292,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/properties", isAuthenticated, asyncHandler(async (req, res) => {
     const properties = await storage.getPropertiesByUser(req.user.id);
     res.json(properties);
+  }));
+
+  // =========== Property Approval Routes ===========
+  
+  // Get properties pending approval (admin only)
+  app.get("/api/properties/pending", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
+    const properties = await storage.getAllProperties();
+    // Filter for pending approval properties only
+    const pendingProperties = properties.filter(property => property.approvalStatus === 'pending');
+    res.json(pendingProperties);
+  }));
+  
+  // Get all properties with approval status (admin only)
+  app.get("/api/properties/all", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
+    const properties = await storage.getAllProperties();
+    res.json(properties);
+  }));
+  
+  // Approve a property (admin only)
+  app.post("/api/properties/:id/approve", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid property ID" });
+    }
+    
+    const property = await storage.getProperty(id);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+    
+    if (property.approvalStatus === 'approved') {
+      return res.status(400).json({ message: "Property is already approved" });
+    }
+    
+    // Update property with approval information
+    const updatedProperty = await storage.updateProperty(id, {
+      approvalStatus: 'approved',
+      approvedBy: req.user.id,
+      approvalDate: new Date()
+    });
+    
+    res.json({
+      message: "Property has been approved successfully",
+      property: updatedProperty
+    });
+  }));
+  
+  // Reject a property (admin only)
+  app.post("/api/properties/:id/reject", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid property ID" });
+    }
+    
+    const { rejectionReason } = req.body;
+    if (!rejectionReason || rejectionReason.trim() === '') {
+      return res.status(400).json({ message: "Rejection reason is required" });
+    }
+    
+    const property = await storage.getProperty(id);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+    
+    if (property.approvalStatus === 'rejected') {
+      return res.status(400).json({ message: "Property is already rejected" });
+    }
+    
+    // Update property with rejection information
+    const updatedProperty = await storage.updateProperty(id, {
+      approvalStatus: 'rejected',
+      approvedBy: req.user.id,
+      rejectionReason: rejectionReason,
+      approvalDate: new Date()
+    });
+    
+    res.json({
+      message: "Property has been rejected",
+      property: updatedProperty
+    });
   }));
 
   // =========== Agent Routes ===========
