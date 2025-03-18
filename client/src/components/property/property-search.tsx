@@ -27,6 +27,8 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
   const [, navigate] = useLocation();
+  
+  // Fixing redirect issues - react-router-dom uses useNavigate instead of wouter's navigate
 
   // Parse URL parameters if any
   useEffect(() => {
@@ -69,7 +71,8 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
       }
     }
     
-    navigate(`/properties?${queryParams.toString()}`);
+    // Redirect to search-results page instead of properties page
+    navigate(`/search-results?${queryParams.toString()}`);
   };
 
   const formatPrice = (value: number) => {
