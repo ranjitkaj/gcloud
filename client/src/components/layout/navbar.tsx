@@ -37,7 +37,7 @@ export default function Navbar() {
 
           {/* Post Property Free Button and Support */}
           <div className="hidden md:flex items-center space-x-3 mr-3">
-            <Link href="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+            <Link to="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
               Post Property Free
             </Link>
             
@@ -98,10 +98,10 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/auth" className="hidden md:inline-flex hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors">
+                <Link to="/auth" className="hidden md:inline-flex hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors">
                   Login
                 </Link>
-                <Link href="/auth" className="inline-flex bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                <Link to="/auth" className="inline-flex bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors">
                   Sign Up
                 </Link>
               </>
@@ -123,7 +123,7 @@ export default function Navbar() {
           
           {/* Post Property in Mobile Menu */}
           <div className="py-2 border-t border-gray-100 mt-2">
-            <Link href="/post-property-free" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center">
+            <Link to="/post-property-free" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center">
               <PlusCircle className="mr-2 h-4 w-4" />
               Post Property Free
             </Link>
@@ -148,7 +148,7 @@ export default function Navbar() {
           
           {!user && (
             <div className="pt-2 border-t border-gray-100 mt-2">
-              <Link href="/auth" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 block">
+              <Link to="/auth" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 block">
                 Login
               </Link>
             </div>

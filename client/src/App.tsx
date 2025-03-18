@@ -7,7 +7,7 @@ import HomePage from "@/pages/home-page";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import AddProperty from "@/pages/add-property";
-import PostPropertyFree from "@/pages/post-property-free";
+import PostPropertyFree from "./pages/post-property-free";
 import ProjectCategory from "@/pages/projects/project-category";
 import { queryClient } from '@/lib/query-client';
 
