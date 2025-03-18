@@ -1,0 +1,46 @@
+"I require modifications to my website's navigation and a new 'Post Property Free' page. Please implement the following:
+
+1. Navigation Bar Changes:
+
+Remove: Delete the "About" and "Contact" links from the navigation bar.
+Add "Post Property Free" Button:
+Replace the removed links with a prominent button labeled "Post Property Free."
+This button should redirect users to a dedicated "Post Property Free" page.
+Add a "Support" Bot Icon:
+Place a bot icon in the navigation bar, adjacent to the "Post Property Free" button.
+Upon clicking the bot icon, a dropdown menu should appear with the following options:
+Contact Number: Clicking this option should initiate a phone call to the designated contact number.
+Email Support: Clicking this option should open the user's default email client, pre-addressed to the support email address.
+WhatsApp Support: Clicking this option should redirect the user to a WhatsApp chat with the support bot.
+2. "Post Property Free" Page:
+
+Authentication Requirement:
+Users must be logged in to post a property.
+If a user is not logged in, a modal or popup should prompt them to log in before proceeding.
+If the user is already logged in, the post form should be displayed.
+Post Form (Top of Page):
+Include a form at the top of the page for users to submit their property listings.
+Roadmap Section:
+Below the form, add a section titled "Post your properties in simple steps."
+Display a step-by-step roadmap outlining the property posting process.
+"Begin to Post Your Property" Button:
+Place a button labeled "Begin to Post Your Property" after the roadmap section.
+Clicking this button should scroll the user back up to the post form at the top of the page.
+Testimonials Section:
+Add a section titled "This is what other Owners & Dealers have to say... about my project."
+Display user testimonials or feedback in a carousel format.
+Implement left and right arrow buttons for horizontal navigation through the testimonials.
+Frequently Asked Questions (FAQ) Section:
+Include an FAQ section with questions and answers related to the property posting process and the project in general.
+Ensure the FAQ section is relevant to the site's content.
+3. Functionality and Design:
+
+Ensure all navigation and form functionalities are seamless and user-friendly.
+Create a professional and responsive website design.
+Ensure that all links and buttons function correctly.
+4. References:
+
+Please use the "Post Property Free" pages of [Insert any example websites that are similar to what you want. Example: Zillow, Realtor.com] as references for the layout and functionality of the "Post Property Free" page.
+Desired Outcome:
+
+A fully functional and professional website with the specified navigation changes and a comprehensive "Post Property Free" page, including robust authentication, a clear roadmap, and user support options."
