@@ -118,6 +118,8 @@ export default function SearchResults() {
         const response = await apiRequest({
           url: `/api/properties/search?${queryParams.toString()}`,
           method: 'GET',
+          headers: {},
+          body: null,
         });
         
         // Parse the response properly
@@ -128,6 +130,8 @@ export default function SearchResults() {
           const featured = await apiRequest({
             url: '/api/properties/featured',
             method: 'GET',
+            headers: {},
+            body: null,
           });
           
           // Convert array response to the expected format

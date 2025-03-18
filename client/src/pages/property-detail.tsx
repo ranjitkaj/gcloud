@@ -90,7 +90,7 @@ export default function PropertyDetail() {
             <h2 className="text-2xl font-bold mb-4">Property Not Found</h2>
             <p className="mb-6">The property you're looking for doesn't exist or has been removed.</p>
             <Button asChild>
-              <Link href="/properties">Browse Properties</Link>
+              <Link to="/properties">Browse Properties</Link>
             </Button>
           </div>
         </main>
@@ -193,7 +193,7 @@ export default function PropertyDetail() {
                     <div className="w-full md:w-1/2 flex flex-wrap md:justify-end">
                       <div className="flex items-center mr-4 text-gray-600">
                         <Calendar className="h-4 w-4 mr-1" />
-                        <span>Listed {formatDistanceToNow(new Date(property.createdAt), { addSuffix: true })}</span>
+                        <span>Listed {formatDistanceToNow(new Date(property.createdAt || new Date()), { addSuffix: true })}</span>
                       </div>
                       <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
                         Owner Direct
@@ -305,7 +305,7 @@ export default function PropertyDetail() {
                 <CardFooter className="bg-gray-50 rounded-b-lg border-t">
                   <div className="w-full text-center text-sm text-gray-600">
                     <p>Property ID: #{property.id}</p>
-                    <p>Last updated: {formatDistanceToNow(new Date(property.createdAt), { addSuffix: true })}</p>
+                    <p>Last updated: {formatDistanceToNow(new Date(property.createdAt || new Date()), { addSuffix: true })}</p>
                   </div>
                 </CardFooter>
               </Card>

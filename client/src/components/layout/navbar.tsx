@@ -98,6 +98,14 @@ export default function Navbar() {
                         <span>Add Property</span>
                       </Link>
                     </DropdownMenuItem>
+                    {user?.role === 'admin' && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin">
+                          <Home className="mr-2 h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
@@ -136,6 +144,12 @@ export default function Navbar() {
               <PlusCircle className="mr-2 h-4 w-4" />
               Post Property Free
             </Link>
+            {user?.role === 'admin' && (
+              <Link to="/admin" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
+                <Home className="mr-2 h-4 w-4" />
+                Admin Dashboard
+              </Link>
+            )}
           </div>
           
           {/* Support Options in Mobile Menu */}
