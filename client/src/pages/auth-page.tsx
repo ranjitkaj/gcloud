@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, navigate } from 'wouter';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,9 +45,9 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
-  const [location, navigate] = useLocation();
-  const { user, loginMutation, registerMutation } = useAuth();
-  // Remove navigation hook since we use navigate function directly
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, login, signup, isLoading } = useAuth();
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -76,21 +76,39 @@ export default function AuthPage() {
     }
   }, [user, navigate]);
 
-  const onLoginSubmit = (data: LoginFormValues) => {
-    loginMutation.mutate(data);
-  };
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [isRegisterLoading, setIsRegisterLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  const onRegisterSubmit = (data: RegisterFormValues) => {
-    // Remove confirmPassword as it's not in the API schema
-    const { confirmPassword, ...registerData } = data;
-    registerMutation.mutate(registerData);
-  };
-
-  useEffect(() => {
-    if (registerMutation.isSuccess) {
-      navigate('/dashboard'); // Redirect on successful registration
+  const onLoginSubmit = async (data: LoginFormValues) => {
+    try {
+      setIsLoginLoading(true);
+      setAuthError(null);
+      await login(data);
+      navigate('/dashboard');
+    } catch (error) {
+      setAuthError('Login failed. Please check your credentials.');
+      console.error('Login error:', error);
+    } finally {
+      setIsLoginLoading(false);
     }
-  }, [registerMutation.isSuccess, navigation]);
+  };
+
+  const onRegisterSubmit = async (data: RegisterFormValues) => {
+    try {
+      setIsRegisterLoading(true);
+      setAuthError(null);
+      // Remove confirmPassword as it's not in the API schema
+      const { confirmPassword, ...registerData } = data;
+      await signup(registerData);
+      navigate('/dashboard'); // Redirect on successful registration
+    } catch (error) {
+      setAuthError('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+    } finally {
+      setIsRegisterLoading(false);
+    }
+  };
 
 
   return (
@@ -144,9 +162,9 @@ export default function AuthPage() {
                         <Button 
                           type="submit" 
                           className="w-full bg-primary hover:bg-primary/90"
-                          disabled={loginMutation.isPending}
+                          disabled={isLoginLoading}
                         >
-                          {loginMutation.isPending ? (
+                          {isLoginLoading ? (
                             <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Logging in...
@@ -244,9 +262,9 @@ export default function AuthPage() {
                         <Button 
                           type="submit" 
                           className="w-full bg-primary hover:bg-primary/90"
-                          disabled={registerMutation.isPending}
+                          disabled={isRegisterLoading}
                         >
-                          {registerMutation.isPending ? (
+                          {isRegisterLoading ? (
                             <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Creating account...
