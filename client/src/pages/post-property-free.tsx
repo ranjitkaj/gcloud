@@ -16,13 +16,54 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Separator } from '@/components/ui/separator';
-import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare, Home, MapPin, Building } from 'lucide-react';
+
+// Property type schema
+const propertySchema = z.object({
+  title: z.string().min(5, { message: "Title must be at least 5 characters" }),
+  description: z.string().min(20, { message: "Description must be at least 20 characters" }),
+  propertyType: z.enum(["Apartment", "Villa", "House", "Plot", "Commercial", "Office"]),
+  forSaleOrRent: z.enum(["Sale", "Rent"]),
+  price: z.string().min(1, { message: "Price is required" }),
+  location: z.string().min(5, { message: "Location must be at least 5 characters" }),
+  pincode: z.string().min(5, { message: "Pincode must be at least 5 characters" }),
+  bedrooms: z.string().optional(),
+  bathrooms: z.string().optional(),
+  area: z.string().min(1, { message: "Area is required" }),
+  areaUnit: z.enum(["sqft", "sqm", "acres", "hectares"]),
+  contactName: z.string().min(2, { message: "Contact name is required" }),
+  contactPhone: z.string().min(10, { message: "Valid phone number is required" }),
+});
+
+type PropertyFormValues = z.infer<typeof propertySchema>;
 
 export default function PostPropertyFree() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const formTopRef = useRef<HTMLDivElement>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  
+  // Form setup with validation
+  const form = useForm<PropertyFormValues>({
+    resolver: zodResolver(propertySchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      propertyType: "Apartment",
+      forSaleOrRent: "Sale",
+      price: "",
+      location: "",
+      pincode: "",
+      bedrooms: "",
+      bathrooms: "",
+      area: "",
+      areaUnit: "sqft",
+      contactName: user?.name || "",
+      contactPhone: "",
+    }
+  });
   
   // Show login modal if user is not logged in
   useEffect(() => {
@@ -39,6 +80,23 @@ export default function PostPropertyFree() {
   // Handle login button click
   const handleLoginClick = () => {
     navigate('/auth');
+  };
+  
+  // Handle form submission
+  const onSubmit = (data: PropertyFormValues) => {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    
+    console.log("Property data submitted:", data);
+    setFormSubmitted(true);
+    
+    // In a real app, here we would send data to the backend
+    // For demo, we'll simulate success and redirect after 2 seconds
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 2000);
   };
 
   // Testimonials data
@@ -63,6 +121,20 @@ export default function PostPropertyFree() {
       role: "Property Owner",
       content: "Listed my commercial property and received multiple inquiries within days. The verification process adds credibility to my listing.",
       avatar: "https://randomuser.me/api/portraits/men/3.jpg"
+    },
+    {
+      id: 4,
+      name: "Aisha Patel",
+      role: "Property Owner",
+      content: "As a first-time seller, I found the platform extremely user-friendly. The step-by-step listing process guided me perfectly, and I received multiple inquiries within days.",
+      avatar: "https://randomuser.me/api/portraits/women/3.jpg"
+    },
+    {
+      id: 5,
+      name: "Rahul Khanna",
+      role: "Real Estate Agent",
+      content: "The analytics and insights provided for my listings help me understand what buyers are looking for. This has dramatically improved my sales conversion rate.",
+      avatar: "https://randomuser.me/api/portraits/men/5.jpg"
     }
   ];
 
@@ -79,6 +151,307 @@ export default function PostPropertyFree() {
     setCurrentTestimonialIndex((prevIndex) => 
       prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
     );
+  };
+  
+  // Form steps - divide property listing form into manageable sections
+  const renderFormByStep = () => {
+    switch(currentStep) {
+      case 1:
+        return (
+          <div className="space-y-4">
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg mb-3">Basic Property Information</h3>
+              <Separator />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="title" className="block text-sm font-medium">Property Title</label>
+                <input
+                  id="title"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="3 BHK Apartment in Downtown"
+                  {...form.register("title")}
+                />
+                {form.formState.errors.title && (
+                  <p className="text-red-500 text-xs">{form.formState.errors.title.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="propertyType" className="block text-sm font-medium">Property Type</label>
+                <select
+                  id="propertyType"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  {...form.register("propertyType")}
+                >
+                  <option value="Apartment">Apartment</option>
+                  <option value="Villa">Villa</option>
+                  <option value="House">House</option>
+                  <option value="Plot">Plot</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Office">Office</option>
+                </select>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="forSaleOrRent" className="block text-sm font-medium">For Sale or Rent</label>
+                <select
+                  id="forSaleOrRent"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  {...form.register("forSaleOrRent")}
+                >
+                  <option value="Sale">Sale</option>
+                  <option value="Rent">Rent</option>
+                </select>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="price" className="block text-sm font-medium">Price (₹)</label>
+                <input
+                  id="price"
+                  type="number"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="2500000"
+                  {...form.register("price")}
+                />
+                {form.formState.errors.price && (
+                  <p className="text-red-500 text-xs">{form.formState.errors.price.message}</p>
+                )}
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <label htmlFor="description" className="block text-sm font-medium">Property Description</label>
+              <textarea
+                id="description"
+                className="w-full p-2 border border-gray-300 rounded-md h-24"
+                placeholder="Describe your property in detail..."
+                {...form.register("description")}
+              />
+              {form.formState.errors.description && (
+                <p className="text-red-500 text-xs">{form.formState.errors.description.message}</p>
+              )}
+            </div>
+            
+            <div className="flex justify-end mt-6">
+              <Button 
+                type="button" 
+                onClick={() => setCurrentStep(2)}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                Next: Location Details
+              </Button>
+            </div>
+          </div>
+        );
+        
+      case 2:
+        return (
+          <div className="space-y-4">
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg mb-3">Location Information</h3>
+              <Separator />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="location" className="block text-sm font-medium">Address</label>
+                <input
+                  id="location"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="123 Main Street, Area Name"
+                  {...form.register("location")}
+                />
+                {form.formState.errors.location && (
+                  <p className="text-red-500 text-xs">{form.formState.errors.location.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="pincode" className="block text-sm font-medium">Pincode</label>
+                <input
+                  id="pincode"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="400001"
+                  {...form.register("pincode")}
+                />
+                {form.formState.errors.pincode && (
+                  <p className="text-red-500 text-xs">{form.formState.errors.pincode.message}</p>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex justify-between mt-6">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => setCurrentStep(1)}
+              >
+                Previous
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => setCurrentStep(3)}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                Next: Property Details
+              </Button>
+            </div>
+          </div>
+        );
+        
+      case 3:
+        return (
+          <div className="space-y-4">
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg mb-3">Property Details</h3>
+              <Separator />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="bedrooms" className="block text-sm font-medium">Bedrooms</label>
+                <select
+                  id="bedrooms"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  {...form.register("bedrooms")}
+                >
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="5+">5+</option>
+                </select>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="bathrooms" className="block text-sm font-medium">Bathrooms</label>
+                <select
+                  id="bathrooms"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  {...form.register("bathrooms")}
+                >
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="4+">4+</option>
+                </select>
+              </div>
+              
+              <div className="col-span-1 md:col-span-3 grid grid-cols-3 gap-4">
+                <div className="col-span-2 space-y-2">
+                  <label htmlFor="area" className="block text-sm font-medium">Area</label>
+                  <input
+                    id="area"
+                    type="number"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    placeholder="1200"
+                    {...form.register("area")}
+                  />
+                  {form.formState.errors.area && (
+                    <p className="text-red-500 text-xs">{form.formState.errors.area.message}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <label htmlFor="areaUnit" className="block text-sm font-medium">Unit</label>
+                  <select
+                    id="areaUnit"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    {...form.register("areaUnit")}
+                  >
+                    <option value="sqft">sq ft</option>
+                    <option value="sqm">sq m</option>
+                    <option value="acres">acres</option>
+                    <option value="hectares">hectares</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-between mt-6">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => setCurrentStep(2)}
+              >
+                Previous
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => setCurrentStep(4)}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                Next: Contact Information
+              </Button>
+            </div>
+          </div>
+        );
+        
+      case 4:
+        return (
+          <div className="space-y-4">
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
+              <Separator />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="contactName" className="block text-sm font-medium">Contact Name</label>
+                <input
+                  id="contactName"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="Your Name"
+                  {...form.register("contactName")}
+                />
+                {form.formState.errors.contactName && (
+                  <p className="text-red-500 text-xs">{form.formState.errors.contactName.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="contactPhone" className="block text-sm font-medium">Contact Phone</label>
+                <input
+                  id="contactPhone"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="Your Phone Number"
+                  {...form.register("contactPhone")}
+                />
+                {form.formState.errors.contactPhone && (
+                  <p className="text-red-500 text-xs">{form.formState.errors.contactPhone.message}</p>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex justify-between mt-6">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => setCurrentStep(3)}
+              >
+                Previous
+              </Button>
+              <Button 
+                type="submit" 
+                onClick={form.handleSubmit(onSubmit)}
+                className="bg-primary hover:bg-primary/90 text-white"
+                disabled={formSubmitted}
+              >
+                {formSubmitted ? "Submitting..." : "Submit Property Listing"}
+              </Button>
+            </div>
+          </div>
+        );
+        
+      default:
+        return null;
+    }
   };
 
   return (
@@ -126,21 +499,20 @@ export default function PostPropertyFree() {
                   </CardHeader>
                   <CardContent>
                     {user ? (
-                      <Button 
-                        className="w-full bg-primary hover:bg-primary/90 text-white" 
-                        size="lg"
-                        onClick={() => navigate('/add-property')}
-                      >
-                        Continue to Property Form
-                      </Button>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        {renderFormByStep()}
+                      </form>
                     ) : (
-                      <Button 
-                        className="w-full bg-primary hover:bg-primary/90 text-white" 
-                        size="lg"
-                        onClick={handleLoginClick}
-                      >
-                        Login to Post Your Property
-                      </Button>
+                      <div className="text-center space-y-4">
+                        <p className="text-gray-600 mb-4">You need to login before posting a property</p>
+                        <Button 
+                          className="w-full bg-primary hover:bg-primary/90 text-white" 
+                          size="lg"
+                          onClick={handleLoginClick}
+                        >
+                          Login to Post Your Property
+                        </Button>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -198,14 +570,46 @@ export default function PostPropertyFree() {
           </div>
         </div>
         
-        {/* Stats Section */}
+        {/* Featured Property Types */}
         <div className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4">List Any Type of Property</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Our platform supports all types of real estate listings to help you reach the right buyers.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col items-center">
+                <Home className="h-12 w-12 text-primary mb-3" />
+                <h3 className="font-semibold text-lg">Residential</h3>
+                <p className="text-gray-600 text-center text-sm mt-2">Apartments, Villas, Individual Houses</p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col items-center">
+                <Building className="h-12 w-12 text-primary mb-3" />
+                <h3 className="font-semibold text-lg">Commercial</h3>
+                <p className="text-gray-600 text-center text-sm mt-2">Office Spaces, Shops, Showrooms</p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col items-center">
+                <MapPin className="h-12 w-12 text-primary mb-3" />
+                <h3 className="font-semibold text-lg">Plots & Land</h3>
+                <p className="text-gray-600 text-center text-sm mt-2">Residential Plots, Agricultural Land</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Stats Section */}
+        <div className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold">With over 7 million unique visitors monthly, your property gets maximum visibility</h2>
             </div>
             
-            <div className="grid grid-cols-3 gap-8 text-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div>
                 <p className="text-4xl font-bold text-primary mb-2">1M+</p>
                 <p className="text-gray-600">Monthly Visitors</p>
@@ -223,7 +627,7 @@ export default function PostPropertyFree() {
         </div>
         
         {/* Testimonials Section */}
-        <div className="py-16 bg-white">
+        <div className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">This is what other Owners & Dealers have to say...</h2>
             
@@ -250,6 +654,7 @@ export default function PostPropertyFree() {
               <button 
                 onClick={prevTestimonial}
                 className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
+                aria-label="Previous testimonial"
               >
                 <ChevronLeft className="h-6 w-6 text-gray-600" />
               </button>
@@ -257,15 +662,30 @@ export default function PostPropertyFree() {
               <button 
                 onClick={nextTestimonial}
                 className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
+                aria-label="Next testimonial"
               >
                 <ChevronRight className="h-6 w-6 text-gray-600" />
               </button>
+            </div>
+            
+            {/* Testimonial navigation dots */}
+            <div className="flex justify-center mt-6">
+              {testimonials.map((_, index) => (
+                <button 
+                  key={index}
+                  onClick={() => setCurrentTestimonialIndex(index)}
+                  className={`h-2 w-2 rounded-full mx-1 ${
+                    currentTestimonialIndex === index ? 'bg-primary' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
         
         {/* FAQ Section */}
-        <div className="py-16 bg-gray-50">
+        <div className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
             
@@ -310,6 +730,20 @@ export default function PostPropertyFree() {
                   <AccordionTrigger>Is there a verification process for listings?</AccordionTrigger>
                   <AccordionContent>
                     Yes, we verify basic property information to maintain quality listings. Premium listings undergo a more thorough verification process for increased credibility.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="item-7">
+                  <AccordionTrigger>How can I increase visibility for my property?</AccordionTrigger>
+                  <AccordionContent>
+                    You can opt for our premium listing options that provide more visibility through featured placements, social media promotions, and email campaigns to targeted buyers.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="item-8">
+                  <AccordionTrigger>What happens after I submit my property listing?</AccordionTrigger>
+                  <AccordionContent>
+                    After submission, your listing will undergo a quick verification process. Once approved, it will be live on our platform and visible to potential buyers. You'll receive a confirmation email with your listing details.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
