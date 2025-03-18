@@ -34,7 +34,7 @@ export default function PropertyCard({
   const { user } = useAuth();
   
   // Determine if this property is premium and if the user can access premium content
-  const isPremiumProperty = property.premium === true || property.subscription === 'premium';
+  const isPremiumProperty = property.premium === true;
   const userHasPremiumAccess = user?.role === 'premium_user' || user?.role === 'admin';
   const hasPropertyAccess = !isPremiumProperty || userHasPremiumAccess;
   
@@ -175,7 +175,7 @@ export default function PropertyCard({
                 <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
                   Commercial
                 </Badge>
-              ) : property.forSaleOrRent === 'Rent' ? (
+              ) : property.rentOrSale === 'Rent' ? (
                 <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">
                   For Rent
                 </Badge>

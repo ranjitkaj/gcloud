@@ -9,6 +9,7 @@ import AuthPage from "@/pages/auth-page";
 import AddProperty from "@/pages/add-property";
 import PostPropertyFree from "./pages/post-property-free";
 import ProjectCategory from "@/pages/projects/project-category";
+import SearchResults from "@/pages/search-results";
 import { queryClient } from '@/lib/query-client';
 
 function App() {

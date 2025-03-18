@@ -431,6 +431,20 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
     enabled: !isMobile
   });
 
+  // Create a search URL with parameters
+  const createSearchUrl = (category: any) => {
+    if (!category || !category.query) return '/search-results';
+    
+    const searchParams = new URLSearchParams();
+    
+    // Add all query parameters to the search URL
+    for (const [key, value] of Object.entries(category.query)) {
+      searchParams.append(key, String(value));
+    }
+    
+    return `/search-results?${searchParams.toString()}`;
+  };
+  
   // Filter properties based on the active category query
   const getFilteredProperties = (category: any) => {
     if (!category || !category.query) return [];
@@ -440,6 +454,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         if (key === 'propertyType' && property.propertyType !== value) return false;
         if (key === 'premium' && property.premium !== value) return false;
         if (key === 'verified' && property.verified !== value) return false;
+        if (key === 'forSaleOrRent' && property.rentOrSale !== value) return false;
         // Add more filters as needed
       }
       return true;
@@ -589,8 +604,11 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {buyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link to={item.href}> {/* Changed to react-router-dom Link */}
-                          <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
+                        <Link to={createSearchUrl(item)}> {/* Use dynamic search URL with filters */}
+                          <div 
+                            className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted"
+                            onMouseEnter={() => setActiveCategory(item.title)}
+                          >
                             {item.icon}
                             <div>
                               <div className="text-sm font-medium">{item.title}</div>
@@ -677,7 +695,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {agentMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link to={item.href}> {/* Changed to react-router-dom Link */}
+                        <Link to={createSearchUrl(item)}> {/* Use dynamic search URL with filters */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -729,7 +747,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {companyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link to={item.href}> {/* Changed to react-router-dom Link */}
+                        <Link to={createSearchUrl(item)}> {/* Use dynamic search URL with filters */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
