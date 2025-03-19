@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { insertUserSchema } from '@shared/schema';
+import { insertUserSchema, verificationMethods } from '@shared/schema';
 import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,18 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
+
+// Import our custom verification components
+import OTPVerification from '@/components/auth/otp-verification';
+import VerificationMethodSelector from '@/components/auth/verification-method-selector';
 
 // Extend the insert schema with additional validation
 const loginSchema = z.object({
