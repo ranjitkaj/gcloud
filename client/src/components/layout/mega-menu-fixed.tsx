@@ -424,7 +424,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
-        <LocationSelector />>
+        <LocationSelector />
 
       </div>
     );
