@@ -13,6 +13,9 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import * as express from 'express';
+import { db } from './db';
+import { count } from 'drizzle-orm';
+import * as schema from '@shared/schema';
 import { 
   getNotifications, 
   markNotificationAsRead, 
@@ -73,11 +76,127 @@ const createCheckoutSession = async (req: Request, res: Response) => {
   }
 };
 
+// Database admin endpoint
+const getDatabaseTablesInfo = async (req: Request, res: Response) => {
+  try {
+    // Check if it's an admin user
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized access' });
+    }
+
+    // Get simple stats from each database table
+    const userCount = (await db.select({ count: count() }).from(schema.users))[0].count;
+    const propertyCount = (await db.select({ count: count() }).from(schema.properties))[0].count;
+    const agentCount = (await db.select({ count: count() }).from(schema.agents))[0].count;
+    const companyCount = (await db.select({ count: count() }).from(schema.companies))[0].count;
+    const bookingCount = (await db.select({ count: count() }).from(schema.bookings))[0].count;
+    const inquiryCount = (await db.select({ count: count() }).from(schema.inquiries))[0].count;
+    const notificationCount = (await db.select({ count: count() }).from(schema.notifications))[0].count;
+    const otpCount = (await db.select({ count: count() }).from(schema.otps))[0].count;
+    const reviewCount = (await db.select({ count: count() }).from(schema.agentReviews))[0].count;
+    
+    // Return the stats
+    return res.json({
+      tables: [
+        { name: 'users', count: userCount },
+        { name: 'properties', count: propertyCount },
+        { name: 'agents', count: agentCount },
+        { name: 'companies', count: companyCount },
+        { name: 'bookings', count: bookingCount },
+        { name: 'inquiries', count: inquiryCount },
+        { name: 'notifications', count: notificationCount },
+        { name: 'otps', count: otpCount },
+        { name: 'agent_reviews', count: reviewCount }
+      ]
+    });
+  } catch (error) {
+    console.error('Error fetching database info:', error);
+    res.status(500).json({ error: 'Failed to fetch database information' });
+  }
+};
+
+// Get table records with pagination
+const getTableRecords = async (req: Request, res: Response) => {
+  try {
+    // Check if it's an admin user
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized access' });
+    }
+
+    const { table } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = (page - 1) * limit;
+
+    let records = [];
+    let totalCount = 0;
+
+    // Get records based on table name
+    switch (table) {
+      case 'users':
+        records = await db.select().from(schema.users).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.users))[0].count;
+        break;
+      case 'properties':
+        records = await db.select().from(schema.properties).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.properties))[0].count;
+        break;
+      case 'agents':
+        records = await db.select().from(schema.agents).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.agents))[0].count;
+        break;
+      case 'companies':
+        records = await db.select().from(schema.companies).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.companies))[0].count;
+        break;
+      case 'bookings':
+        records = await db.select().from(schema.bookings).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.bookings))[0].count;
+        break;
+      case 'inquiries':
+        records = await db.select().from(schema.inquiries).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.inquiries))[0].count;
+        break;
+      case 'notifications':
+        records = await db.select().from(schema.notifications).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.notifications))[0].count;
+        break;
+      case 'otps':
+        records = await db.select().from(schema.otps).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.otps))[0].count;
+        break;
+      case 'agent_reviews':
+        records = await db.select().from(schema.agentReviews).limit(limit).offset(offset);
+        totalCount = (await db.select({ count: count() }).from(schema.agentReviews))[0].count;
+        break;
+      default:
+        return res.status(404).json({ error: 'Table not found' });
+    }
+
+    return res.json({
+      records,
+      pagination: {
+        total: totalCount,
+        page,
+        limit,
+        pages: Math.ceil(totalCount / limit)
+      }
+    });
+  } catch (error) {
+    console.error(`Error fetching records from table:`, error);
+    res.status(500).json({ error: 'Failed to fetch records' });
+  }
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
 
   app.use(express.json());
+  
+  // Database admin routes
+  app.get('/api/admin/database/tables', isAuthenticated, hasRole(['admin']), asyncHandler(getDatabaseTablesInfo));
+  app.get('/api/admin/database/tables/:table', isAuthenticated, hasRole(['admin']), asyncHandler(getTableRecords));
 
   app.post('/api/create-checkout-session', isAuthenticated, asyncHandler(async (req, res) => {
     await createCheckoutSession(req, res);

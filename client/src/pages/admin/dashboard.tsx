@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   Card,
   CardContent,
@@ -18,7 +19,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Property, User } from '@shared/schema';
-import { AlertCircle, CheckCircle2, XCircle, Search } from 'lucide-react';
+import { AlertCircle, CheckCircle2, XCircle, Search, Database, Eye } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
