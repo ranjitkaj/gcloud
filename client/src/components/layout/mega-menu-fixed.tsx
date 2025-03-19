@@ -417,6 +417,9 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         <Link to="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Sell
         </Link>
+        <Link to="/post-property-free" className="text-green-600 hover:text-green-700 font-medium transition-colors py-2">
+          Post Property FREE
+        </Link>
         <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
@@ -628,6 +631,18 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               pathname === "/add-property" && "text-primary font-medium"
             )}>
               Sell
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link to="/post-property-free" className={cn(
+              navigationMenuTriggerStyle(),
+              "bg-green-600 text-white hover:bg-green-700 hover:text-white",
+              pathname === "/post-property-free" && "bg-green-700"
+            )}>
+              Post Property FREE
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>

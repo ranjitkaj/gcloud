@@ -12,7 +12,6 @@ import Testimonials from "@/components/home/testimonials";
 import MobileApp from "@/components/home/mobile-app";
 import CTASection from "@/components/home/cta-section";
 import ServicesSection from "@/components/home/services-section";
-import UrgencySales from "@/components/home/urgency-sales";
 
 export default function HomePage() {
   return (
@@ -20,10 +19,10 @@ export default function HomePage() {
       <Navbar />
       <main className="flex-grow">
         <HeroSection />
-        <UrgencySales />
         <FeaturedListings />
         <ServicesSection />
         <RecommendedProperties />
+
         <FeaturedAgents />
         <ListPropertyCTA />
         <PropertyCategories />
