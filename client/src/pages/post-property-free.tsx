@@ -254,7 +254,7 @@ export default function PostPropertyFree() {
       title: data.title,
       description: data.description,
       propertyType: data.propertyType,
-      rent_or_sale: data.forSaleOrRent.toLowerCase(), // Fixed field name to match database column
+      rentOrSale: data.forSaleOrRent.toLowerCase(), // Using schema field name
       price: price,
       // If urgency sale, calculate 25% discount
       discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
