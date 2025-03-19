@@ -3,29 +3,15 @@ import { useLocation } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { insertUserSchema, verificationMethods } from '@shared/schema';
+import { insertUserSchema, verificationMethods, userRoles } from '@shared/schema';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Check, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -47,6 +33,7 @@ const loginSchema = z.object({
 const registerSchema = insertUserSchema.extend({
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string(),
+  role: z.string().optional(),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -86,6 +73,7 @@ export default function AuthPage() {
       name: '',
       email: '',
       phone: '',
+      role: 'user',
     },
   });
 
@@ -285,22 +273,41 @@ export default function AuthPage() {
                   onCancel={handleVerificationCancelled}
                 />
               ) : (
-                <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="login">Login</TabsTrigger>
-                    <TabsTrigger value="register">Register</TabsTrigger>
-                  </TabsList>
+                <div className="w-full shadow-lg rounded-xl overflow-hidden">
+                  <div className="bg-gradient-to-r from-primary/90 to-primary text-white pb-10 pt-6 px-6 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary opacity-80 z-0"></div>
+                    <div className="relative z-10">
+                      <h1 className="text-2xl font-bold">Welcome to 99acres</h1>
+                      <p className="text-white/80 mt-1">
+                        Your one-stop destination for all your real estate needs
+                      </p>
+                    </div>
+                    <div className="flex space-x-2 relative z-10 mt-4">
+                      <Button 
+                        variant={activeTab === 'login' ? 'default' : 'outline'} 
+                        onClick={() => setActiveTab('login')}
+                        className={activeTab === 'login' ? 'bg-white text-primary' : 'bg-transparent text-white border-white/30 hover:bg-white/10'}
+                      >
+                        Login
+                      </Button>
+                      <Button 
+                        variant={activeTab === 'register' ? 'default' : 'outline'} 
+                        onClick={() => setActiveTab('register')}
+                        className={activeTab === 'register' ? 'bg-white text-primary' : 'bg-transparent text-white border-white/30 hover:bg-white/10'}
+                      >
+                        Register
+                      </Button>
+                    </div>
+                  </div>
 
-                  <TabsContent value="login">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Login to your account</CardTitle>
-                        <CardDescription>
-                          Enter your username and password to access your account
-                        </CardDescription>
-                      </CardHeader>
-                      <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
-                        <CardContent className="space-y-4">
+                  {activeTab === 'login' && (
+                    <div className="p-6">
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-semibold">Login to your account</h2>
+                          <p className="text-gray-500">Enter your credentials to access your account</p>
+                        </div>
+                        <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                           <div className="space-y-2">
                             <Label htmlFor="username">Username</Label>
                             <Input 
@@ -324,11 +331,20 @@ export default function AuthPage() {
                               <p className="text-sm text-red-500">{loginForm.formState.errors.password.message}</p>
                             )}
                           </div>
-                        </CardContent>
-                        <CardFooter>
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <input type="checkbox" id="remember" className="h-4 w-4 rounded border-gray-300" />
+                              <Label htmlFor="remember" className="text-sm font-normal">Remember me</Label>
+                            </div>
+                            <a href="#" className="text-sm text-primary hover:underline">
+                              Forgot password?
+                            </a>
+                          </div>
+                          
                           <Button 
                             type="submit" 
-                            className="w-full bg-primary hover:bg-primary/90"
+                            className="w-full bg-primary hover:bg-primary/90 mt-4"
                             disabled={isLoginLoading}
                           >
                             {isLoginLoading ? (
@@ -340,21 +356,19 @@ export default function AuthPage() {
                               'Login'
                             )}
                           </Button>
-                        </CardFooter>
-                      </form>
-                    </Card>
-                  </TabsContent>
-
-                  <TabsContent value="register">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Create an account</CardTitle>
-                        <CardDescription>
-                          Enter your details to create a new account
-                        </CardDescription>
-                      </CardHeader>
-                      <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
-                        <CardContent className="space-y-4">
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {activeTab === 'register' && (
+                    <div className="p-6">
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-semibold">Create an account</h2>
+                          <p className="text-gray-500">Enter your details to create a new account</p>
+                        </div>
+                        <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
                           <div className="space-y-2">
                             <Label htmlFor="reg-name">Full Name</Label>
                             <Input 
@@ -389,6 +403,27 @@ export default function AuthPage() {
                               <p className="text-sm text-red-500">{registerForm.formState.errors.phone.message}</p>
                             )}
                           </div>
+                          
+                          {/* Role selection field - NEW */}
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-role">Account Type</Label>
+                            <Select 
+                              onValueChange={(value) => registerForm.setValue('role', value)}
+                              defaultValue="user"
+                            >
+                              <SelectTrigger id="reg-role">
+                                <SelectValue placeholder="Select account type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="user">Regular User</SelectItem>
+                                <SelectItem value="owner">Property Owner</SelectItem>
+                                <SelectItem value="agent">Real Estate Agent</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-gray-500">Select the type of account you want to create</p>
+                          </div>
+                          
                           <div className="space-y-2">
                             <Label htmlFor="reg-username">Username</Label>
                             <Input 
@@ -424,11 +459,10 @@ export default function AuthPage() {
                               <p className="text-sm text-red-500">{registerForm.formState.errors.confirmPassword.message}</p>
                             )}
                           </div>
-                        </CardContent>
-                        <CardFooter>
+                          
                           <Button 
                             type="submit" 
-                            className="w-full bg-primary hover:bg-primary/90"
+                            className="w-full bg-primary hover:bg-primary/90 mt-6"
                             disabled={isRegisterLoading}
                           >
                             {isRegisterLoading ? (
@@ -440,23 +474,23 @@ export default function AuthPage() {
                               'Register'
                             )}
                           </Button>
-                        </CardFooter>
-                      </form>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 
             <div className="w-full md:w-1/2 p-6 hidden md:block">
-              <div className="bg-gradient-to-br from-primary to-primary-700 rounded-xl p-8 text-white">
-                <h2 className="text-3xl font-bold mb-4">Welcome to HomeDirectly</h2>
+              <div className="bg-gradient-to-br from-primary to-primary/80 rounded-xl p-8 text-white shadow-xl">
+                <h2 className="text-3xl font-bold mb-4">Welcome to 99acres</h2>
                 <p className="text-lg mb-6">India's leading platform for direct property transactions without broker commissions.</p>
 
                 <div className="space-y-4 mb-6">
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 bg-white bg-opacity-20 p-1 rounded-md mr-3">
-                      <i className="ri-check-line"></i>
+                    <div className="flex-shrink-0 bg-white/20 p-2 rounded-full mr-3">
+                      <Check className="h-4 w-4" />
                     </div>
                     <div>
                       <h3 className="font-semibold">Save Money</h3>
@@ -465,8 +499,8 @@ export default function AuthPage() {
                   </div>
 
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 bg-white bg-opacity-20 p-1 rounded-md mr-3">
-                      <i className="ri-check-line"></i>
+                    <div className="flex-shrink-0 bg-white/20 p-2 rounded-full mr-3">
+                      <Check className="h-4 w-4" />
                     </div>
                     <div>
                       <h3 className="font-semibold">Direct Communication</h3>
@@ -475,30 +509,31 @@ export default function AuthPage() {
                   </div>
 
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 bg-white bg-opacity-20 p-1 rounded-md mr-3">
-                      <i className="ri-check-line"></i>
+                    <div className="flex-shrink-0 bg-white/20 p-2 rounded-full mr-3">
+                      <MapPin className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">Verified Listings</h3>
-                      <p className="text-blue-100">All properties are verified for authenticity</p>
+                      <h3 className="font-semibold">Location-Based Properties</h3>
+                      <p className="text-blue-100">Find properties near your preferred location</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="text-center">
-                  <p className="text-sm">Join thousands of users who trust HomeDirectly</p>
-                  <div className="flex justify-center mt-4 space-x-2">
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" className="w-full h-full object-cover" />
+                <div className="bg-white/10 rounded-lg p-4 mt-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full overflow-hidden mr-4 border-2 border-white/30">
+                      <img src="https://placehold.co/100x100?text=User" alt="User" className="w-full h-full object-cover" />
                     </div>
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                      <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="User" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-sm">
-                      +10K
+                    <div>
+                      <div className="flex mb-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <svg key={star} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        ))}
+                      </div>
+                      <p className="italic text-sm">"Found my dream home without paying any broker fees. Highly recommend!"</p>
+                      <p className="text-xs mt-1">- Rajesh Kumar, Delhi</p>
                     </div>
                   </div>
                 </div>
