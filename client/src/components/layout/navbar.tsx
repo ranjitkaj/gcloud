@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut, Home, PlusCircle, Bell, HelpCircle, Phone, Mail, MessageSquare, Star } from "lucide-react";
+import { Menu, User, LogOut, Home, PlusCircle, Bell, HelpCircle, Phone, Mail, MessageSquare, Star, ChevronLeft } from "lucide-react";
 import { MegaMenu } from "./mega-menu";
 import NotificationCenter from "@/components/ui/notification-center";
 
@@ -16,6 +16,12 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
+  const [canGoBack, setCanGoBack] = useState(false);
+
+  useEffect(() => {
+    // Check if we can go back (if we're not on the home page)
+    setCanGoBack(location !== '/' && window.history.length > 1);
+  }, [location]);
 
   const handleLogout = () => {
     logout();
@@ -24,16 +30,31 @@ export default function Navbar() {
   const navigateTo = (path: string) => {
     setLocation(path);
   };
+  
+  const goBack = () => {
+    window.history.back();
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl text-primary font-bold font-heading">HomeDirectly</span>
-            <span className="hidden sm:block px-2 py-1 text-xs font-medium bg-green-500 text-white rounded-md">No Broker</span>
-          </Link>
+          {/* Back Button and Logo */}
+          <div className="flex items-center space-x-2">
+            {canGoBack && (
+              <button 
+                onClick={goBack} 
+                className="mr-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Go back"
+              >
+                <ChevronLeft className="h-5 w-5 text-gray-600" />
+              </button>
+            )}
+            <Link to="/" className="flex items-center space-x-2">
+              <span className="text-2xl text-primary font-bold font-heading">HomeDirectly</span>
+              <span className="hidden sm:block px-2 py-1 text-xs font-medium bg-green-500 text-white rounded-md">No Broker</span>
+            </Link>
+          </div>
 
           {/* Navigation (Desktop) */}
           <div className="hidden md:flex items-center">
@@ -139,6 +160,15 @@ export default function Navbar() {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-2">
+          {canGoBack && (
+            <button 
+              onClick={goBack} 
+              className="w-full text-left mb-2 py-2 flex items-center text-gray-700 hover:text-primary transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              <span className="font-medium">Back</span>
+            </button>
+          )}
           <MegaMenu isMobile={true} />
           
           {/* Post Property in Mobile Menu */}
