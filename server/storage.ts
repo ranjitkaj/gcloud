@@ -725,6 +725,12 @@ export class MemStorage implements IStorage {
     await this._updateRecommendationScore(userId, propertyId, 1);
   }
   
+  async getUserPropertyViews(userId: number): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]> {
+    return Array.from(this.propertyViews.values()).filter(
+      (view) => view.userId === userId
+    );
+  }
+  
   async saveProperty(userId: number, propertyId: number): Promise<void> {
     const id = this.savedIdCounter++;
     const now = new Date();

@@ -78,7 +78,7 @@ export class AIRecommendationService {
     const locations = new Set<string>();
     allProperties.forEach(p => {
       if (p.city) locations.add(p.city);
-      if (p.locality) locations.add(p.locality);
+      if (p.address) locations.add(p.address);
     });
     Array.from(locations).forEach((location, index) => {
       this.locationMapping.set(location, index);
@@ -189,9 +189,9 @@ export class AIRecommendationService {
       preferences.locations.set(property.city, currentCityWeight + weight);
     }
     
-    if (property.locality) {
-      const currentLocalityWeight = preferences.locations.get(property.locality) || 0;
-      preferences.locations.set(property.locality, currentLocalityWeight + weight);
+    if (property.address) {
+      const currentAddressWeight = preferences.locations.get(property.address) || 0;
+      preferences.locations.set(property.address, currentAddressWeight + weight);
     }
     
     // Update amenities preference
@@ -332,8 +332,8 @@ export class AIRecommendationService {
       score += preferences.locations.get(property.city) * RECOMMENDATION_WEIGHTS.location;
     }
     
-    if (property.locality && preferences.locations.has(property.locality)) {
-      score += preferences.locations.get(property.locality) * RECOMMENDATION_WEIGHTS.location * 0.5;
+    if (property.address && preferences.locations.has(property.address)) {
+      score += preferences.locations.get(property.address) * RECOMMENDATION_WEIGHTS.location * 0.5;
     }
     
     // Amenities match

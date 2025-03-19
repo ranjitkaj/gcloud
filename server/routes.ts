@@ -631,6 +631,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const recommendations = await storage.getRecommendedProperties(req.user.id, limit);
     res.json(recommendations);
   }));
+  
+  // Get AI-powered personalized recommendations
+  app.get("/api/recommendations/ai", isAuthenticated, asyncHandler(async (req, res) => {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+    
+    // Import and initialize the AI recommendation service
+    const { getRecommendationService } = await import('./recommendation-service');
+    const recommendationService = getRecommendationService(storage);
+    
+    const aiRecommendations = await recommendationService.getPersonalizedRecommendations(req.user.id, limit);
+    res.json(aiRecommendations);
+  }));
 
   // Get current user's saved properties
   app.get("/api/user/saved", isAuthenticated, asyncHandler(async (req, res) => {

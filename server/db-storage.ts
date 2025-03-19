@@ -453,6 +453,16 @@ export class DbStorage implements IStorage {
     // Update recommendation score
     await this._updateRecommendationScore(userId, propertyId, 1);
   }
+  
+  async getUserPropertyViews(userId: number): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]> {
+    return await db.select({
+      userId: propertyViews.userId,
+      propertyId: propertyViews.propertyId,
+      viewedAt: propertyViews.viewedAt
+    })
+    .from(propertyViews)
+    .where(eq(propertyViews.userId, userId));
+  }
 
   async saveProperty(userId: number, propertyId: number): Promise<void> {
     // First check if already saved

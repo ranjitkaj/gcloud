@@ -27,7 +27,7 @@ export default function RecommendationEngine() {
   
   // Query recommended properties for logged in users
   const { data: recommendedProperties = [] } = useQuery<Property[]>({
-    queryKey: ['/api/recommendations'],
+    queryKey: ['/api/recommendations/ai'],
     enabled: !!user,
   });
   
