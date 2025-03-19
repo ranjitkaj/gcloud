@@ -31,9 +31,9 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link href="/properties" className="hover:text-white transition-colors">Search Properties</Link></li>
               <li><Link href="/add-property" className="hover:text-white transition-colors">List Your Property</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Pricing Plans</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Property Valuation</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Legal Documentation</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link href="/properties?tag=urgent" className="hover:text-white transition-colors">Urgency Sales</Link></li>
               <li><Link href="/" className="hover:text-white transition-colors">Home Loans</Link></li>
             </ul>
           </div>
@@ -75,9 +75,9 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>&copy; {new Date().getFullYear()} HomeDirectly. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link href="/" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="/" className="hover:text-white transition-colors">Cookie Policy</Link>
+              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link>
+              <Link href="/post-property-free" className="hover:text-white transition-colors">Post Property Free</Link>
             </div>
           </div>
         </div>

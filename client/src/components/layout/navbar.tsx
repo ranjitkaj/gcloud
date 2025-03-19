@@ -40,8 +40,14 @@ export default function Navbar() {
             <MegaMenu />
           </div>
 
-          {/* Post Property Free Button and Support */}
+          {/* Navigation Links and Post Property Button */}
           <div className="hidden md:flex items-center space-x-3 mr-3">
+            <Link to="/about" className="inline-flex text-gray-700 hover:text-primary font-medium py-2 px-3 rounded-lg transition-colors">
+              About
+            </Link>
+            <Link to="/contact" className="inline-flex text-gray-700 hover:text-primary font-medium py-2 px-3 rounded-lg transition-colors">
+              Contact
+            </Link>
             <Link to="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
               Post Property FREE
             </Link>

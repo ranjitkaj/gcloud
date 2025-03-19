@@ -17,6 +17,8 @@ import ProjectCategory from "@/pages/projects/project-category";
 import SearchResults from "@/pages/search-results";
 import RecommendationsPage from "@/pages/recommendations";
 import AdminDashboard from "@/pages/admin/dashboard";
+import AboutPage from "@/pages/about";
+import ContactPage from "@/pages/contact";
 import { queryClient } from '@/lib/query-client';
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
             <Route path="/search-results" element={<SearchResults />} />
             <Route path="/projects/:category" element={<ProjectCategory />} />
             <Route path="/post-property-free" element={<PostPropertyFree />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             
             {/* User Routes */}
             <Route path="/dashboard" element={<Dashboard />} />
