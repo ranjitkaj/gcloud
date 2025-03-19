@@ -60,6 +60,16 @@ export default function Dashboard() {
   } = useQuery<Property[]>({
     queryKey: ['/api/user/properties'],
   });
+  
+  // Fetch saved properties
+  const {
+    data: savedProperties,
+    isLoading: isSavedPropertiesLoading,
+    isError: isSavedPropertiesError,
+    refetch: refetchSavedProperties
+  } = useQuery<Property[]>({
+    queryKey: ['/api/user/saved'],
+  });
 
   // Format the price in Indian currency format
   const formatPrice = (price: number) => {
@@ -99,11 +109,40 @@ export default function Dashboard() {
     },
   });
 
+  // Unsave property mutation 
+  const unsaveMutation = useMutation({
+    mutationFn: async (propertyId: number) => {
+      await apiRequest("DELETE", `/api/properties/${propertyId}/save`);
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user/saved'] });
+      refetchSavedProperties();
+      
+      toast({
+        title: "Property unsaved",
+        description: "The property has been removed from your saved list",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error removing saved property",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   // Placeholder function for delete confirmation
   const handleDeleteProperty = (propertyId: number) => {
     if (confirm("Are you sure you want to delete this property?")) {
       deleteMutation.mutate(propertyId);
     }
+  };
+  
+  // Function to handle unsaving properties
+  const handleUnsaveProperty = (propertyId: number) => {
+    unsaveMutation.mutate(propertyId);
   };
 
   if (!user) {
@@ -146,6 +185,13 @@ export default function Dashboard() {
                       <span>My Properties</span>
                     </button>
                     <button 
+                      className={`w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-gray-50 transition-colors ${activeTab === 'saved' ? 'text-primary font-medium' : 'text-gray-700'}`}
+                      onClick={() => setActiveTab('saved')}
+                    >
+                      <Bookmark className="h-5 w-5" />
+                      <span>Saved Properties</span>
+                    </button>
+                    <button 
                       className={`w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-gray-50 transition-colors ${activeTab === 'account' ? 'text-primary font-medium' : 'text-gray-700'}`}
                       onClick={() => setActiveTab('account')}
                     >
@@ -182,6 +228,15 @@ export default function Dashboard() {
                         {isLoading ? 
                           <Skeleton className="h-4 w-10" /> : 
                           properties?.filter(p => p.featured).length || 0
+                        }
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Saved Properties</span>
+                      <span className="font-semibold">
+                        {isSavedPropertiesLoading ? 
+                          <Skeleton className="h-4 w-10" /> : 
+                          savedProperties?.length || 0
                         }
                       </span>
                     </div>
@@ -346,6 +401,148 @@ export default function Dashboard() {
                             <Link href="/add-property">
                               <PlusCircle className="h-4 w-4 mr-2" />
                               <span>Add New Property</span>
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="saved">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex flex-col md:flex-row md:items-center justify-between">
+                        <div>
+                          <CardTitle>Saved Properties</CardTitle>
+                          <CardDescription>
+                            Properties you've saved for future reference
+                          </CardDescription>
+                        </div>
+                        <div className="mt-4 md:mt-0 flex space-x-2">
+                          <Button variant="outline" size="sm" className="text-gray-600">
+                            <ListFilter className="h-4 w-4 mr-2" />
+                            <span>Filter</span>
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-gray-600">
+                            <Search className="h-4 w-4 mr-2" />
+                            <span>Search</span>
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {isSavedPropertiesLoading ? (
+                        // Loading skeletons
+                        <div className="space-y-4">
+                          {[1, 2].map((i) => (
+                            <div key={i} className="border rounded-lg p-4">
+                              <div className="flex flex-col md:flex-row gap-4">
+                                <Skeleton className="h-24 w-32 rounded-md" />
+                                <div className="flex-1 space-y-2">
+                                  <Skeleton className="h-6 w-2/3" />
+                                  <Skeleton className="h-4 w-1/3" />
+                                  <div className="flex gap-4">
+                                    <Skeleton className="h-4 w-16" />
+                                    <Skeleton className="h-4 w-16" />
+                                    <Skeleton className="h-4 w-16" />
+                                  </div>
+                                </div>
+                                <div className="flex md:flex-col gap-2 mt-2 md:mt-0">
+                                  <Skeleton className="h-8 w-20" />
+                                  <Skeleton className="h-8 w-20" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : isSavedPropertiesError ? (
+                        <div className="text-center py-8">
+                          <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                          <h3 className="text-lg font-semibold mb-2">Error Loading Saved Properties</h3>
+                          <p className="text-gray-600 mb-4">There was a problem loading your saved properties.</p>
+                          <Button onClick={() => refetchSavedProperties()}>Try Again</Button>
+                        </div>
+                      ) : savedProperties && savedProperties.length > 0 ? (
+                        <div className="space-y-4">
+                          {savedProperties.map((property) => (
+                            <div key={property.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                              <div className="flex flex-col md:flex-row gap-4">
+                                <div className="w-full md:w-32 h-24 bg-gray-100 rounded-md overflow-hidden">
+                                  <img 
+                                    src={property.imageUrls?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'} 
+                                    alt={property.title} 
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <h3 className="font-semibold text-gray-900 mb-1">
+                                    {property.title}
+                                    {property.premium && (
+                                      <Badge className="ml-2 bg-yellow-500">Premium</Badge>
+                                    )}
+                                  </h3>
+                                  <p className="text-gray-600 text-sm mb-2">{property.location}, {property.city}</p>
+                                  <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                                    {property.bedrooms && (
+                                      <div className="flex items-center">
+                                        <Bed className="h-4 w-4 mr-1" />
+                                        <span>{property.bedrooms} Beds</span>
+                                      </div>
+                                    )}
+                                    {property.bathrooms && (
+                                      <div className="flex items-center">
+                                        <Droplet className="h-4 w-4 mr-1" />
+                                        <span>{property.bathrooms} Baths</span>
+                                      </div>
+                                    )}
+                                    <div className="flex items-center">
+                                      <Ruler className="h-4 w-4 mr-1" />
+                                      <span>{property.area} sq.ft</span>
+                                    </div>
+                                    <div className="font-medium text-primary">
+                                      {formatPrice(property.price)}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex md:flex-col gap-2">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-600"
+                                    onClick={() => navigate(`/property/${property.id}`)}
+                                  >
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    <span>View</span>
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-red-600"
+                                  >
+                                    <Heart className="h-4 w-4 mr-2 fill-current" />
+                                    <span>Unsave</span>
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="mt-2 pt-2 border-t text-xs text-gray-500 flex justify-between">
+                                <span>{property.propertyType} · {property.rentOrSale}</span>
+                                <span>ID: #{property.id}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-12">
+                          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-gray-100 rounded-full text-gray-500">
+                            <Bookmark className="h-8 w-8" />
+                          </div>
+                          <h3 className="text-xl font-semibold mb-2">No Saved Properties Yet</h3>
+                          <p className="text-gray-600 mb-6">Start browsing properties and save your favorites</p>
+                          <Button asChild>
+                            <Link href="/properties-page">
+                              <Search className="h-4 w-4 mr-2" />
+                              <span>Browse Properties</span>
                             </Link>
                           </Button>
                         </div>
