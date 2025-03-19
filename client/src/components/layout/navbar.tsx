@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { MegaMenu } from "./mega-menu";
 import NotificationCenter from "@/components/ui/notification-center";
+import LocationSelector from "./location-selector"; // Import LocationSelector
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -74,6 +75,7 @@ export default function Navbar() {
                 }}
               />
             </Link>
+            <LocationSelector /> {/* Add LocationSelector here */}
           </div>
 
           {/* Navigation (Desktop) */}
