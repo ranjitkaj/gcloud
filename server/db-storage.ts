@@ -13,7 +13,7 @@ import {
 } from "@shared/schema";
 import { IStorage } from "./storage";
 import { db } from "./db";
-import { eq, and, desc, gte, lte, inArray, sql, or, like, exists, not } from "drizzle-orm";
+import { eq, and, desc, gte, lte, inArray, sql, or, like, exists, not, gt, isNotNull } from "drizzle-orm";
 import session from "express-session";
 import createPgSession from "connect-pg-simple";
 import pkg from 'pg';
@@ -381,6 +381,22 @@ export class DbStorage implements IStorage {
     return await db.select().from(properties)
       .where(eq(properties.rentOrSale, rentOrSale));
   }
+  
+  async getUrgentSaleProperties(limit: number = 10): Promise<Property[]> {
+    const now = new Date();
+    return await db.select().from(properties)
+      .where(
+        and(
+          isNotNull(properties.discountedPrice),
+          isNotNull(properties.expiresAt),
+          gt(properties.expiresAt, now),
+          eq(properties.status, 'available'),
+          eq(properties.approvalStatus, 'approved')
+        )
+      )
+      .orderBy(desc(properties.createdAt))
+      .limit(limit);
+  }
 
   async searchProperties(query: {
     city?: string;
@@ -566,7 +582,7 @@ export class DbStorage implements IStorage {
       .where(inArray(properties.id, propertyIds));
   }
 
-  private async _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void> {
+  async _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void> {
     // Check if recommendation exists
     const existingRec = await db.select().from(propertyRecommendations)
       .where(
@@ -598,7 +614,7 @@ export class DbStorage implements IStorage {
     await this._updateSimilarPropertiesRecommendations(userId, propertyId, scoreChange / 2);
   }
 
-  private async _updateSimilarPropertiesRecommendations(userId: number, propertyId: number, baseScoreChange: number): Promise<void> {
+  async _updateSimilarPropertiesRecommendations(userId: number, propertyId: number, baseScoreChange: number): Promise<void> {
     // Get property type, city, and price range
     const property = await this.getProperty(propertyId);
     if (!property) return;

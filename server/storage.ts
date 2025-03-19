@@ -103,6 +103,7 @@ export interface IStorage {
   unsaveProperty(userId: number, propertyId: number): Promise<void>;
   getRecommendedProperties(userId: number, limit?: number): Promise<Property[]>;
   _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void>;
+  _updateSimilarPropertiesRecommendations(userId: number, propertyId: number, baseScoreChange: number): Promise<void>;
   
   // Inquiry operations
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
@@ -831,8 +832,8 @@ export class MemStorage implements IStorage {
     return recommendedProperties.slice(0, limit);
   }
   
-  // Private helper to update recommendation scores
-  private async _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void> {
+  // Helper to update recommendation scores
+  async _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void> {
     // Find existing recommendation
     const existingRec = Array.from(this.recommendations.values())
       .find(rec => rec.userId === userId && rec.propertyId === propertyId);
