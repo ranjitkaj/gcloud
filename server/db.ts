@@ -141,6 +141,8 @@ export async function initializeDatabase() {
         rejection_reason TEXT,
         approval_date TIMESTAMP,
         subscription_level TEXT DEFAULT 'free',
+        subscription_amount INTEGER DEFAULT 0,
+        subscription_expires_at TIMESTAMP,
         year_built INTEGER,
         expires_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
