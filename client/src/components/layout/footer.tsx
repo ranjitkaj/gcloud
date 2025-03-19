@@ -257,7 +257,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-6 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>
-              &copy; {new Date().getFullYear()} HomeDirectly. All rights
+              &copy; {new Date().getFullYear()} Urgent Sale. All rights
               reserved.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0 text-sm">
