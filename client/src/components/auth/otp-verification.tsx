@@ -105,9 +105,9 @@ export default function OTPVerification({
       setIsResending(true);
       
       const response = await apiRequest(
-        'POST',
         '/api/resend-otp',
-        { type }
+        { type },
+        { method: 'POST' }
       );
 
       const data = await response.json();

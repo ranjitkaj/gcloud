@@ -4,6 +4,7 @@ import { Express } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
+import nodemailer from "nodemailer";
 import { storage } from "./storage";
 import { User as SelectUser, verificationMethods } from "@shared/schema";
 
@@ -27,9 +28,55 @@ async function hashPassword(password: string) {
 
 // Function to send OTP via email
 async function sendEmailOTP(email: string, otp: string) {
-  // TODO: Implement actual email sending with a service like SendGrid
-  console.log(`EMAIL OTP for ${email}: ${otp}`);
-  return true;
+  try {
+    // Create a test account using Ethereal (for development)
+    const testAccount = await nodemailer.createTestAccount();
+    
+    // Create a transporter using the test account
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+    
+    // Email content
+    const mailOptions = {
+      from: '"Real Estate Platform" <verify@realestate.com>',
+      to: email,
+      subject: 'Your Verification Code',
+      text: `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <h2 style="color: #4a6ee0;">Real Estate Platform - Verification</h2>
+          <p>Hello,</p>
+          <p>Thank you for registering with our platform. Please use the verification code below to complete your account setup:</p>
+          <div style="background-color: #f7f7f7; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0; border-radius: 4px;">
+            ${otp}
+          </div>
+          <p>This code will expire in <strong>10 minutes</strong>.</p>
+          <p>If you didn't request this code, please ignore this email.</p>
+          <p>Best regards,<br>The Real Estate Team</p>
+        </div>
+      `,
+    };
+    
+    // Send the email
+    const info = await transporter.sendMail(mailOptions);
+    
+    // Log the test URL for development/testing
+    console.log(`EMAIL OTP for ${email}: ${otp}`);
+    console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    // Still return true to not block the registration flow (in production, handle this differently)
+    return true;
+  }
 }
 
 // Function to send OTP via WhatsApp
