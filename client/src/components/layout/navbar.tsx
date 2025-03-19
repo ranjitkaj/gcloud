@@ -51,7 +51,7 @@ export default function Navbar() {
               </button>
             )}
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="UrgentSales.in" className="h-12 w-auto" />
+              <img src="/images/logo.png" alt="UrgentSales.in" className="h-12 w-auto" />
             </Link>
           </div>
 
