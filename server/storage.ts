@@ -94,10 +94,12 @@ export interface IStorage {
   
   // Recommendation operations
   addPropertyView(userId: number, propertyId: number): Promise<void>;
+  getUserPropertyViews(userId: number): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]>;
   saveProperty(userId: number, propertyId: number): Promise<void>;
   getSavedProperties(userId: number): Promise<Property[]>;
   unsaveProperty(userId: number, propertyId: number): Promise<void>;
   getRecommendedProperties(userId: number, limit?: number): Promise<Property[]>;
+  _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void>;
   
   // Inquiry operations
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
