@@ -259,13 +259,16 @@ export default function PropertiesPage() {
   const queryString = searchParams.toString();
 
   // Fetch properties based on search parameters
-  const { data: properties, isLoading } = useQuery<Property[]>({
+  const { data: propertiesResponse, isLoading } = useQuery<{ properties: Property[] }>({
     queryKey: [`/api/properties/search?${queryString}`],
     queryFn: getQueryFn({ on401: "returnNull" }),
   });
+  
+  // Extract properties array from response
+  const properties = propertiesResponse?.properties;
 
   const sortProperties = (properties: Property[] | undefined) => {
-    if (!properties) return [];
+    if (!properties || !Array.isArray(properties)) return [];
     
     return [...properties].sort((a, b) => {
       if (sortOrder === 'newest') {
@@ -582,7 +585,7 @@ export default function PropertiesPage() {
                   
                   {searchParams.get('propertyType') && (
                     <Badge variant="secondary" className="flex items-center gap-1">
-                      {searchParams.get('propertyType')?.charAt(0).toUpperCase() + searchParams.get('propertyType')?.slice(1) || ''}
+                      {(searchParams.get('propertyType') || '').charAt(0).toUpperCase() + (searchParams.get('propertyType') || '').slice(1)}
                       <X 
                         className="h-3 w-3 cursor-pointer" 
                         onClick={() => {

@@ -46,7 +46,7 @@ import { Badge } from "@/components/ui/badge";
 const buyMenuItems = [
   {
     title: "Residential Properties",
-    href: "/properties?type=residential",
+    href: "/properties?propertyType=apartment",
     description: "Find your dream home among our residential listings",
     icon: <Home className="h-5 w-5 text-primary" />,
     query: { propertyType: "house" },
