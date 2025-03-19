@@ -13,6 +13,13 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import * as express from 'express';
+import { 
+  getNotifications, 
+  markNotificationAsRead, 
+  markAllNotificationsAsRead,
+  createNotification,
+  sendRoleNotifications
+} from './notification-service';
 
 
 // Helper to catch errors in async routes
@@ -75,6 +82,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/create-checkout-session', isAuthenticated, asyncHandler(async (req, res) => {
     await createCheckoutSession(req, res);
   }));
+  
+  // =========== Notification Routes ===========
+  
+  // Get user notifications
+  app.get('/api/notifications', isAuthenticated, asyncHandler(getNotifications));
+  
+  // Mark a notification as read
+  app.post('/api/notifications/:notificationId/read', isAuthenticated, asyncHandler(markNotificationAsRead));
+  
+  // Mark all notifications as read
+  app.post('/api/notifications/read-all', isAuthenticated, asyncHandler(markAllNotificationsAsRead));
+  
+  // Create a notification (admin only)
+  app.post('/api/notifications', isAuthenticated, hasRole(['admin']), asyncHandler(createNotification));
+  
+  // Send role-specific notifications (admin only)
+  app.post('/api/notifications/role', isAuthenticated, hasRole(['admin']), asyncHandler(sendRoleNotifications));
 
   // =========== Property Routes ===========
 

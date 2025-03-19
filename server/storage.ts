@@ -110,6 +110,19 @@ export interface IStorage {
   createAgentReview(review: InsertAgentReview): Promise<AgentReview>;
   getAgentReviews(agentId: number): Promise<AgentReview[]>;
   
+  // Notification operations
+  getNotifications(userId: number, limit?: number): Promise<any[]>;
+  getUnreadNotificationsCount(userId: number): Promise<number>;
+  markNotificationAsRead(notificationId: number): Promise<any>;
+  markAllNotificationsAsRead(userId: number): Promise<void>;
+  createNotification(notification: {
+    userId: number;
+    title: string;
+    message: string;
+    type: string;
+    linkTo?: string;
+  }): Promise<any>;
+
   // Session store
   sessionStore: any;
 }

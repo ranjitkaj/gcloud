@@ -310,5 +310,7 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
 export type InsertAgentReview = z.infer<typeof insertAgentReviewSchema>;
 export type AgentReview = typeof agentReviews.$inferSelect;
 
+export const notificationTypes = ['system', 'promotion', 'update', 'property'] as const;
+
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;

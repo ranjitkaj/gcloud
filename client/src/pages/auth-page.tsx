@@ -126,7 +126,6 @@ export default function AuthPage() {
       if (data.phone) {
         setRegisteredUser({
           ...registerData,
-          id: -1, // Temporary ID until user is created
         });
         setRegistrationState('verification-method');
       } else {

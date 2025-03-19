@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -10,19 +10,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, User, LogOut, Home, PlusCircle, Bell, HelpCircle, Phone, Mail, MessageSquare } from "lucide-react";
 import { MegaMenu } from "./mega-menu";
+import NotificationCenter from "@/components/ui/notification-center";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [location, setLocation] = useLocation();
 
   const handleLogout = () => {
     logout();
   };
 
   const navigateTo = (path: string) => {
-    navigate(path);
+    setLocation(path);
   };
 
   return (
@@ -74,10 +74,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-3">
             {user ? (
               <>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-                </Button>
+                <NotificationCenter />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full">
