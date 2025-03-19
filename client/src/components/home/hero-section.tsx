@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Select,
   SelectContent,
@@ -9,12 +10,85 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { MapPin, Search } from 'lucide-react';
+import { MapPin, Search, Navigation } from 'lucide-react';
 
 export default function HeroSection() {
   const [location, setLocation] = useState('');
   const [propertyType, setPropertyType] = useState('');
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [, navigate] = useLocation();
+  const { toast } = useToast();
+
+  // Function to get user's current location
+  const getUserLocation = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "Location Not Available",
+        description: "Geolocation is not supported by your browser",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLocationLoading(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          // Get latitude and longitude
+          const { latitude, longitude } = position.coords;
+          
+          // Use reverse geocoding to get the address
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+          );
+          
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Extract city or locality information
+            const city = data.address.city || 
+                        data.address.town || 
+                        data.address.village || 
+                        data.address.suburb ||
+                        data.address.neighbourhood ||
+                        data.address.state;
+                        
+            if (city) {
+              setLocation(city);
+              toast({
+                title: "Location Found",
+                description: `Using your current location: ${city}`,
+              });
+            } else {
+              setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+            }
+          } else {
+            // If geocoding fails, just use coordinates
+            setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          }
+        } catch (error) {
+          console.error('Error getting location:', error);
+          toast({
+            title: "Location Error",
+            description: "Unable to fetch your location details. Please enter manually.",
+            variant: "destructive",
+          });
+        } finally {
+          setIsLocationLoading(false);
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        setIsLocationLoading(false);
+        toast({
+          title: "Location Error",
+          description: "Unable to get your location. Please enable location services and try again.",
+          variant: "destructive",
+        });
+      }
+    );
+  };
 
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
@@ -56,13 +130,28 @@ export default function HeroSection() {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <MapPin className="h-5 w-5 text-gray-400" />
                   </div>
-                  <Input 
-                    type="text" 
-                    placeholder="Enter location, neighborhood, or address" 
-                    className="pl-10 pr-4 py-6 text-gray-700 bg-gray-50"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  />
+                  <div className="flex w-full">
+                    <Input 
+                      type="text" 
+                      placeholder="Enter location, neighborhood, or address" 
+                      className="pl-10 pr-4 py-6 text-gray-700 bg-gray-50 rounded-r-none flex-1"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="rounded-l-none border-l-0 h-12 px-3 bg-gray-50 hover:bg-gray-100 focus:ring-0"
+                      onClick={getUserLocation}
+                      disabled={isLocationLoading}
+                    >
+                      {isLocationLoading ? (
+                        <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full"></div>
+                      ) : (
+                        <Navigation className="h-5 w-5 text-primary" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-row space-x-2">
