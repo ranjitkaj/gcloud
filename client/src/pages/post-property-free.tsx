@@ -49,6 +49,7 @@ const propertySchema = z.object({
   propertyType: z.enum(["apartment", "villa", "house", "plot", "commercial", "office"]),
   forSaleOrRent: z.enum(["Sale", "Rent"]),
   price: z.string().min(1, { message: "Price is required" }),
+  isUrgentSale: z.boolean().default(false),
   location: z.string().min(5, { message: "Location must be at least 5 characters" }),
   pincode: z.string().min(5, { message: "Pincode must be at least 5 characters" }),
   bedrooms: z.string().optional(),
@@ -112,6 +113,7 @@ export default function PostPropertyFree() {
       propertyType: "apartment",
       forSaleOrRent: "Sale",
       price: "",
+      isUrgentSale: false,
       location: "",
       pincode: "",
       bedrooms: "",
@@ -246,12 +248,15 @@ export default function PostPropertyFree() {
     }
     
     // Create a complete property object with form data and images
+    const price = parseInt(data.price);
     const propertyData = {
       title: data.title,
       description: data.description,
       propertyType: data.propertyType,
       rentOrSale: data.forSaleOrRent.toLowerCase(),
-      price: parseInt(data.price),
+      price: price,
+      // If urgency sale, calculate 25% discount
+      discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
       location: data.location,
       city: data.location.split(',').pop()?.trim() || '',
       address: data.location, // Using location as address too
@@ -267,6 +272,8 @@ export default function PostPropertyFree() {
       subscriptionLevel: 'free',
       status: 'available', // Setting initial status
       approvalStatus: 'pending',
+      // Set expiry date for urgency listings (7 days from now)
+      expiresAt: data.isUrgentSale ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
       userId: user?.id // Required field
     };
     
