@@ -139,6 +139,16 @@ export class MemStorage implements IStorage {
   private recommendations: Map<number, { userId: number, propertyId: number, score: number, createdAt: Date }>;
   private otps: Map<number, Otp>;
   private bookings: Map<number, Booking>;
+  private notifications: Map<number, { 
+    id: number, 
+    userId: number, 
+    title: string,
+    message: string,
+    type: string,
+    isRead: boolean,
+    createdAt: Date,
+    linkTo?: string
+  }>;
   
   sessionStore: any;
   userIdCounter: number;
@@ -152,6 +162,7 @@ export class MemStorage implements IStorage {
   recommendationIdCounter: number;
   otpIdCounter: number;
   bookingIdCounter: number;
+  notificationIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -165,6 +176,7 @@ export class MemStorage implements IStorage {
     this.recommendations = new Map();
     this.otps = new Map();
     this.bookings = new Map();
+    this.notifications = new Map();
     
     this.userIdCounter = 1;
     this.propertyIdCounter = 1;
@@ -177,6 +189,7 @@ export class MemStorage implements IStorage {
     this.recommendationIdCounter = 1;
     this.otpIdCounter = 1;
     this.bookingIdCounter = 1;
+    this.notificationIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -905,6 +918,61 @@ export class MemStorage implements IStorage {
     return Array.from(this.agentReviews.values())
       .filter(review => review.agentId === agentId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+  
+  // Notification operations
+  async getNotifications(userId: number, limit: number = 20): Promise<any[]> {
+    const userNotifications = Array.from(this.notifications.values())
+      .filter(notification => notification.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    return userNotifications.slice(0, limit);
+  }
+  
+  async getUnreadNotificationsCount(userId: number): Promise<number> {
+    return Array.from(this.notifications.values())
+      .filter(notification => notification.userId === userId && !notification.isRead)
+      .length;
+  }
+  
+  async markNotificationAsRead(notificationId: number): Promise<any> {
+    const notification = this.notifications.get(notificationId);
+    if (!notification) return null;
+    
+    const updatedNotification = { ...notification, isRead: true };
+    this.notifications.set(notificationId, updatedNotification);
+    return updatedNotification;
+  }
+  
+  async markAllNotificationsAsRead(userId: number): Promise<void> {
+    const userNotifications = Array.from(this.notifications.entries())
+      .filter(([, notification]) => notification.userId === userId);
+    
+    for (const [id, notification] of userNotifications) {
+      const updatedNotification = { ...notification, isRead: true };
+      this.notifications.set(id, updatedNotification);
+    }
+  }
+  
+  async createNotification(notification: {
+    userId: number;
+    title: string;
+    message: string;
+    type: string;
+    linkTo?: string;
+  }): Promise<any> {
+    const id = this.notificationIdCounter++;
+    const now = new Date();
+    
+    const newNotification = {
+      id,
+      createdAt: now,
+      isRead: false,
+      ...notification
+    };
+    
+    this.notifications.set(id, newNotification);
+    return newNotification;
   }
 }
 
