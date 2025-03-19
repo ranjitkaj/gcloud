@@ -881,7 +881,21 @@ export default function PostPropertyFree() {
                 
                 <div>
                   <h4 className="text-sm font-medium text-gray-500">Price</h4>
-                  <p className="text-base">₹{parseInt(form.getValues().price || "0").toLocaleString()}</p>
+                  {form.getValues().isUrgentSale ? (
+                    <div>
+                      <p className="text-base flex items-center">
+                        <span className="line-through text-gray-500 mr-2">₹{parseInt(form.getValues().price || "0").toLocaleString()}</span>
+                        <span className="text-red-600 font-semibold">₹{Math.round(parseInt(form.getValues().price || "0") * 0.75).toLocaleString()}</span>
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <Clock className="h-3 w-3 mr-1" />
+                          Urgency Sale
+                        </span>
+                      </p>
+                      <p className="text-xs text-red-600 mt-1">25% discount applied! Limited time offer (7 days)</p>
+                    </div>
+                  ) : (
+                    <p className="text-base">₹{parseInt(form.getValues().price || "0").toLocaleString()}</p>
+                  )}
                 </div>
                 
                 <div className="md:col-span-2">

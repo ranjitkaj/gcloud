@@ -78,6 +78,7 @@ export interface IStorage {
   getPropertiesByType(propertyType: string): Promise<Property[]>;
   getPropertiesByStatus(status: string): Promise<Property[]>;
   getPropertiesByRentOrSale(rentOrSale: string): Promise<Property[]>;
+  getUrgentSaleProperties(limit?: number): Promise<Property[]>;
   searchProperties(query: {
     city?: string;
     propertyType?: string;
@@ -647,6 +648,26 @@ export class MemStorage implements IStorage {
     return Array.from(this.properties.values()).filter(
       (property) => property.rentOrSale === rentOrSale,
     );
+  }
+  
+  async getUrgentSaleProperties(limit: number = 10): Promise<Property[]> {
+    const now = new Date();
+    return Array.from(this.properties.values())
+      .filter(property => 
+        property.discountedPrice && 
+        property.expiresAt && 
+        property.expiresAt > now &&
+        property.status === 'available' &&
+        property.approvalStatus === 'approved'
+      )
+      .sort((a, b) => {
+        // Sort by creation date (newest first)
+        if (a.createdAt && b.createdAt) {
+          return b.createdAt.getTime() - a.createdAt.getTime();
+        }
+        return 0;
+      })
+      .slice(0, limit);
   }
 
   async searchProperties(query: {
