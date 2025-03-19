@@ -236,27 +236,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get urgent properties (properties with discounted prices)
   app.get("/api/properties/urgent", asyncHandler(async (req, res) => {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 3;
-    // Get all properties then filter for properties with discountedPrice
-    const allProperties = await storage.getAllProperties();
-    const urgentProperties = allProperties
-      .filter(property => property.discountedPrice && property.discountedPrice > 0)
-      .slice(0, limit)
-      .map(property => ({
-        id: property.id,
-        title: property.title,
-        location: property.location,
-        price: property.price,
-        discountedPrice: property.discountedPrice || Math.round(property.price * 0.75), // 25% discount
-        propertyType: property.propertyType,
-        bedrooms: property.bedrooms,
-        bathrooms: property.bathrooms,
-        area: property.area,
-        imageUrl: property.imageUrls && property.imageUrls.length > 0 ? property.imageUrls[0] : '',
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
-      }));
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
     
-    res.json(urgentProperties);
+    // Use the dedicated method to get urgent properties
+    const urgentProperties = await storage.getUrgentSaleProperties(limit);
+    
+    // Map to the expected format for the frontend
+    const formattedProperties = urgentProperties.map(property => ({
+      id: property.id,
+      title: property.title,
+      location: property.location,
+      price: property.price,
+      discountedPrice: property.discountedPrice || Math.round(property.price * 0.75), // 25% discount
+      propertyType: property.propertyType,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      area: property.area,
+      imageUrl: property.imageUrls && property.imageUrls.length > 0 ? property.imageUrls[0] : '',
+      expiresAt: property.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Use property expiration date or default to 7 days
+    }));
+    
+    res.json(formattedProperties);
   }));
 
   // Get recent properties

@@ -867,7 +867,7 @@ export class MemStorage implements IStorage {
   }
   
   // Basic collaborative filtering implementation
-  private async _updateSimilarPropertiesRecommendations(userId: number, propertyId: number, baseScoreChange: number): Promise<void> {
+  async _updateSimilarPropertiesRecommendations(userId: number, propertyId: number, baseScoreChange: number): Promise<void> {
     const property = await this.getProperty(propertyId);
     if (!property) return;
     
