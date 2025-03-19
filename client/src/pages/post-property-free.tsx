@@ -176,6 +176,7 @@ export default function PostPropertyFree() {
       id: 1,
       name: "Raj Sharma",
       role: "Property Owner",
+      location: "Mumbai",
       content: "I sold my apartment within just 3 weeks of listing it here. The process was extremely smooth and I got a great price without paying any broker fees!",
       avatar: "https://randomuser.me/api/portraits/men/1.jpg"
     },
@@ -183,6 +184,7 @@ export default function PostPropertyFree() {
       id: 2,
       name: "Priya Mehta",
       role: "Real Estate Dealer",
+      location: "Delhi",
       content: "As a dealer, this platform has helped me connect with serious buyers directly. The listing process is straightforward and the support team is very responsive.",
       avatar: "https://randomuser.me/api/portraits/women/2.jpg"
     },
@@ -190,6 +192,7 @@ export default function PostPropertyFree() {
       id: 3,
       name: "Vikram Singh",
       role: "Property Owner",
+      location: "Bangalore",
       content: "Listed my commercial property and received multiple inquiries within days. The verification process adds credibility to my listing.",
       avatar: "https://randomuser.me/api/portraits/men/3.jpg"
     },
@@ -197,6 +200,7 @@ export default function PostPropertyFree() {
       id: 4,
       name: "Aisha Patel",
       role: "Property Owner",
+      location: "Pune",
       content: "As a first-time seller, I found the platform extremely user-friendly. The step-by-step listing process guided me perfectly, and I received multiple inquiries within days.",
       avatar: "https://randomuser.me/api/portraits/women/3.jpg"
     },
@@ -204,6 +208,7 @@ export default function PostPropertyFree() {
       id: 5,
       name: "Rahul Khanna",
       role: "Real Estate Agent",
+      location: "Chennai",
       content: "The analytics and insights provided for my listings help me understand what buyers are looking for. This has dramatically improved my sales conversion rate.",
       avatar: "https://randomuser.me/api/portraits/men/5.jpg"
     }
@@ -590,7 +595,7 @@ export default function PostPropertyFree() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
       
       {/* Login Modal */}
@@ -636,45 +641,63 @@ export default function PostPropertyFree() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <div className="bg-primary/10 py-12 md:py-20">
+        <div className="bg-primary/5 py-12 border-b border-gray-100">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-primary">
-                  Sell or Rent your Property online faster
+                <h1 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
+                  Sell or Rent your Property online <span className="text-green-600">faster</span>
                 </h1>
                 <p className="text-gray-700 text-lg mb-6">
                   Post your property for free and connect with potential buyers directly. 
                   No middleman, no commissions, just fast and transparent property deals.
                 </p>
-                <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Check className="text-primary mr-2 h-5 w-5" />
-                    <p>Advertise to millions of potential buyers</p>
+                
+                <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4">1</div>
+                      <div>
+                        <p className="font-medium">Visibility to verified buyers</p>
+                        <p className="text-sm text-gray-500">Maximum exposure to genuine buyers</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4">2</div>
+                      <div>
+                        <p className="font-medium">Direct property inquiries</p>
+                        <p className="text-sm text-gray-500">Receive inquiries on your listings</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4">3</div>
+                      <div>
+                        <p className="font-medium">0% brokerage</p>
+                        <p className="text-sm text-gray-500">Absolutely no hidden or brokerage fees</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <Check className="text-primary mr-2 h-5 w-5" />
-                    <p>Get genuine responses from verified users</p>
+                </div>
+                
+                <div className="flex items-center mt-6">
+                  <div className="w-16 h-16 flex items-center justify-center mr-4">
+                    <img src="https://placehold.co/100x100?text=Verify" alt="Verified badge" className="w-full h-full" />
                   </div>
-                  <div className="flex items-center">
-                    <Check className="text-primary mr-2 h-5 w-5" />
-                    <p>Shortlist & connect directly with buyers</p>
-                  </div>
-                  <div className="flex items-center">
-                    <Check className="text-primary mr-2 h-5 w-5" />
-                    <p>Absolutely no brokerage fees involved</p>
+                  <div>
+                    <p className="font-medium text-sm">Properties are verified by our team</p>
+                    <p className="text-xs text-gray-500">All listings are thoroughly verified for quality</p>
                   </div>
                 </div>
               </div>
               
               {/* Form Section */}
               <div ref={formTopRef}>
-                <Card className="shadow-lg">
-                  <CardHeader>
-                    <CardTitle>Start Posting Your Property</CardTitle>
-                    <CardDescription>Fill in the details below to list your property</CardDescription>
+                <Card className="shadow-md border border-gray-200">
+                  <CardHeader className="bg-primary/5 border-b border-gray-100">
+                    <CardTitle className="text-2xl">Start Posting Your Property</CardTitle>
+                    <CardDescription>Fill in the details to list your property for free</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-6">
                     {user ? (
                       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {renderFormByStep()}
@@ -683,12 +706,13 @@ export default function PostPropertyFree() {
                       <div className="text-center space-y-4">
                         <p className="text-gray-600 mb-4">You need to login before posting a property</p>
                         <Button 
-                          className="w-full bg-primary hover:bg-primary/90 text-white" 
+                          className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" 
                           size="lg"
                           onClick={handleLoginClick}
                         >
                           Login to Post Your Property
                         </Button>
+                        <p className="text-sm text-gray-500 mt-4">100% free listing, no hidden charges</p>
                       </div>
                     )}
                   </CardContent>
@@ -702,47 +726,55 @@ export default function PostPropertyFree() {
         <div className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Post Your Property in 3 Simple Steps</h2>
+              <h2 className="text-3xl font-bold mb-4">Post Your Property in <span className="text-green-600">3 Simple Steps</span></h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 Listing your property has never been easier. Follow these simple steps to get your property in front of thousands of potential buyers.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-8 mt-12">
-              <div className="relative text-center p-6 rounded-lg border border-gray-200 bg-white shadow-sm">
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold">1</div>
-                <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-3">Add details of your property</h3>
-                  <p className="text-gray-600">Fill in all the essential information about your property including images, location, and amenities.</p>
-                </div>
+            <div className="relative mt-16">
+              {/* Progress Line */}
+              <div className="hidden md:block absolute top-12 left-0 right-0 h-1 bg-gray-200 z-0">
+                <div className="h-full bg-green-500 w-full" style={{ width: '100%' }}></div>
               </div>
               
-              <div className="relative text-center p-6 rounded-lg border border-gray-200 bg-white shadow-sm">
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold">2</div>
-                <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-3">Upload Photos & Videos</h3>
-                  <p className="text-gray-600">Add high-quality photos and videos of your property to attract serious buyers.</p>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full bg-primary/10 border-4 border-white shadow-lg flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-green-500 text-white flex items-center justify-center text-xl font-bold">1</div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-center mb-2">Add Property Details</h3>
+                  <p className="text-gray-600 text-center text-sm">Fill in all essential information about your property</p>
                 </div>
-              </div>
-              
-              <div className="relative text-center p-6 rounded-lg border border-gray-200 bg-white shadow-sm">
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold">3</div>
-                <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-3">Add Pricing & Ownership</h3>
-                  <p className="text-gray-600">Specify your expected price and provide ownership details to establish trust.</p>
+                
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full bg-primary/10 border-4 border-white shadow-lg flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-green-500 text-white flex items-center justify-center text-xl font-bold">2</div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-center mb-2">Upload Photos & Videos</h3>
+                  <p className="text-gray-600 text-center text-sm">Add high-quality visuals to attract buyers</p>
+                </div>
+                
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full bg-primary/10 border-4 border-white shadow-lg flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-green-500 text-white flex items-center justify-center text-xl font-bold">3</div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-center mb-2">Pricing & Ownership</h3>
+                  <p className="text-gray-600 text-center text-sm">Set your price and confirm ownership details</p>
                 </div>
               </div>
             </div>
             
-            <div className="mt-12 text-center">
+            <div className="mt-16 text-center">
               <Button 
                 size="lg" 
-                className="bg-primary hover:bg-primary/90 text-white"
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 rounded-md text-lg font-medium shadow-md"
                 onClick={scrollToForm}
               >
                 Begin to Post Your Property
-                <ArrowDown className="ml-2 h-4 w-4" />
+                <ArrowDown className="ml-2 h-5 w-5" />
               </Button>
+              <p className="text-sm text-gray-500 mt-4">100% secure, free listing without hidden charges</p>
             </div>
           </div>
         </div>
@@ -782,22 +814,42 @@ export default function PostPropertyFree() {
         {/* Stats Section */}
         <div className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold">With over 7 million unique visitors monthly, your property gets maximum visibility</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div>
-                <p className="text-4xl font-bold text-primary mb-2">1M+</p>
-                <p className="text-gray-600">Monthly Visitors</p>
+            <div className="rounded-xl bg-gradient-to-r from-primary/5 to-primary/10 p-10 shadow-sm border border-gray-100">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold">
+                  With over <span className="text-green-600">7 million</span> unique visitors monthly,<br />
+                  your property gets maximum visibility
+                </h2>
               </div>
-              <div>
-                <p className="text-4xl font-bold text-primary mb-2">5.5M+</p>
-                <p className="text-gray-600">Property Views</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
+                <div className="bg-white p-6 rounded-lg shadow-md text-center flex flex-col items-center border border-gray-100">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-3">
+                    <Users className="h-8 w-8 text-green-600" />
+                  </div>
+                  <p className="text-4xl font-bold text-green-600 mb-1">1M+</p>
+                  <p className="text-gray-600 text-sm">Monthly Active Visitors</p>
+                </div>
+                
+                <div className="bg-white p-6 rounded-lg shadow-md text-center flex flex-col items-center border border-gray-100">
+                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+                    <Building className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <p className="text-4xl font-bold text-blue-600 mb-1">5.5M+</p>
+                  <p className="text-gray-600 text-sm">Property Views Per Month</p>
+                </div>
+                
+                <div className="bg-white p-6 rounded-lg shadow-md text-center flex flex-col items-center border border-gray-100">
+                  <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-3">
+                    <BadgeCheck className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <p className="text-4xl font-bold text-purple-600 mb-1">200K+</p>
+                  <p className="text-gray-600 text-sm">Happy Customers</p>
+                </div>
               </div>
-              <div>
-                <p className="text-4xl font-bold text-primary mb-2">200K+</p>
-                <p className="text-gray-600">Happy Customers</p>
+              
+              <div className="text-center mt-8">
+                <p className="text-gray-500 text-sm">Results based on platform analytics from the last quarter</p>
               </div>
             </div>
           </div>
@@ -806,57 +858,112 @@ export default function PostPropertyFree() {
         {/* Testimonials Section */}
         <div className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">This is what other Owners & Dealers have to say...</h2>
-            
-            <div className="relative max-w-4xl mx-auto">
-              <div className="bg-white rounded-lg shadow-lg p-8">
-                <p className="text-lg text-gray-700 mb-6 italic">
-                  "{testimonials[currentTestimonialIndex].content}"
-                </p>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                    <img 
-                      src={testimonials[currentTestimonialIndex].avatar} 
-                      alt={testimonials[currentTestimonialIndex].name} 
-                      className="w-full h-full object-cover"
-                    />
+            <div className="max-w-5xl mx-auto">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10">
+                <div className="w-full md:w-1/3">
+                  <h2 className="text-3xl font-bold mb-4">This is what other Owners & Dealers have to say...</h2>
+                  <p className="text-gray-600">Real experiences from our users who have successfully connected with buyers through our platform</p>
+                  
+                  <div className="mt-8 hidden md:flex justify-center gap-2">
+                    <button 
+                      onClick={prevTestimonial}
+                      className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
+                      aria-label="Previous testimonial"
+                    >
+                      <ChevronLeft className="h-5 w-5 text-gray-600" />
+                    </button>
+                    <button 
+                      onClick={nextTestimonial}
+                      className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
+                      aria-label="Next testimonial"
+                    >
+                      <ChevronRight className="h-5 w-5 text-gray-600" />
+                    </button>
                   </div>
-                  <div>
-                    <h4 className="font-semibold">{testimonials[currentTestimonialIndex].name}</h4>
-                    <p className="text-gray-600 text-sm">{testimonials[currentTestimonialIndex].role}</p>
+                </div>
+                
+                <div className="w-full md:w-2/3 relative">
+                  <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 md:p-8">
+                    <div className="flex flex-col h-full">
+                      <div className="mb-4 flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <svg key={star} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                          </svg>
+                        ))}
+                      </div>
+                      
+                      <p className="text-lg text-gray-700 mb-6 flex-grow">
+                        "{testimonials[currentTestimonialIndex].content}"
+                      </p>
+                      
+                      <div className="flex items-center">
+                        <div className="w-14 h-14 rounded-full overflow-hidden mr-4 border-2 border-primary/20">
+                          <img 
+                            src={testimonials[currentTestimonialIndex].avatar} 
+                            alt={testimonials[currentTestimonialIndex].name} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-lg">{testimonials[currentTestimonialIndex].name}</h4>
+                          <div className="flex items-center gap-2">
+                            <p className="text-gray-600 text-sm">{testimonials[currentTestimonialIndex].role}</p>
+                            <span className="text-gray-300">•</span>
+                            <p className="text-gray-600 text-sm">{testimonials[currentTestimonialIndex].location}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  
+                  {/* Background decoration element */}
+                  <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-lg bg-primary/5 -z-10"></div>
                 </div>
               </div>
               
-              <button 
-                onClick={prevTestimonial}
-                className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
-                aria-label="Previous testimonial"
-              >
-                <ChevronLeft className="h-6 w-6 text-gray-600" />
-              </button>
-              
-              <button 
-                onClick={nextTestimonial}
-                className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100"
-                aria-label="Next testimonial"
-              >
-                <ChevronRight className="h-6 w-6 text-gray-600" />
-              </button>
-            </div>
-            
-            {/* Testimonial navigation dots */}
-            <div className="flex justify-center mt-6">
-              {testimonials.map((_, index) => (
+              {/* Mobile navigation */}
+              <div className="flex justify-center gap-2 md:hidden">
                 <button 
-                  key={index}
-                  onClick={() => setCurrentTestimonialIndex(index)}
-                  className={`h-2 w-2 rounded-full mx-1 ${
-                    currentTestimonialIndex === index ? 'bg-primary' : 'bg-gray-300'
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
+                  onClick={prevTestimonial}
+                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
+                  aria-label="Previous testimonial"
+                >
+                  <ChevronLeft className="h-5 w-5 text-gray-600" />
+                </button>
+                
+                {/* Testimonial navigation dots */}
+                <div className="flex justify-center items-center gap-1 mx-2">
+                  {testimonials.map((_, index) => (
+                    <button 
+                      key={index}
+                      onClick={() => setCurrentTestimonialIndex(index)}
+                      className={`h-2 w-2 rounded-full mx-1 ${
+                        currentTestimonialIndex === index ? 'bg-green-600' : 'bg-gray-300'
+                      }`}
+                      aria-label={`Go to testimonial ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={nextTestimonial}
+                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
+                  aria-label="Next testimonial"
+                >
+                  <ChevronRight className="h-5 w-5 text-gray-600" />
+                </button>
+              </div>
+              
+              <div className="text-center mt-8">
+                <Button 
+                  size="lg" 
+                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                  onClick={scrollToForm}
+                >
+                  Post Your Property Now
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -864,76 +971,101 @@ export default function PostPropertyFree() {
         {/* FAQ Section */}
         <div className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-            
-            <div className="max-w-3xl mx-auto">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>What types of property can I post on your site?</AccordionTrigger>
-                  <AccordionContent>
-                    You can post all types of properties including residential apartments, villas, plots, commercial spaces, office buildings, and more. Our platform caters to all property types.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>Is posting a property completely free?</AccordionTrigger>
-                  <AccordionContent>
-                    Yes, posting a basic property listing is completely free. We also offer premium listing options with additional features for increased visibility at a nominal cost.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-3">
-                  <AccordionTrigger>How long will my property listing remain active?</AccordionTrigger>
-                  <AccordionContent>
-                    Free listings remain active for 60 days. Premium listings can stay active for up to 120 days. You can always renew your listing if needed.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-4">
-                  <AccordionTrigger>Can I edit my property details after posting?</AccordionTrigger>
-                  <AccordionContent>
-                    Yes, you can edit your property details anytime from your dashboard. Updates will reflect immediately on your listing.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-5">
-                  <AccordionTrigger>How do I communicate with potential buyers?</AccordionTrigger>
-                  <AccordionContent>
-                    When a buyer shows interest, you'll receive a notification. You can then communicate directly through our secure messaging system or share contact details if comfortable.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-6">
-                  <AccordionTrigger>Is there a verification process for listings?</AccordionTrigger>
-                  <AccordionContent>
-                    Yes, we verify basic property information to maintain quality listings. Premium listings undergo a more thorough verification process for increased credibility.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-7">
-                  <AccordionTrigger>How can I increase visibility for my property?</AccordionTrigger>
-                  <AccordionContent>
-                    You can opt for our premium listing options that provide more visibility through featured placements, social media promotions, and email campaigns to targeted buyers.
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-8">
-                  <AccordionTrigger>What happens after I submit my property listing?</AccordionTrigger>
-                  <AccordionContent>
-                    After submission, your listing will undergo a quick verification process. Once approved, it will be live on our platform and visible to potential buyers. You'll receive a confirmation email with your listing details.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-            
-            <div className="mt-12 text-center">
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-white"
-                onClick={scrollToForm}
-              >
-                Post Your Property Now
-              </Button>
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <span className="px-4 py-1.5 rounded-full bg-green-100 text-green-700 text-sm font-medium mb-3 inline-block">FAQs</span>
+                <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Get answers to common questions about posting your property on our platform
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      What types of property can I post on your site?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      You can post all types of properties including residential apartments, villas, plots, commercial spaces, office buildings, and more. Our platform caters to all property types.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-2" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      Is posting a property completely free?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      Yes, posting a basic property listing is completely free. We also offer premium listing options with additional features for increased visibility at a nominal cost.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-3" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      How long will my property listing remain active?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      Free listings remain active for 60 days. Premium listings can stay active for up to 120 days. You can always renew your listing if needed.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-4" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      Can I edit my property details after posting?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      Yes, you can edit your property details anytime from your dashboard. Updates will reflect immediately on your listing.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-5" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      How do I communicate with potential buyers?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      When a buyer shows interest, you'll receive a notification. You can then communicate directly through our secure messaging system or share contact details if comfortable.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-6" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      Is there a verification process for listings?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      Yes, we verify basic property information to maintain quality listings. Premium listings undergo a more thorough verification process for increased credibility.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-7" className="border-b px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      How can I increase visibility for my property?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      You can opt for our premium listing options that provide more visibility through featured placements, social media promotions, and email campaigns to targeted buyers.
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="item-8" className="px-6">
+                    <AccordionTrigger className="py-5 text-lg font-medium hover:no-underline">
+                      What happens after I submit my property listing?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-gray-600">
+                      After submission, your listing will undergo a quick verification process. Once approved, it will be live on our platform and visible to potential buyers. You'll receive a confirmation email with your listing details.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+              
+              <div className="mt-12 text-center">
+                <p className="text-gray-600 mb-6">Ready to list your property? It takes less than 10 minutes to create a listing!</p>
+                <Button 
+                  size="lg" 
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg font-medium rounded-md shadow-md"
+                  onClick={scrollToForm}
+                >
+                  Post Your Property Now
+                </Button>
+              </div>
             </div>
           </div>
         </div>
