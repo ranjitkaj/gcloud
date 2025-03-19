@@ -95,8 +95,10 @@ export interface IStorage {
   // Recommendation operations
   addPropertyView(userId: number, propertyId: number): Promise<void>;
   getUserPropertyViews(userId: number): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]>;
+  getAllPropertyViews(): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]>;
   saveProperty(userId: number, propertyId: number): Promise<void>;
   getSavedProperties(userId: number): Promise<Property[]>;
+  getAllSavedProperties(): Promise<{ userId: number, propertyId: number, savedAt: Date }[]>;
   unsaveProperty(userId: number, propertyId: number): Promise<void>;
   getRecommendedProperties(userId: number, limit?: number): Promise<Property[]>;
   _updateRecommendationScore(userId: number, propertyId: number, scoreChange: number): Promise<void>;
@@ -731,6 +733,10 @@ export class MemStorage implements IStorage {
     );
   }
   
+  async getAllPropertyViews(): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]> {
+    return Array.from(this.propertyViews.values());
+  }
+  
   async saveProperty(userId: number, propertyId: number): Promise<void> {
     const id = this.savedIdCounter++;
     const now = new Date();
@@ -738,6 +744,10 @@ export class MemStorage implements IStorage {
     
     // Update recommendation score based on save (higher weight than view)
     await this._updateRecommendationScore(userId, propertyId, 5);
+  }
+  
+  async getAllSavedProperties(): Promise<{ userId: number, propertyId: number, savedAt: Date }[]> {
+    return Array.from(this.savedProps.values());
   }
   
   async getSavedProperties(userId: number): Promise<Property[]> {
