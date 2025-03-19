@@ -43,6 +43,13 @@ function App() {
           <Route path="/projects/:category" component={ProjectCategory} />
           <Route path="/post-property-free" component={PostPropertyFree} />
           
+          {/* Policy & Legal Pages */}
+          <Route path="/terms-conditions" component={TermsConditions} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/disclaimer" component={Disclaimer} />
+          <Route path="/feedback" component={Feedback} />
+          <Route path="/report-problem" component={ReportProblem} />
+          
           {/* User Routes */}
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/add-property" component={AddProperty} />

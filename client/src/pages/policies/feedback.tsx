@@ -54,8 +54,11 @@ export default function Feedback() {
     try {
       // In a real application, you would send this data to your backend
       // This is a placeholder for the actual implementation
-      await apiRequest('/api/feedback', {
+      await fetch('/api/feedback', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
       

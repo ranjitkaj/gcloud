@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -11,16 +12,16 @@ export default function Footer() {
             <p className="mb-4">India's leading platform for direct property transactions without broker commissions.</p>
             <div className="flex space-x-4 mt-4">
               <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <i className="ri-facebook-fill text-xl"></i>
+                <Facebook size={20} />
               </a>
               <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <i className="ri-twitter-fill text-xl"></i>
+                <Twitter size={20} />
               </a>
               <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <i className="ri-instagram-fill text-xl"></i>
+                <Instagram size={20} />
               </a>
               <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <i className="ri-linkedin-fill text-xl"></i>
+                <Linkedin size={20} />
               </a>
             </div>
           </div>
@@ -30,11 +31,11 @@ export default function Footer() {
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/properties" className="hover:text-white transition-colors">Search Properties</Link></li>
+              <li><Link href="/post-property-free" className="hover:text-white transition-colors">Post Property FREE</Link></li>
               <li><Link href="/add-property" className="hover:text-white transition-colors">List Your Property</Link></li>
               <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link href="/properties?tag=urgent" className="hover:text-white transition-colors">Urgency Sales</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Home Loans</Link></li>
             </ul>
           </div>
 
@@ -56,28 +57,67 @@ export default function Footer() {
             <h3 className="text-lg font-semibold text-white mb-4">Contact Us</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <i className="ri-map-pin-line mt-1 mr-3"></i>
+                <MapPin size={18} className="mt-1 mr-3 flex-shrink-0" />
                 <span>123 Tech Park, Whitefield, Bangalore - 560066, India</span>
               </li>
               <li className="flex items-center">
-                <i className="ri-phone-line mr-3"></i>
+                <Phone size={18} className="mr-3 flex-shrink-0" />
                 <span>+91 8800123456</span>
               </li>
               <li className="flex items-center">
-                <i className="ri-mail-line mr-3"></i>
+                <Mail size={18} className="mr-3 flex-shrink-0" />
                 <span>support@homedirectly.com</span>
               </li>
             </ul>
+            <div className="mt-4">
+              <Link href="/feedback" className="inline-block text-primary-400 hover:text-primary-300 transition-colors">
+                Send Feedback
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-10 pt-6">
+        {/* Legal & Policy Links */}
+        <div className="border-t border-gray-700 mt-8 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <h4 className="text-white text-sm font-medium mb-2">Legal</h4>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                <Link href="/terms-conditions" className="text-gray-400 hover:text-white transition-colors">
+                  Terms & Conditions
+                </Link>
+                <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link href="/disclaimer" className="text-gray-400 hover:text-white transition-colors">
+                  Disclaimer
+                </Link>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-white text-sm font-medium mb-2">Support</h4>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                <Link href="/feedback" className="text-gray-400 hover:text-white transition-colors">
+                  Feedback
+                </Link>
+                <Link href="/report-problem" className="text-gray-400 hover:text-white transition-colors">
+                  Report a Problem
+                </Link>
+                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-700 mt-6 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>&copy; {new Date().getFullYear()} HomeDirectly. All rights reserved.</p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
-              <Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link>
-              <Link href="/post-property-free" className="hover:text-white transition-colors">Post Property Free</Link>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0 text-sm">
+              <Link href="/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link>
+              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link>
+              <Link href="/post-property-free" className="text-gray-400 hover:text-white transition-colors">Post Property Free</Link>
             </div>
           </div>
         </div>

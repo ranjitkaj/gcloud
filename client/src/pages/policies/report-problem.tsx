@@ -67,8 +67,11 @@ export default function ReportProblem() {
     try {
       // In a real application, you would send this data to your backend
       // This is a placeholder for the actual implementation
-      await apiRequest('/api/report-problem', {
+      await fetch('/api/report-problem', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           ...data,
           files: files.map(file => ({ 
