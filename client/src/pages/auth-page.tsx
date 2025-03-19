@@ -231,12 +231,29 @@ export default function AuthPage() {
           linkTo: '/',
         }),
       });
+      
+      // Refresh user data to ensure we have the latest verification status
+      try {
+        const userResponse = await fetch('/api/user');
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          // Force reload the page to update all components with the new user state
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+          return;
+        }
+      } catch (refreshError) {
+        console.error('Error refreshing user data:', refreshError);
+      }
     } catch (error) {
       console.error('Failed to create notification:', error);
     }
 
-    // Redirect to homepage where they can see recommendations
-    navigate('/');
+    // Redirect to homepage even if notification creation fails
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 1000);
   };
   
   const handleVerificationCancelled = () => {

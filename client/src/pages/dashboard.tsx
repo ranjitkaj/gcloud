@@ -39,7 +39,9 @@ import {
   Edit,
   Eye,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Bookmark,
+  Heart
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -197,6 +199,7 @@ export default function Dashboard() {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="mb-6">
                   <TabsTrigger value="properties">My Properties</TabsTrigger>
+                  <TabsTrigger value="saved">Saved Properties</TabsTrigger>
                   <TabsTrigger value="account">Account Settings</TabsTrigger>
                 </TabsList>
                 
