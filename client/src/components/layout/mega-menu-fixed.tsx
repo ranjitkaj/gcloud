@@ -434,7 +434,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/properties") && "text-primary font-medium"
+              pathname.startsWith("/properties") && "text-primary font-medium"
             )}
           >
             Buy
@@ -447,7 +447,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {buyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link href={item.href}>
+                        <Link to={item.href}>
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -495,7 +495,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     <div className="grid grid-cols-2 gap-3">
                       {getFilteredProperties(buyMenuItems.find(item => item.title === activeCategory)).map((property) => (
                         <div key={property.id} className="col-span-1">
-                          <Link href={`/properties/${property.id}`}>
+                          <Link to={`/properties/${property.id}`}>
                             <PropertyMiniCard property={property} />
                           </Link>
                         </div>
@@ -506,7 +506,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   <div className="grid grid-cols-2 gap-3">
                     {properties.slice(0, 4).map((property) => (
                       <div key={property.id} className="col-span-1">
-                        <Link href={`/properties/${property.id}`}>
+                        <Link to={`/properties/${property.id}`}>
                           <PropertyMiniCard property={property} />
                         </Link>
                       </div>
@@ -522,7 +522,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/agents") && "text-primary font-medium"
+              pathname.startsWith("/agents") && "text-primary font-medium"
             )}
           >
             Agents
@@ -535,7 +535,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {agentMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link href={item.href}>
+                        <Link to={item.href}>
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -559,7 +559,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {agents.slice(0, 4).map((agent) => (
                     <div key={agent.id} className="col-span-1">
-                      <Link href={`/agents/${agent.id}`}>
+                      <Link to={`/agents/${agent.id}`}>
                         <AgentMiniCard agent={agent} />
                       </Link>
                     </div>
@@ -574,7 +574,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/companies") && "text-primary font-medium"
+              pathname.startsWith("/companies") && "text-primary font-medium"
             )}
           >
             Companies
@@ -587,7 +587,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {companyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link href={item.href}>
+                        <Link to={item.href}>
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
@@ -611,7 +611,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {companies.slice(0, 4).map((company) => (
                     <div key={company.id} className="col-span-1">
-                      <Link href={`/companies/${company.id}`}>
+                      <Link to={`/companies/${company.id}`}>
                         <CompanyMiniCard company={company} />
                       </Link>
                     </div>
@@ -624,9 +624,9 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href="/add-property" className={cn(
+            <Link to="/add-property" className={cn(
               navigationMenuTriggerStyle(),
-              location === "/add-property" && "text-primary font-medium"
+              pathname === "/add-property" && "text-primary font-medium"
             )}>
               Sell
             </Link>
@@ -637,7 +637,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              location.startsWith("/resources") && "text-primary font-medium"
+              pathname.startsWith("/resources") && "text-primary font-medium"
             )}
           >
             Resources
@@ -649,7 +649,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 {resourceMenuItems.map((item) => (
                   <div key={item.title}>
                     <NavigationMenuLink asChild>
-                      <Link href={item.href}>
+                      <Link to={item.href}>
                         <div className="flex cursor-pointer items-start space-x-3 rounded-md p-3 hover:bg-muted">
                           {item.icon}
                           <div>

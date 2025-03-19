@@ -22,7 +22,7 @@ interface PropertySearchProps {
 
 export default function PropertySearch({ className = '', showAdvanced = false }: PropertySearchProps) {
   const [locationValue, setLocation] = useState('');
-  const [propertyType, setPropertyType] = useState('');
+  const [propertyType, setPropertyType] = useState<typeof propertyTypes[number] | ''>('');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
