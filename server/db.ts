@@ -4,6 +4,16 @@ import * as schema from '@shared/schema';
 import pkg from 'pg';
 const { Pool } = pkg;
 import { log } from './vite';
+import { scrypt, randomBytes } from "crypto";
+import { promisify } from "util";
+
+// Helper for password hashing
+const scryptAsync = promisify(scrypt);
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
 
 // Create a PostgreSQL connection pool
 export const pool = new Pool({
@@ -23,6 +33,36 @@ export async function runMigrations() {
   } catch (error) {
     log(`Error running migrations: ${error}`, 'database');
     throw error;
+  }
+}
+
+// Function to create admin user
+async function createAdminUser() {
+  try {
+    const adminEmail = 'srinathballa20@gmail.com';
+    const adminUsername = 'admin';
+    
+    // Check if admin already exists
+    const result = await pool.query(
+      'SELECT * FROM users WHERE email = $1 OR username = $2 LIMIT 1',
+      [adminEmail, adminUsername]
+    );
+    
+    if (result.rows.length === 0) {
+      log('Creating admin user...', 'database');
+      const hashedPassword = await hashPassword('Srinath12#');
+      
+      await pool.query(
+        'INSERT INTO users (username, email, password, name, role, verified, email_verified, phone_verified) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+        [adminUsername, adminEmail, hashedPassword, 'System Administrator', 'admin', true, true, true]
+      );
+      
+      log('Admin user created successfully', 'database');
+    } else {
+      log('Admin user already exists', 'database');
+    }
+  } catch (error) {
+    log(`Error creating admin user: ${error}`, 'database');
   }
 }
 
