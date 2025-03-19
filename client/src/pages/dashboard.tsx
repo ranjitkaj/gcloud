@@ -519,6 +519,7 @@ export default function Dashboard() {
                                     variant="outline" 
                                     size="sm" 
                                     className="text-red-600"
+                                    onClick={() => handleUnsaveProperty(property.id)}
                                   >
                                     <Heart className="h-4 w-4 mr-2 fill-current" />
                                     <span>Unsave</span>
