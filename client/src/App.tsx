@@ -22,6 +22,8 @@ import ProjectCategory from "@/pages/projects/project-category";
 import SearchResults from "@/pages/search-results";
 import RecommendationsPage from "@/pages/recommendations";
 import AdminDashboard from "@/pages/admin/dashboard";
+import AboutPage from "@/pages/about";
+import ContactPage from "@/pages/contact";
 
 // Policy Pages
 import TermsConditions from "@/pages/policies/terms-conditions";
@@ -46,6 +48,8 @@ function App() {
           <Route path="/search-results" component={SearchResults} />
           <Route path="/projects/:category" component={ProjectCategory} />
           <Route path="/post-property-free" component={PostPropertyFree} />
+          <Route path="/about" component={AboutPage} />
+          <Route path="/contact" component={ContactPage} />
           
           {/* Policy & Legal Pages */}
           <Route path="/terms-conditions" component={TermsConditions} />

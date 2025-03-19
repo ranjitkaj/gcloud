@@ -85,7 +85,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/about"
+                  to="/about"
                   className="hover:text-white transition-colors"
                 >
                   About Us
@@ -93,7 +93,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  to="/contact"
                   className="hover:text-white transition-colors"
                 >
                   Contact Us
@@ -101,7 +101,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/properties?tag=urgent"
+                  href="/?tag=urgent"
                   className="hover:text-white transition-colors"
                 >
                   Urgency Sales
