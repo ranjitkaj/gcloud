@@ -790,8 +790,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (interactionType === 'view') {
       await storage.addPropertyView(req.user.id, propertyId);
     }
+  }));
+  
+  // Trigger training of the AI recommendation model
+  app.post("/api/recommendations/train", isAuthenticated, asyncHandler(async (req, res) => {
+    // Only admins and agents can trigger model training
+    if (!['admin', 'agent'].includes(req.user.role)) {
+      return res.status(403).json({ message: "Permission denied. Only admins and agents can trigger model training." });
+    }
     
-    res.json({ success: true });
+    // Import and initialize the AI recommendation service
+    const { getRecommendationService } = await import('./recommendation-service');
+    const recommendationService = getRecommendationService(storage);
+    
+    try {
+      // Train the model asynchronously
+      recommendationService.trainModel().catch(err => {
+        console.error('Error training model:', err);
+      });
+      
+      res.json({ message: "Model training initiated successfully" });
+    } catch (error) {
+      console.error('Error initiating model training:', error);
+      res.status(500).json({ message: "Error initiating model training" });
+    }
   }));
 
   // Get current user's saved properties

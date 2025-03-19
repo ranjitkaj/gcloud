@@ -15,6 +15,7 @@ import PropertyDetail from "@/pages/property-detail";
 import PropertiesPage from "@/pages/properties-page";
 import ProjectCategory from "@/pages/projects/project-category";
 import SearchResults from "@/pages/search-results";
+import RecommendationsPage from "@/pages/recommendations";
 import AdminDashboard from "@/pages/admin/dashboard";
 import { queryClient } from '@/lib/query-client';
 
@@ -36,6 +37,7 @@ function App() {
             {/* User Routes */}
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-property" element={<AddProperty />} />
+            <Route path="/recommendations" element={<RecommendationsPage />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminDashboard />} />

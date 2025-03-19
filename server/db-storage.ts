@@ -455,13 +455,32 @@ export class DbStorage implements IStorage {
   }
   
   async getUserPropertyViews(userId: number): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]> {
-    return await db.select({
+    const result = await db.select({
       userId: propertyViews.userId,
       propertyId: propertyViews.propertyId,
       viewedAt: propertyViews.viewedAt
     })
     .from(propertyViews)
     .where(eq(propertyViews.userId, userId));
+    
+    return result.map(item => ({
+      ...item,
+      viewedAt: item.viewedAt || new Date() // Ensure no null dates
+    }));
+  }
+  
+  async getAllPropertyViews(): Promise<{ userId: number, propertyId: number, viewedAt: Date }[]> {
+    const result = await db.select({
+      userId: propertyViews.userId,
+      propertyId: propertyViews.propertyId,
+      viewedAt: propertyViews.viewedAt
+    })
+    .from(propertyViews);
+    
+    return result.map(item => ({
+      ...item,
+      viewedAt: item.viewedAt || new Date() // Ensure no null dates
+    }));
   }
 
   async saveProperty(userId: number, propertyId: number): Promise<void> {
@@ -484,6 +503,20 @@ export class DbStorage implements IStorage {
     }
   }
 
+  async getAllSavedProperties(): Promise<{ userId: number, propertyId: number, savedAt: Date }[]> {
+    const result = await db.select({
+      userId: savedProperties.userId,
+      propertyId: savedProperties.propertyId,
+      savedAt: savedProperties.savedAt
+    })
+    .from(savedProperties);
+    
+    return result.map(item => ({
+      ...item,
+      savedAt: item.savedAt || new Date() // Ensure no null dates
+    }));
+  }
+  
   async getSavedProperties(userId: number): Promise<Property[]> {
     const savedProps = await db.select({
       propertyId: savedProperties.propertyId
