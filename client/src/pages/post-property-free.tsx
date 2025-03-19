@@ -276,6 +276,34 @@ export default function PostPropertyFree() {
     createPropertyMutation.mutate(propertyData);
   };
 
+  // How it works steps
+  const howItWorksSteps = [
+    {
+      id: 1,
+      title: "List Your Property",
+      description: "Fill in your property details, add photos, and submit your free listing in just a few minutes.",
+      icon: <Home className="h-8 w-8 text-primary" />
+    },
+    {
+      id: 2,
+      title: "Get Verified",
+      description: "Our team reviews your listing to ensure it meets quality standards for better visibility.",
+      icon: <BadgeCheck className="h-8 w-8 text-primary" />
+    },
+    {
+      id: 3,
+      title: "Connect with Buyers",
+      description: "Receive direct inquiries from interested buyers without any broker interference.",
+      icon: <MessageSquare className="h-8 w-8 text-primary" />
+    },
+    {
+      id: 4,
+      title: "Finalize Your Deal",
+      description: "Meet potential buyers, negotiate directly, and close the deal on your terms.",
+      icon: <Check className="h-8 w-8 text-primary" />
+    }
+  ];
+
   // Testimonials data
   const testimonials = [
     {
@@ -1027,6 +1055,30 @@ export default function PostPropertyFree() {
                   </form>
                 </Form>
               </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* How It Works */}
+        <section className="py-12 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">How It Works</h2>
+              <p className="text-gray-600">
+                Listing your property is easy and free. Follow these simple steps to get started.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+              {howItWorksSteps.map((step) => (
+                <div key={step.id} className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow">
+                  <div className="bg-primary/10 p-4 rounded-full inline-flex mb-4">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                  <p className="text-gray-600">{step.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
