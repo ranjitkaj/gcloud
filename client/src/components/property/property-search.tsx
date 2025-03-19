@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
@@ -26,9 +26,8 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
-  const [, navigate] = useLocation();
-  
-  // Fixing redirect issues - react-router-dom uses useNavigate instead of wouter's navigate
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Parse URL parameters if any
   useEffect(() => {

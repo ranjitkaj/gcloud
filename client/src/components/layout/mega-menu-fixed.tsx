@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -405,19 +405,19 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
     // Mobile view with simple list
     return (
       <div className="flex flex-col space-y-3 pt-2 pb-3">
-        <Link href="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Buy
         </Link>
-        <Link href="/agents" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/agents" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Agents
         </Link>
-        <Link href="/companies" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/companies" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Companies
         </Link>
-        <Link href="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Sell
         </Link>
-        <Link href="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
 

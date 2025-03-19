@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom"; //Using react-router-dom as per edited code
+import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
