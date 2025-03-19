@@ -3,10 +3,14 @@ import { Property } from "@shared/schema";
 import PropertyCard from "../property/property-card";
 import { queryClient, getQueryFn } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles, Eye, ThumbsUp, MousePointerClick, Star, Brain } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export default function RecommendedProperties() {
   const { user } = useAuth();
+  const [showAiInfo, setShowAiInfo] = useState(false);
   
   const { data: recommendations = [], isLoading, error } = useQuery<Property[]>({
     queryKey: ["/api/recommendations"],
@@ -39,13 +43,75 @@ export default function RecommendedProperties() {
                 </p>
               </div>
               {recommendations.length > 0 && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Our AI analyzes your preferences to find properties that match your taste
-                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-xs text-gray-500">
+                    Our AI analyzes your preferences to find properties that match your taste
+                  </p>
+                  <Button 
+                    variant="link" 
+                    className="text-xs text-indigo-600 p-0 h-auto" 
+                    onClick={() => setShowAiInfo(!showAiInfo)}
+                  >
+                    {showAiInfo ? 'Hide info' : 'Learn how it works'}
+                  </Button>
+                </div>
               )}
             </div>
           )}
         </div>
+        
+        {/* AI Recommendation Education Card */}
+        {user && showAiInfo && (
+          <Card className="p-5 mb-8 bg-indigo-50 border-indigo-100">
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-indigo-600" />
+                <h3 className="text-lg font-semibold text-gray-900">How AI Recommendations Work</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                <div className="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-sm">
+                  <div className="bg-indigo-100 p-3 rounded-full mb-3">
+                    <Eye className="h-5 w-5 text-indigo-600" />
+                  </div>
+                  <h4 className="font-medium mb-2">Learning Your Preferences</h4>
+                  <p className="text-sm text-gray-600">Our system tracks which properties you view and how long you spend on each listing</p>
+                </div>
+                
+                <div className="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-sm">
+                  <div className="bg-indigo-100 p-3 rounded-full mb-3">
+                    <ThumbsUp className="h-5 w-5 text-indigo-600" />
+                  </div>
+                  <h4 className="font-medium mb-2">Pattern Recognition</h4>
+                  <p className="text-sm text-gray-600">The AI identifies patterns in the properties you like, save, or inquire about</p>
+                </div>
+                
+                <div className="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-sm">
+                  <div className="bg-indigo-100 p-3 rounded-full mb-3">
+                    <Sparkles className="h-5 w-5 text-indigo-600" />
+                  </div>
+                  <h4 className="font-medium mb-2">Personalized Results</h4>
+                  <p className="text-sm text-gray-600">Properties that match your preferences are highlighted with the AI Recommended badge</p>
+                </div>
+              </div>
+              
+              <p className="text-sm text-gray-600 mt-2">
+                The more you interact with properties on our platform, the better our recommendations become. Your data is only used to improve your experience and is never shared with third parties.
+              </p>
+              
+              <div className="flex justify-end">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowAiInfo(false)}
+                  className="text-indigo-600 border-indigo-200"
+                >
+                  Got it
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {isLoadingProperties ? (
           <div className="flex justify-center py-12">
