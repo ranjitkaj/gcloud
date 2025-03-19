@@ -58,14 +58,17 @@ export default function Footer() {
               <li>
                 <Link
                   href="/properties?type=residential"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
-                  Search Properties
+                  {" "}
+                  Search Properties{" "}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/post-property-free"
+                  href="/post-property-free?type=residential"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Post Property FREE
@@ -73,7 +76,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/add-property"
+                  href="/add-property?type=residential"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   List Your Property
