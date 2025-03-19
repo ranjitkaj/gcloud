@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'wouter';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
@@ -21,12 +21,15 @@ interface PropertySearchProps {
 }
 
 export default function PropertySearch({ className = '', showAdvanced = false }: PropertySearchProps) {
-  const [locationValue, setLocation] = useState('');
+  const [locationValue, setLocationValue] = useState('');
   const [propertyType, setPropertyType] = useState<typeof propertyTypes[number] | ''>('');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
+  
+  // Use Wouter's navigation hook
+  const [_, setUrlLocation] = useLocation();
   
   // Function to get user's current location
   const getUserLocation = () => {
@@ -59,13 +62,13 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
                         data.address.state;
                         
             if (city) {
-              setLocation(city);
+              setLocationValue(city);
             } else {
-              setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+              setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
             }
           } else {
             // If geocoding fails, just use coordinates
-            setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+            setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           }
         } catch (error) {
           console.error('Error getting location:', error);
@@ -81,7 +84,6 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
       }
     );
   };
-  const navigate = useNavigate();
 
   // Parse URL parameters if any
   useEffect(() => {
@@ -92,7 +94,7 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
     const maxPriceParam = params.get('maxPrice');
     const bedroomsParam = params.get('minBedrooms');
 
-    if (cityParam) setLocation(cityParam);
+    if (cityParam) setLocationValue(cityParam);
     if (typeParam && propertyTypes.includes(typeParam as any)) {
       setPropertyType(typeParam as typeof propertyTypes[number]);
     }
@@ -126,8 +128,8 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
       }
     }
     
-    // Redirect to properties page for search functionality
-    navigate(`/properties?${queryParams.toString()}`);
+    // Redirect to properties page for search functionality using Wouter's setLocation
+    setUrlLocation(`/properties?${queryParams.toString()}`);
   };
 
   const formatPrice = (value: number) => {
@@ -155,7 +157,7 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
                   placeholder="Enter location, neighborhood, or address" 
                   className="pl-10 pr-4 py-6 text-gray-700 bg-gray-50 rounded-r-none"
                   value={locationValue}
-                  onChange={(e) => setLocation(e.target.value)}
+                  onChange={(e) => setLocationValue(e.target.value)}
                 />
                 <Button 
                   variant="outline" 
