@@ -461,7 +461,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
   };
 
   if (isMobile) {
-    // Mobile view with simple list
+    // Mobile view with simple list - no complex navigation components
     return (
       <div className="flex flex-col space-y-3 pt-2 pb-3">
         <Link to="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
@@ -476,108 +476,12 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         <Link to="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Sell
         </Link>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger
-            className={cn(
-              "bg-transparent hover:bg-transparent focus:bg-transparent",
-              pathname.startsWith("/projects") && "text-primary font-medium"
-            )}
-          >
-            Projects
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid w-[800px] grid-cols-4 p-4 gap-3">
-              <div className="space-y-3">
-                <h4 className="font-medium mb-1 text-sm">By Type</h4>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/residential" className="block text-sm text-gray-500 hover:text-primary">
-                    <Building2 className="inline-block w-4 h-4 mr-2" />
-                    Residential Projects
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/commercial" className="block text-sm text-gray-500 hover:text-primary">
-                    <Building className="inline-block w-4 h-4 mr-2" />
-                    Commercial Projects
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/mixed-use" className="block text-sm text-gray-500 hover:text-primary">
-                    <Layers3 className="inline-block w-4 h-4 mr-2" />
-                    Mixed-Use Projects
-                  </Link>
-                </NavigationMenuLink>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-medium mb-1 text-sm">By Status</h4>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/under-construction" className="block text-sm text-gray-500 hover:text-primary">
-                    <Building2 className="inline-block w-4 h-4 mr-2" />
-                    Under Construction
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/ready-to-move" className="block text-sm text-gray-500 hover:text-primary">
-                    <CheckCircle2 className="inline-block w-4 h-4 mr-2" />
-                    Ready to Move
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/upcoming" className="block text-sm text-gray-500 hover:text-primary">
-                    <Clock className="inline-block w-4 h-4 mr-2" />
-                    Upcoming Projects
-                  </Link>
-                </NavigationMenuLink>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-medium mb-1 text-sm">By Features</h4>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/luxury" className="block text-sm text-gray-500 hover:text-primary">
-                    <Star className="inline-block w-4 h-4 mr-2" />
-                    Luxury Projects
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/eco-friendly" className="block text-sm text-gray-500 hover:text-primary">
-                    <Landmark className="inline-block w-4 h-4 mr-2" />
-                    Eco-Friendly
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/smart-homes" className="block text-sm text-gray-500 hover:text-primary">
-                    <Shield className="inline-block w-4 h-4 mr-2" />
-                    Smart Homes
-                  </Link>
-                </NavigationMenuLink>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-medium mb-1 text-sm">Featured</h4>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/featured" className="block text-sm text-gray-500 hover:text-primary">
-                    <Medal className="inline-block w-4 h-4 mr-2" />
-                    Featured Projects
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/most-viewed" className="block text-sm text-gray-500 hover:text-primary">
-                    <LineChart className="inline-block w-4 h-4 mr-2" />
-                    Most Viewed
-                  </Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/projects/premium" className="block text-sm text-gray-500 hover:text-primary">
-                    <Award className="inline-block w-4 h-4 mr-2" />
-                    Premium Projects
-                  </Link>
-                </NavigationMenuLink>
-              </div>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+        <Link to="/projects" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+          Projects
+        </Link>
         <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
-
       </div>
     );
   }
