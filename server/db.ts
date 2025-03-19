@@ -31,6 +31,9 @@ export async function initializeDatabase() {
   try {
     log('Initializing database...', 'database');
 
+    // Drop existing tables to rebuild schema
+    await pool.query(`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`);
+    
     // Manually create tables if they don't exist
     // This is a temporary solution until we have proper migrations
     await pool.query(`
@@ -85,9 +88,11 @@ export async function initializeDatabase() {
         phone TEXT,
         email TEXT,
         website TEXT,
-        founded_year INTEGER,
+        established_year INTEGER,
         employee_count INTEGER,
         featured BOOLEAN DEFAULT FALSE,
+        verified BOOLEAN DEFAULT FALSE,
+        admin_id INTEGER,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -96,10 +101,10 @@ export async function initializeDatabase() {
         user_id INTEGER NOT NULL,
         company_id INTEGER,
         license_number TEXT,
-        specialization TEXT,
+        specializations TEXT[],
         years_of_experience INTEGER,
-        areas_served TEXT[],
-        average_rating DOUBLE PRECISION DEFAULT 0,
+        areas TEXT[],
+        rating DOUBLE PRECISION DEFAULT 0,
         review_count INTEGER DEFAULT 0,
         featured BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -120,6 +125,7 @@ export async function initializeDatabase() {
         city TEXT,
         state TEXT,
         zip TEXT,
+        location TEXT,
         latitude DOUBLE PRECISION,
         longitude DOUBLE PRECISION,
         images TEXT[],
@@ -130,8 +136,12 @@ export async function initializeDatabase() {
         company_id INTEGER,
         featured BOOLEAN DEFAULT FALSE,
         premium BOOLEAN DEFAULT FALSE,
-        approved TEXT DEFAULT 'pending',
+        approval_status TEXT DEFAULT 'pending',
+        approved_by INTEGER,
+        rejection_reason TEXT,
+        approval_date TIMESTAMP,
         subscription_level TEXT DEFAULT 'free',
+        year_built INTEGER,
         expires_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
