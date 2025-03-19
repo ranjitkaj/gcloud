@@ -116,15 +116,15 @@ export default function HeroSection() {
             className="w-full h-full object-cover object-center opacity-30"
           />
         </div>
-        <div className="container mx-auto px-4 py-10 md:py-16 relative z-10">
+        <div className="container mx-auto px-4 py-8 md:py-12 relative z-10">
           <div className="max-w-3xl">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading leading-tight mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold font-heading leading-tight mb-3">
               Find Your Dream Home, <span className="text-primary-400">Without The Broker</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-200 mb-4">
+            <p className="text-base md:text-lg text-gray-200 mb-3">
               Direct connections between owners and buyers. No commissions, no hassle.
             </p>
-            <div className="flex space-x-4 mt-4">
+            <div className="flex space-x-4 mt-3">
               <Link to="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
                 Post Property FREE
               </Link>
@@ -133,6 +133,11 @@ export default function HeroSection() {
               </Link>
             </div>
           </div>
+        </div>
+        
+        {/* Property Search - Integrated with banner */}
+        <div className="container mx-auto px-4 pb-6 relative z-20 -mb-16">
+          <PropertySearch className="shadow-xl" showAdvanced={false} />
         </div>
 
         {/* Stats Bar */}
@@ -159,13 +164,9 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
-
-      {/* Add PropertySearch below the banner */}
-      <section className="bg-gray-50 py-6">
-        <div className="container mx-auto px-4">
-          <PropertySearch className="shadow-xl" showAdvanced={true} />
-        </div>
-      </section>
+      
+      {/* Add spacing to accommodate the property search that overlaps */}
+      <div className="h-24 md:h-28 bg-gray-50"></div>
     </>
   );
 }
