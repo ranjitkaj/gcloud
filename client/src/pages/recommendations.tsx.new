@@ -224,7 +224,7 @@ export default function RecommendationsPage() {
                   Browse more properties or save properties you like to help our AI understand your preferences.
                 </p>
                 <Button className="mt-4" asChild>
-                  <Link href="/properties-page">Browse Properties</Link>
+                  <Link to="/properties">Browse Properties</Link>
                 </Button>
               </div>
             )}
@@ -272,7 +272,7 @@ export default function RecommendationsPage() {
                   Save properties you like to get personalized recommendations based on similar properties.
                 </p>
                 <Button className="mt-4" asChild>
-                  <Link href="/properties-page">Browse Properties</Link>
+                  <Link to="/properties">Browse Properties</Link>
                 </Button>
               </div>
             )}
@@ -314,7 +314,7 @@ export default function RecommendationsPage() {
                 Save properties you're interested in to view them later and get better recommendations.
               </p>
               <Button className="mt-4" asChild>
-                <Link href="/properties-page">Find Properties</Link>
+                <Link to="/properties">Find Properties</Link>
               </Button>
             </div>
           )}
