@@ -29,26 +29,23 @@ async function hashPassword(password: string) {
 // Function to send OTP via email
 async function sendEmailOTP(email: string, otp: string) {
   try {
-    // For development, we'll use a simpler approach since Ethereal may have issues
-    // Log the OTP for testing purposes - in production, this would use a real email service
+    // Log the OTP for testing purposes in the console
     console.log(`EMAIL OTP for ${email}: ${otp}`);
     
-    // Google SMTP setup - in a real app, we'd use environment variables for credentials
-    // This is just for demo purposes - you would need to enable "Less secure app access" 
-    // or use OAuth2 with a real Gmail account
+    // Gmail SMTP setup with the provided credentials
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'your-test-email@gmail.com', // Replace with a real email in production
-        pass: 'your-password'               // Replace with a real password in production
+        user: 'srinathballa20@gmail.com', // User provided email
+        pass: 'veouuoapolixrlqa'         // User provided app password
       }
     });
     
     // Email content
     const mailOptions = {
-      from: '"Real Estate Platform" <noreply@realestate.com>',
+      from: '"Real Estate Platform" <srinathballa20@gmail.com>',
       to: email,
-      subject: 'Your Verification Code',
+      subject: 'Your Real Estate Platform Verification Code',
       text: `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
@@ -65,14 +62,15 @@ async function sendEmailOTP(email: string, otp: string) {
       `,
     };
     
-    // For development purposes, we'll just log the OTP instead of sending an actual email
-    // In production, uncomment this to actually send the email
-    // await transporter.sendMail(mailOptions);
+    // Actually send the email using the provided credentials
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent: %s', info.messageId);
     
-    // Since we're in development mode, we'll display the OTP in the console
+    // Still display the OTP in the console for development
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`EMAIL: ${email}`);
+    console.log(`SENDING STATUS: Email sent successfully`);
     console.log(`=========================================`);
     
     return true;
@@ -82,8 +80,9 @@ async function sendEmailOTP(email: string, otp: string) {
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`EMAIL: ${email}`);
+    console.log(`SENDING STATUS: Failed - ${error.message}`);
     console.log(`=========================================`);
-    return true;
+    return true; // Still return true to not block the flow
   }
 }
 
