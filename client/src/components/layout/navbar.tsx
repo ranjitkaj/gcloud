@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, User, LogOut, Home, PlusCircle, Bell, HelpCircle, Phone, Mail, MessageSquare } from "lucide-react";
+import { Menu, User, LogOut, Home, PlusCircle, Bell, HelpCircle, Phone, Mail, MessageSquare, Star } from "lucide-react";
 import { MegaMenu } from "./mega-menu";
 import NotificationCenter from "@/components/ui/notification-center";
 
@@ -95,6 +95,12 @@ export default function Navbar() {
                         <span>Add Property</span>
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/recommendations">
+                        <Star className="mr-2 h-4 w-4" />
+                        <span>Recommendations</span>
+                      </Link>
+                    </DropdownMenuItem>
                     {user?.role === 'admin' && (
                       <DropdownMenuItem asChild>
                         <Link to="/admin">
@@ -141,6 +147,12 @@ export default function Navbar() {
               <PlusCircle className="mr-2 h-4 w-4" />
               Post Property FREE
             </Link>
+            {user && (
+              <Link to="/recommendations" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
+                <Star className="mr-2 h-4 w-4" />
+                Recommendations
+              </Link>
+            )}
             {user?.role === 'admin' && (
               <Link to="/admin" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
                 <Home className="mr-2 h-4 w-4" />
