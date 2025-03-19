@@ -126,14 +126,21 @@ export default function PostPropertyFree() {
     }
   });
   
-  // Setup login modal
+  // Redirect to auth page if not logged in
   useEffect(() => {
-    if (user) {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "You need to login before posting a property.",
+        variant: "default",
+      });
+      navigate('/auth');
+    } else {
       setShowLoginModal(false);
       // Pre-fill user name if available
       form.setValue("contactName", user.name || "");
     }
-  }, [user, form]);
+  }, [user, form, toast, navigate]);
 
   // Function to scroll to top of form
   const scrollToForm = () => {
@@ -233,7 +240,12 @@ export default function PostPropertyFree() {
   // Handle form submission
   const onSubmit = (data: PropertyFormValues) => {
     if (!user) {
-      setShowLoginModal(true);
+      toast({
+        title: "Login Required",
+        description: "You need to login before posting a property.",
+        variant: "default",
+      });
+      navigate('/auth');
       return;
     }
     

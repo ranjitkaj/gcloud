@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import PropertySearch from "@/components/property/property-search";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Slideshow data
   const slides = [
@@ -95,7 +97,16 @@ export default function HeroSection() {
                     {slide.buttonText}
                   </Link>
                   <Link
-                    to="/post-property-free"
+                    to={user ? "/post-property-free" : "/auth"}
+                    onClick={() => {
+                      if (!user) {
+                        toast({
+                          title: "Login Required",
+                          description: "You need to login before posting a property.",
+                          variant: "default",
+                        });
+                      }
+                    }}
                     className="inline-flex ml-4 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow-lg"
                   >
                     Post Property FREE

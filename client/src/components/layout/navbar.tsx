@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,7 @@ import LocationSelector from "./location-selector"; // Import LocationSelector
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const [location, setLocation] = useLocation();
   const [canGoBack, setCanGoBack] = useState(false);
 
@@ -87,7 +89,16 @@ export default function Navbar() {
           {/* Post Property Button and Support Icon */}
           <div className="hidden md:flex items-center space-x-3 mr-3">
             <Link
-              to="/post-property-free"
+              to={user ? "/post-property-free" : "/auth"}
+              onClick={() => {
+                if (!user) {
+                  toast({
+                    title: "Login Required",
+                    description: "You need to login before posting a property.",
+                    variant: "default",
+                  });
+                }
+              }}
               className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               Post Property FREE
@@ -226,7 +237,16 @@ export default function Navbar() {
           {/* Post Property in Mobile Menu */}
           <div className="py-2 border-t border-gray-100 mt-2">
             <Link
-              to="/post-property-free"
+              to={user ? "/post-property-free" : "/auth"}
+              onClick={() => {
+                if (!user) {
+                  toast({
+                    title: "Login Required",
+                    description: "You need to login before posting a property.",
+                    variant: "default",
+                  });
+                }
+              }}
               className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center"
             >
               <PlusCircle className="mr-2 h-4 w-4" />
