@@ -37,7 +37,7 @@ export default function HeroSection() {
       subtitle: "Be the First to Explore Latest Properties",
       buttonText: "View New Launches",
       buttonLink: "/properties?status=new_launch",
-      // color: "from-green-900 to-green-700"
+      color: "from-green-900 to-green-700"
     }
   ];
   

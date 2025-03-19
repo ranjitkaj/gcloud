@@ -151,14 +151,7 @@ export default function Footer() {
                   Commercial Spaces
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/properties"
-                  className="hover:text-white transition-colors"
-                >
-                  PG & Co-living
-                </Link>
-              </li>
+
               <li>
                 <Link
                   href="/properties"
@@ -178,9 +171,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin size={18} className="mt-1 mr-3 flex-shrink-0" />
-                <span>
-                  123 Tech Park, Whitefield, Bangalore - 560066, India
-                </span>
+                <span>123 , Ammerpet, Hyderabad - 500016, India</span>
               </li>
               <li className="flex items-center">
                 <Phone size={18} className="mr-3 flex-shrink-0" />
@@ -188,13 +179,14 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="mr-3 flex-shrink-0" />
-                <span>support@homedirectly.com</span>
+                <span>support@UrgentSales.com</span>
               </li>
             </ul>
             <div className="mt-4">
               <Link
                 href="/feedback"
-                className="inline-block text-primary-400 hover:text-primary-300 transition-colors"
+                onClick={() => window.scrollTo(0, 0)}
+                className="hover:text-white transition-colors"
               >
                 Send Feedback
               </Link>
@@ -210,19 +202,22 @@ export default function Footer() {
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
                 <Link
                   href="/terms-conditions"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="hover:text-white transition-colors"
                 >
                   Terms & Conditions
                 </Link>
                 <Link
                   href="/privacy-policy"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="hover:text-white transition-colors"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   href="/disclaimer"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="hover:text-white transition-colors"
                 >
                   Disclaimer
                 </Link>
@@ -233,19 +228,22 @@ export default function Footer() {
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
                 <Link
                   href="/feedback"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="hover:text-white transition-colors"
                 >
                   Feedback
                 </Link>
                 <Link
                   href="/report-problem"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="hover:text-white transition-colors"
                 >
                   Report a Problem
                 </Link>
                 <Link
                   href="/contact"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="hover:text-white transition-colors"
                 >
                   Contact Us
                 </Link>
@@ -257,8 +255,15 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-6 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>
-              &copy; {new Date().getFullYear()} Urgent Sale. All rights
-              reserved.
+              &copy; {new Date().getFullYear()} Powered by
+              <a
+                href="https://omnexaai.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Omnexa AI Labs
+              </a>
+              All rights reserved.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0 text-sm">
               <Link

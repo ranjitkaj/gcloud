@@ -45,7 +45,7 @@ export default function ReportProblem() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  
+
   const form = useForm<ReportFormValues>({
     resolver: zodResolver(reportSchema),
     defaultValues: {
@@ -67,41 +67,42 @@ export default function ReportProblem() {
     try {
       // In a real application, you would send this data to your backend
       // This is a placeholder for the actual implementation
-      await fetch('/api/report-problem', {
-        method: 'POST',
+      await fetch("/api/report-problem", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...data,
-          files: files.map(file => ({ 
-            name: file.name, 
-            size: file.size, 
+          files: files.map((file) => ({
+            name: file.name,
+            size: file.size,
             type: file.type,
             id: file.id,
           })),
         }),
       });
-      
+
       setIsSuccess(true);
-      
+
       toast({
         title: "Problem reported successfully",
-        description: "Thank you for reporting this issue. Our team will investigate and respond as soon as possible.",
+        description:
+          "Thank you for reporting this issue. Our team will investigate and respond as soon as possible.",
       });
-      
+
       // Reset form after 3 seconds of showing success message
       setTimeout(() => {
         form.reset();
         setFiles([]);
         setIsSuccess(false);
       }, 3000);
-      
     } catch (error) {
-      console.error('Error reporting problem:', error);
+      console.error("Error reporting problem:", error);
       toast({
         title: "Error reporting problem",
-        description: "There was an error submitting your report. Please try again later.",
+        description:
+          "There was an error submitting your report. Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -114,7 +115,7 @@ export default function ReportProblem() {
   };
 
   const handleFileRemoved = (fileId: string) => {
-    setFiles(prev => prev.filter(file => file.id !== fileId));
+    setFiles((prev) => prev.filter((file) => file.id !== fileId));
   };
 
   return (
@@ -123,36 +124,49 @@ export default function ReportProblem() {
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
           {/* Breadcrumb */}
           <div className="mb-6 text-sm text-gray-500">
-            <Link href="/" className="hover:text-primary">Home</Link> {' > '} 
+            <Link href="/" className="hover:text-primary">
+              Home
+            </Link>{" "}
+            {" > "}
             <span className="text-gray-700">Report a Problem</span>
           </div>
-          
+
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Report a Problem</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Report a Problem
+              </h1>
               <p className="text-gray-600">
-                Encountered an issue with our platform? Please help us by reporting it in detail using the form below.
+                Encountered an issue with our platform? Please help us by
+                reporting it in detail using the form below.
               </p>
             </div>
           </div>
-          
+
           {isSuccess ? (
             <div className="bg-green-50 rounded-lg p-6 text-center">
               <div className="flex justify-center mb-4">
                 <CheckCircle className="h-16 w-16 text-green-500" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Thank You for Your Report</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                Thank You for Your Report
+              </h2>
               <p className="text-gray-600 mb-4">
-                We've received your problem report and our technical team will investigate the issue.
-                You'll receive a confirmation email shortly with a reference number for your report.
+                We've received your problem report and our technical team will
+                investigate the issue. You'll receive a confirmation email
+                shortly with a reference number for your report.
               </p>
               <p className="text-gray-700 font-medium">
-                Reference #: {Math.random().toString(36).substring(2, 10).toUpperCase()}
+                Reference #:{" "}
+                {Math.random().toString(36).substring(2, 10).toUpperCase()}
               </p>
             </div>
           ) : (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -167,7 +181,7 @@ export default function ReportProblem() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="email"
@@ -175,14 +189,18 @@ export default function ReportProblem() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your email address" type="email" {...field} />
+                          <Input
+                            placeholder="Your email address"
+                            type="email"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -190,8 +208,8 @@ export default function ReportProblem() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Problem Type</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
+                        <Select
+                          onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -200,10 +218,18 @@ export default function ReportProblem() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="website">Website Issue</SelectItem>
-                            <SelectItem value="property">Property Listing Issue</SelectItem>
-                            <SelectItem value="payment">Payment Issue</SelectItem>
-                            <SelectItem value="account">Account Issue</SelectItem>
+                            <SelectItem value="website">
+                              Website Issue
+                            </SelectItem>
+                            <SelectItem value="property">
+                              Property Listing Issue
+                            </SelectItem>
+                            <SelectItem value="payment">
+                              Payment Issue
+                            </SelectItem>
+                            <SelectItem value="account">
+                              Account Issue
+                            </SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
@@ -211,15 +237,15 @@ export default function ReportProblem() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="urgency"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Urgency Level</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
+                        <Select
+                          onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -228,10 +254,18 @@ export default function ReportProblem() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="low">Low - Minor inconvenience</SelectItem>
-                            <SelectItem value="medium">Medium - Affects functionality</SelectItem>
-                            <SelectItem value="high">High - Prevents core tasks</SelectItem>
-                            <SelectItem value="critical">Critical - Security issue</SelectItem>
+                            <SelectItem value="low">
+                              Low - Minor inconvenience
+                            </SelectItem>
+                            <SelectItem value="medium">
+                              Medium - Affects functionality
+                            </SelectItem>
+                            <SelectItem value="high">
+                              High - Prevents core tasks
+                            </SelectItem>
+                            <SelectItem value="critical">
+                              Critical - Security issue
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -239,38 +273,40 @@ export default function ReportProblem() {
                     )}
                   />
                 </div>
-                
-                {(watchProblemType === "property" || watchProblemType === "payment") && (
+
+                {(watchProblemType === "property" ||
+                  watchProblemType === "payment") && (
                   <FormField
                     control={form.control}
                     name="propertyId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          {watchProblemType === "property" ? "Property ID" : "Transaction/Order ID"}
+                          {watchProblemType === "property"
+                            ? "Property ID"
+                            : "Transaction/Order ID"}
                         </FormLabel>
                         <FormControl>
-                          <Input 
+                          <Input
                             placeholder={
-                              watchProblemType === "property" 
-                                ? "Enter property listing ID (if applicable)" 
+                              watchProblemType === "property"
+                                ? "Enter property listing ID (if applicable)"
                                 : "Enter transaction or order ID"
-                            } 
-                            {...field} 
+                            }
+                            {...field}
                           />
                         </FormControl>
                         <FormDescription>
-                          {watchProblemType === "property" 
-                            ? "You can find the property ID in the URL when viewing a property" 
-                            : "You can find this ID in your email receipt or transaction history"
-                          }
+                          {watchProblemType === "property"
+                            ? "You can find the property ID in the URL when viewing a property"
+                            : "You can find this ID in your email receipt or transaction history"}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 )}
-                
+
                 <FormField
                   control={form.control}
                   name="description"
@@ -278,20 +314,21 @@ export default function ReportProblem() {
                     <FormItem>
                       <FormLabel>Problem Description</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Please describe the issue in detail..." 
-                          className="min-h-32" 
-                          {...field} 
+                        <Textarea
+                          placeholder="Please describe the issue in detail..."
+                          className="min-h-32"
+                          {...field}
                         />
                       </FormControl>
                       <FormDescription>
-                        Please include what you were trying to do when the problem occurred
+                        Please include what you were trying to do when the
+                        problem occurred
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="stepsToReproduce"
@@ -299,31 +336,34 @@ export default function ReportProblem() {
                     <FormItem>
                       <FormLabel>Steps to Reproduce (Optional)</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="List the steps someone could follow to encounter this issue..." 
-                          className="min-h-24" 
-                          {...field} 
+                        <Textarea
+                          placeholder="List the steps someone could follow to encounter this issue..."
+                          className="min-h-24"
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <div>
-                  <h3 className="text-base font-medium text-gray-900 mb-1">Screenshots/Attachments (Optional)</h3>
+                  <h3 className="text-base font-medium text-gray-900 mb-1">
+                    Screenshots/Attachments (Optional)
+                  </h3>
                   <p className="text-sm text-gray-500 mb-2">
-                    Upload screenshots or files that help illustrate the problem (Max 5 files, 5MB each)
+                    Upload screenshots or files that help illustrate the problem
+                    (Max 5 files, 5MB each)
                   </p>
-                  <FileUpload 
-                    onFilesSelected={handleFilesSelected} 
+                  <FileUpload
+                    onFilesSelected={handleFilesSelected}
                     onFileRemoved={handleFileRemoved}
                     initialFiles={files}
                     maxFiles={5}
                     allowMultiple={true}
                   />
                 </div>
-                
+
                 <FormField
                   control={form.control}
                   name="deviceInfo"
@@ -331,41 +371,54 @@ export default function ReportProblem() {
                     <FormItem>
                       <FormLabel>Device & Browser Information</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          {...field} 
+                        <Textarea
+                          {...field}
                           className="font-mono text-xs"
                           disabled
                         />
                       </FormControl>
                       <FormDescription>
-                        This helps our technical team reproduce and fix the issue
+                        This helps our technical team reproduce and fix the
+                        issue
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
-                <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting Report..." : "Submit Problem Report"}
+
+                <Button
+                  type="submit"
+                  className="w-full md:w-auto"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? "Submitting Report..."
+                    : "Submit Problem Report"}
                 </Button>
               </form>
             </Form>
           )}
-          
+
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="text-lg font-medium text-gray-800 mb-2">Need Immediate Help?</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-2">
+              Need Immediate Help?
+            </h3>
             <p className="text-gray-600 mb-4">
-              For urgent issues that require immediate attention, please contact our support team directly:
+              For urgent issues that require immediate attention, please contact
+              our support team directly:
             </p>
             <div className="flex flex-col space-y-2">
               <p className="flex items-center text-gray-700">
-                <span className="font-medium mr-2">Email:</span> support@homedirectly.com
+                <span className="font-medium mr-2">Email:</span>{" "}
+                support@urgentsales.com
               </p>
               <p className="flex items-center text-gray-700">
-                <span className="font-medium mr-2">Phone:</span> +91 8800123456 (Mon-Fri, 9 AM - 6 PM)
+                <span className="font-medium mr-2">Phone:</span> +91 8800123456
+                (Mon-Fri, 9 AM - 6 PM)
               </p>
               <p className="flex items-center text-gray-700">
-                <span className="font-medium mr-2">WhatsApp:</span> +91 8800123456
+                <span className="font-medium mr-2">WhatsApp:</span> +91
+                8800123456
               </p>
             </div>
           </div>

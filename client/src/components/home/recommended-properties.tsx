@@ -74,7 +74,7 @@ export default function RecommendedProperties() {
                   <Button
                     variant="link"
                     className="text-xs text-indigo-600 p-0 h-auto"
-                    onClick={() => setShowAiInfo(!showAiInfo)}
+                    onClick={() => window.scrollTo(0, 0)}
                   >
                     {showAiInfo ? "Hide info" : "Learn how it works"}
                   </Button>
