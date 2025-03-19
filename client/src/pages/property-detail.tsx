@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { Property } from '@shared/schema';
 import Navbar from '@/components/layout/navbar';
@@ -25,19 +25,104 @@ import {
   Share2,
   Heart,
   Phone,
-  Mail
+  Mail,
+  Sparkles
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
 
 export default function PropertyDetail() {
   const { id } = useParams<{ id: string }>();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showAiRecommendation, setShowAiRecommendation] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   // Fetch property details
   const { data: property, isLoading, isError } = useQuery<Property>({
     queryKey: [`/api/properties/${id}`],
   });
+
+  // Track property view with recommendation engine
+  const trackInteractionMutation = useMutation({
+    mutationFn: async ({ propertyId, interactionType }: { propertyId: number, interactionType: 'view' | 'save' | 'inquiry' }) => {
+      return apiRequest('/api/recommendations/track', 'POST', { propertyId, interactionType });
+    }
+  });
+
+  // Save/unsave property mutation
+  const savePropertyMutation = useMutation({
+    mutationFn: async (propertyId: number) => {
+      return apiRequest(`/api/properties/${propertyId}/save`, 'POST');
+    },
+    onSuccess: () => {
+      setIsFavorite(true);
+      toast({
+        title: "Property saved",
+        description: "You can find it in your saved properties list",
+      });
+      // Track saving as an interaction for recommendations
+      if (user && property) {
+        trackInteractionMutation.mutate({
+          propertyId: property.id,
+          interactionType: 'save'
+        });
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save property. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const unsavePropertyMutation = useMutation({
+    mutationFn: async (propertyId: number) => {
+      return apiRequest(`/api/properties/${propertyId}/save`, 'DELETE');
+    },
+    onSuccess: () => {
+      setIsFavorite(false);
+      toast({
+        title: "Property removed",
+        description: "Property has been removed from your saved list",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to remove property. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Check if property is saved for logged-in user
+  const { data: savedProperties = [] } = useQuery<Property[]>({
+    queryKey: ['/api/user/saved'],
+    enabled: !!user,
+  });
+
+  // Track view on component mount
+  useEffect(() => {
+    if (user && property) {
+      trackInteractionMutation.mutate({
+        propertyId: property.id,
+        interactionType: 'view'
+      });
+      
+      // Check if property is already saved
+      const isSaved = savedProperties.some(prop => prop.id === property.id);
+      setIsFavorite(isSaved);
+      
+      // Randomly show AI recommendation badge (in a real app, this would be based on more complex logic)
+      setShowAiRecommendation(Math.random() > 0.7);
+    }
+  }, [user, property, savedProperties]);
 
   // Format the price in Indian currency format
   const formatPrice = (price?: number) => {
@@ -53,7 +138,21 @@ export default function PropertyDetail() {
   };
 
   const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "Please login to save properties",
+      });
+      return;
+    }
+    
+    if (property) {
+      if (isFavorite) {
+        unsavePropertyMutation.mutate(property.id);
+      } else {
+        savePropertyMutation.mutate(property.id);
+      }
+    }
   };
 
   if (isLoading) {
@@ -154,6 +253,12 @@ export default function PropertyDetail() {
               />
               {property.featured && (
                 <Badge className="absolute top-4 left-4 z-10 bg-primary">FEATURED</Badge>
+              )}
+              {showAiRecommendation && (
+                <Badge className="absolute top-4 right-4 z-10 bg-indigo-600 flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  <span>AI RECOMMENDED</span>
+                </Badge>
               )}
             </div>
             {images.length > 1 && (

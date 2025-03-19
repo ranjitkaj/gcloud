@@ -24,11 +24,13 @@ import {
 interface PropertyCardProps {
   property: Property;
   showPremiumBadge?: boolean;
+  isAiRecommended?: boolean;
 }
 
 export default function PropertyCard({ 
   property, 
-  showPremiumBadge = false 
+  showPremiumBadge = false,
+  isAiRecommended = false
 }: PropertyCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const { user } = useAuth();

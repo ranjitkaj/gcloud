@@ -643,6 +643,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const aiRecommendations = await recommendationService.getPersonalizedRecommendations(req.user.id, limit);
     res.json(aiRecommendations);
   }));
+  
+  // Track user property interaction for improving recommendations
+  app.post("/api/recommendations/track", isAuthenticated, asyncHandler(async (req, res) => {
+    const { propertyId, interactionType } = req.body;
+    
+    if (!propertyId || !interactionType) {
+      return res.status(400).json({ message: "Property ID and interaction type are required" });
+    }
+    
+    // Validate interaction type
+    if (!['view', 'save', 'inquiry'].includes(interactionType)) {
+      return res.status(400).json({ message: "Invalid interaction type" });
+    }
+    
+    // Check if property exists
+    const property = await storage.getProperty(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+    
+    // Import and initialize the AI recommendation service
+    const { getRecommendationService } = await import('./recommendation-service');
+    const recommendationService = getRecommendationService(storage);
+    
+    // Track the interaction
+    await recommendationService.updateModelWithInteraction(
+      req.user.id,
+      propertyId,
+      interactionType
+    );
+    
+    // Also record view in database if it's a view interaction
+    if (interactionType === 'view') {
+      await storage.addPropertyView(req.user.id, propertyId);
+    }
+    
+    res.json({ success: true });
+  }));
 
   // Get current user's saved properties
   app.get("/api/user/saved", isAuthenticated, asyncHandler(async (req, res) => {
