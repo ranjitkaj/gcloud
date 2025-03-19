@@ -17,6 +17,14 @@ import ProjectCategory from "@/pages/projects/project-category";
 import SearchResults from "@/pages/search-results";
 import RecommendationsPage from "@/pages/recommendations";
 import AdminDashboard from "@/pages/admin/dashboard";
+
+// Policy Pages
+import TermsConditions from "@/pages/policies/terms-conditions";
+import PrivacyPolicy from "@/pages/policies/privacy-policy";
+import Disclaimer from "@/pages/policies/disclaimer";
+import Feedback from "@/pages/policies/feedback";
+import ReportProblem from "@/pages/policies/report-problem";
+
 import { queryClient } from '@/lib/query-client';
 import { Toaster } from "@/components/ui/toaster";
 

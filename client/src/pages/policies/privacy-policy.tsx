@@ -1,0 +1,142 @@
+import { Link } from "wouter";
+
+export default function PrivacyPolicy() {
+  return (
+    <div className="bg-gray-50 min-h-screen py-10">
+      <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+        <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
+          {/* Breadcrumb */}
+          <div className="mb-6 text-sm text-gray-500">
+            <Link href="/" className="hover:text-primary">Home</Link> {' > '} 
+            <span className="text-gray-700">Privacy Policy</span>
+          </div>
+          
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h1>
+          
+          <div className="prose max-w-none">
+            <p className="text-gray-700 mb-4">
+              At HomeDirectly, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">1. Information We Collect</h2>
+            <p className="text-gray-700 mb-4">
+              We may collect personal information that you voluntarily provide to us when you:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Create an account or register on our platform</li>
+              <li>List a property for sale or rent</li>
+              <li>Contact property sellers or agents through our platform</li>
+              <li>Subscribe to our newsletter or promotional materials</li>
+              <li>Participate in surveys, contests, or promotions</li>
+              <li>Contact our customer support team</li>
+            </ul>
+            <p className="text-gray-700 mb-4">
+              The personal information we collect may include:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Name, email address, and phone number</li>
+              <li>Username and password</li>
+              <li>Billing and payment information</li>
+              <li>Property details and photographs</li>
+              <li>Location information</li>
+              <li>Communication preferences</li>
+            </ul>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">2. Automatically Collected Information</h2>
+            <p className="text-gray-700 mb-4">
+              When you access our platform, we may automatically collect certain information, including:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>IP address and device information</li>
+              <li>Browser type and operating system</li>
+              <li>Pages you view and links you click</li>
+              <li>Time spent on our platform</li>
+              <li>Referral sources</li>
+              <li>Cookies and similar tracking technologies</li>
+            </ul>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">3. How We Use Your Information</h2>
+            <p className="text-gray-700 mb-4">
+              We may use the information we collect for various purposes, including:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Providing and maintaining our services</li>
+              <li>Processing transactions and managing your account</li>
+              <li>Facilitating communication between buyers and sellers</li>
+              <li>Personalizing your experience and recommending properties</li>
+              <li>Sending you newsletters, promotions, and marketing communications</li>
+              <li>Improving our platform and developing new features</li>
+              <li>Analyzing usage patterns and trends</li>
+              <li>Preventing fraud and enhancing security</li>
+              <li>Complying with legal obligations</li>
+            </ul>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">4. Information Sharing and Disclosure</h2>
+            <p className="text-gray-700 mb-4">
+              We may share your information with:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Other users as necessary to facilitate property transactions</li>
+              <li>Service providers who assist us in operating our platform</li>
+              <li>Business partners and affiliates</li>
+              <li>Legal authorities when required by law or to protect our rights</li>
+              <li>In connection with a business merger, sale, or acquisition</li>
+            </ul>
+            <p className="text-gray-700 mb-4">
+              We do not sell your personal information to third parties.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">5. Your Choices and Rights</h2>
+            <p className="text-gray-700 mb-4">
+              You have certain rights regarding your personal information, including:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Accessing and updating your personal information</li>
+              <li>Opting out of marketing communications</li>
+              <li>Requesting deletion of your account and data</li>
+              <li>Managing cookie preferences</li>
+              <li>Objecting to certain data processing activities</li>
+            </ul>
+            <p className="text-gray-700 mb-4">
+              To exercise these rights, please contact us using the information provided at the end of this policy.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">6. Data Security</h2>
+            <p className="text-gray-700 mb-4">
+              We implement appropriate security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">7. Data Retention</h2>
+            <p className="text-gray-700 mb-4">
+              We retain your personal information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">8. Children's Privacy</h2>
+            <p className="text-gray-700 mb-4">
+              Our platform is not intended for children under 18 years of age. We do not knowingly collect personal information from children under 18. If you believe we have collected information from a child under 18, please contact us immediately.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">9. Changes to This Privacy Policy</h2>
+            <p className="text-gray-700 mb-4">
+              We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. You are advised to review this Privacy Policy periodically for any changes.
+            </p>
+            
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">10. Contact Us</h2>
+            <p className="text-gray-700 mb-4">
+              If you have any questions or concerns about this Privacy Policy, please contact us at:
+            </p>
+            <p className="text-gray-700 mb-4">
+              Email: privacy@homedirectly.com<br />
+              Phone: +91 8800123456<br />
+              Address: 123 Tech Park, Whitefield, Bangalore - 560066, India
+            </p>
+            
+            <p className="text-gray-700 mt-8">
+              Last Updated: March 19, 2025
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
