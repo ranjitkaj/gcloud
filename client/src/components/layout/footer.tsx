@@ -57,7 +57,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/properties?type=residential" onClick={() => window.scrollTo(0.0)}
+                  href="/properties?type=residential"
                   className="hover:text-white transition-colors"
                 >
                   Search Properties
