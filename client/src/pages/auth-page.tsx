@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useRoute } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -32,7 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
 
 // Import our custom verification components
 import OTPVerification from '@/components/auth/otp-verification';
@@ -57,9 +57,14 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [location, navigate] = useWouterNavigate();
   const { user, login, signup, isLoading } = useAuth();
+  const { toast } = useToast();
+
+  // Track the registration flow state
+  const [registrationState, setRegistrationState] = useState<'form' | 'verification-method' | 'verification'>('form');
+  const [selectedVerificationMethod, setSelectedVerificationMethod] = useState<'email' | 'whatsapp' | 'sms'>('email');
+  const [registeredUser, setRegisteredUser] = useState<any>(null);
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -110,10 +115,21 @@ export default function AuthPage() {
     try {
       setIsRegisterLoading(true);
       setAuthError(null);
+      
       // Remove confirmPassword as it's not in the API schema
       const { confirmPassword, ...registerData } = data;
-      await signup(registerData);
-      navigate('/dashboard'); // Redirect on successful registration
+      
+      // If phone is provided, show verification method selection
+      if (data.phone) {
+        setRegisteredUser({
+          ...registerData,
+          id: -1, // Temporary ID until user is created
+        });
+        setRegistrationState('verification-method');
+      } else {
+        // No phone provided, use email verification directly
+        await signupWithVerification(registerData, 'email');
+      }
     } catch (error) {
       setAuthError('Registration failed. Please try again.');
       console.error('Registration error:', error);
@@ -121,7 +137,57 @@ export default function AuthPage() {
       setIsRegisterLoading(false);
     }
   };
-
+  
+  const signupWithVerification = async (userData: any, verificationMethod: 'email' | 'whatsapp' | 'sms') => {
+    try {
+      setIsRegisterLoading(true);
+      
+      // Add verification method to the request
+      const response = await signup({
+        ...userData,
+        verificationMethod
+      });
+      
+      // Store the registered user for the verification step
+      setRegisteredUser(response);
+      setSelectedVerificationMethod(verificationMethod);
+      
+      // Show OTP verification UI
+      setRegistrationState('verification');
+      
+      // Show toast for OTP sent
+      const recipient = verificationMethod === 'email' ? userData.email : userData.phone;
+      toast({
+        title: 'Verification required',
+        description: `A verification code has been sent to ${recipient}`,
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      setAuthError('Registration failed. Please try again.');
+      // Go back to form on error
+      setRegistrationState('form');
+    } finally {
+      setIsRegisterLoading(false);
+    }
+  };
+  
+  const handleVerificationMethodSelected = (method: 'email' | 'whatsapp' | 'sms') => {
+    setSelectedVerificationMethod(method);
+    signupWithVerification(registeredUser, method);
+  };
+  
+  const handleVerificationCompleted = () => {
+    toast({
+      title: 'Account verified',
+      description: 'Your account has been verified successfully.',
+    });
+    navigate('/dashboard');
+  };
+  
+  const handleVerificationCancelled = () => {
+    setRegistrationState('form');
+    setRegisteredUser(null);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -130,166 +196,184 @@ export default function AuthPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="w-full md:w-1/2 max-w-md mx-auto md:mx-0">
-              <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
-                </TabsList>
+              {registrationState === 'verification-method' && registeredUser ? (
+                <VerificationMethodSelector
+                  email={registeredUser.email}
+                  phone={registeredUser.phone}
+                  onMethodSelected={handleVerificationMethodSelected}
+                  onCancel={handleVerificationCancelled}
+                />
+              ) : registrationState === 'verification' && registeredUser ? (
+                <OTPVerification
+                  userId={registeredUser.id}
+                  email={registeredUser.email}
+                  phone={registeredUser.phone}
+                  type={selectedVerificationMethod}
+                  onVerified={handleVerificationCompleted}
+                  onCancel={handleVerificationCancelled}
+                />
+              ) : (
+                <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="login">Login</TabsTrigger>
+                    <TabsTrigger value="register">Register</TabsTrigger>
+                  </TabsList>
 
-                <TabsContent value="login">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Login to your account</CardTitle>
-                      <CardDescription>
-                        Enter your username and password to access your account
-                      </CardDescription>
-                    </CardHeader>
-                    <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="username">Username</Label>
-                          <Input 
-                            id="username" 
-                            {...loginForm.register('username')} 
-                            placeholder="Enter your username" 
-                          />
-                          {loginForm.formState.errors.username && (
-                            <p className="text-sm text-red-500">{loginForm.formState.errors.username.message}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="password">Password</Label>
-                          <Input 
-                            id="password" 
-                            type="password" 
-                            {...loginForm.register('password')} 
-                            placeholder="Enter your password" 
-                          />
-                          {loginForm.formState.errors.password && (
-                            <p className="text-sm text-red-500">{loginForm.formState.errors.password.message}</p>
-                          )}
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-primary hover:bg-primary/90"
-                          disabled={isLoginLoading}
-                        >
-                          {isLoginLoading ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Logging in...
-                            </>
-                          ) : (
-                            'Login'
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </form>
-                  </Card>
-                </TabsContent>
+                  <TabsContent value="login">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Login to your account</CardTitle>
+                        <CardDescription>
+                          Enter your username and password to access your account
+                        </CardDescription>
+                      </CardHeader>
+                      <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
+                        <CardContent className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="username">Username</Label>
+                            <Input 
+                              id="username" 
+                              {...loginForm.register('username')} 
+                              placeholder="Enter your username" 
+                            />
+                            {loginForm.formState.errors.username && (
+                              <p className="text-sm text-red-500">{loginForm.formState.errors.username.message}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input 
+                              id="password" 
+                              type="password" 
+                              {...loginForm.register('password')} 
+                              placeholder="Enter your password" 
+                            />
+                            {loginForm.formState.errors.password && (
+                              <p className="text-sm text-red-500">{loginForm.formState.errors.password.message}</p>
+                            )}
+                          </div>
+                        </CardContent>
+                        <CardFooter>
+                          <Button 
+                            type="submit" 
+                            className="w-full bg-primary hover:bg-primary/90"
+                            disabled={isLoginLoading}
+                          >
+                            {isLoginLoading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Logging in...
+                              </>
+                            ) : (
+                              'Login'
+                            )}
+                          </Button>
+                        </CardFooter>
+                      </form>
+                    </Card>
+                  </TabsContent>
 
-                <TabsContent value="register">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Create an account</CardTitle>
-                      <CardDescription>
-                        Enter your details to create a new account
-                      </CardDescription>
-                    </CardHeader>
-                    <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="reg-name">Full Name</Label>
-                          <Input 
-                            id="reg-name" 
-                            {...registerForm.register('name')} 
-                            placeholder="Enter your full name" 
-                          />
-                          {registerForm.formState.errors.name && (
-                            <p className="text-sm text-red-500">{registerForm.formState.errors.name.message}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="reg-email">Email</Label>
-                          <Input 
-                            id="reg-email" 
-                            type="email" 
-                            {...registerForm.register('email')} 
-                            placeholder="Enter your email address" 
-                          />
-                          {registerForm.formState.errors.email && (
-                            <p className="text-sm text-red-500">{registerForm.formState.errors.email.message}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="reg-phone">Phone Number (Optional)</Label>
-                          <Input 
-                            id="reg-phone" 
-                            {...registerForm.register('phone')} 
-                            placeholder="Enter your phone number" 
-                          />
-                          {registerForm.formState.errors.phone && (
-                            <p className="text-sm text-red-500">{registerForm.formState.errors.phone.message}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="reg-username">Username</Label>
-                          <Input 
-                            id="reg-username" 
-                            {...registerForm.register('username')} 
-                            placeholder="Create a username" 
-                          />
-                          {registerForm.formState.errors.username && (
-                            <p className="text-sm text-red-500">{registerForm.formState.errors.username.message}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="reg-password">Password</Label>
-                          <Input 
-                            id="reg-password" 
-                            type="password" 
-                            {...registerForm.register('password')}
-                            placeholder="Create a password" 
-                          />
-                          {registerForm.formState.errors.password && (
-                            <p className="text-sm text-red-500">{registerForm.formState.errors.password.message}</p>
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="reg-confirm-password">Confirm Password</Label>
-                          <Input 
-                            id="reg-confirm-password" 
-                            type="password" 
-                            {...registerForm.register('confirmPassword')} 
-                            placeholder="Confirm your password" 
-                          />
-                          {registerForm.formState.errors.confirmPassword && (
-                            <p className="text-sm text-red-500">{registerForm.formState.errors.confirmPassword.message}</p>
-                          )}
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-primary hover:bg-primary/90"
-                          disabled={isRegisterLoading}
-                        >
-                          {isRegisterLoading ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Creating account...
-                            </>
-                          ) : (
-                            'Register'
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </form>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+                  <TabsContent value="register">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Create an account</CardTitle>
+                        <CardDescription>
+                          Enter your details to create a new account
+                        </CardDescription>
+                      </CardHeader>
+                      <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
+                        <CardContent className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-name">Full Name</Label>
+                            <Input 
+                              id="reg-name" 
+                              {...registerForm.register('name')} 
+                              placeholder="Enter your full name" 
+                            />
+                            {registerForm.formState.errors.name && (
+                              <p className="text-sm text-red-500">{registerForm.formState.errors.name.message}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-email">Email</Label>
+                            <Input 
+                              id="reg-email" 
+                              type="email" 
+                              {...registerForm.register('email')} 
+                              placeholder="Enter your email address" 
+                            />
+                            {registerForm.formState.errors.email && (
+                              <p className="text-sm text-red-500">{registerForm.formState.errors.email.message}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-phone">Phone Number (Optional)</Label>
+                            <Input 
+                              id="reg-phone" 
+                              {...registerForm.register('phone')} 
+                              placeholder="Enter your phone number" 
+                            />
+                            {registerForm.formState.errors.phone && (
+                              <p className="text-sm text-red-500">{registerForm.formState.errors.phone.message}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-username">Username</Label>
+                            <Input 
+                              id="reg-username" 
+                              {...registerForm.register('username')} 
+                              placeholder="Create a username" 
+                            />
+                            {registerForm.formState.errors.username && (
+                              <p className="text-sm text-red-500">{registerForm.formState.errors.username.message}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-password">Password</Label>
+                            <Input 
+                              id="reg-password" 
+                              type="password" 
+                              {...registerForm.register('password')}
+                              placeholder="Create a password" 
+                            />
+                            {registerForm.formState.errors.password && (
+                              <p className="text-sm text-red-500">{registerForm.formState.errors.password.message}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="reg-confirm-password">Confirm Password</Label>
+                            <Input 
+                              id="reg-confirm-password" 
+                              type="password" 
+                              {...registerForm.register('confirmPassword')} 
+                              placeholder="Confirm your password" 
+                            />
+                            {registerForm.formState.errors.confirmPassword && (
+                              <p className="text-sm text-red-500">{registerForm.formState.errors.confirmPassword.message}</p>
+                            )}
+                          </div>
+                        </CardContent>
+                        <CardFooter>
+                          <Button 
+                            type="submit" 
+                            className="w-full bg-primary hover:bg-primary/90"
+                            disabled={isRegisterLoading}
+                          >
+                            {isRegisterLoading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Creating account...
+                              </>
+                            ) : (
+                              'Register'
+                            )}
+                          </Button>
+                        </CardFooter>
+                      </form>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              )}
             </div>
 
             <div className="w-full md:w-1/2 p-6 hidden md:block">

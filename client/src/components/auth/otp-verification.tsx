@@ -59,14 +59,15 @@ export default function OTPVerification({
       setIsVerifying(true);
       setVerificationStatus('idle');
 
-      const response = await apiRequest('/api/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ otp, type }),
-        credentials: 'include'
-      });
+      const response = await apiRequest(
+        'POST',
+        '/api/verify-otp',
+        { otp, type }
+      );
 
-      if (response.success) {
+      const data = await response.json();
+
+      if (data.success) {
         setVerificationStatus('success');
         toast({
           title: 'Verification successful',
@@ -82,7 +83,7 @@ export default function OTPVerification({
         setVerificationStatus('error');
         toast({
           title: 'Verification failed',
-          description: response.message || 'Invalid or expired OTP',
+          description: data.message || 'Invalid or expired OTP',
           variant: 'destructive'
         });
       }
@@ -103,14 +104,15 @@ export default function OTPVerification({
     try {
       setIsResending(true);
       
-      const response = await apiRequest('/api/resend-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
-        credentials: 'include'
-      });
+      const response = await apiRequest(
+        'POST',
+        '/api/resend-otp',
+        { type }
+      );
 
-      if (response.success) {
+      const data = await response.json();
+
+      if (data.success) {
         toast({
           title: 'OTP resent',
           description: `A new verification code has been sent to ${getRecipientContact()}`,
@@ -119,7 +121,7 @@ export default function OTPVerification({
       } else {
         toast({
           title: 'Failed to resend OTP',
-          description: response.message || 'Please try again later',
+          description: data.message || 'Please try again later',
           variant: 'destructive'
         });
       }
