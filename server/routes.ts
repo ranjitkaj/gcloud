@@ -234,6 +234,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(properties);
   }));
 
+  // Get urgent properties (properties with discounted prices)
+  app.get("/api/properties/urgent", asyncHandler(async (req, res) => {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 3;
+    // Get all properties then filter for properties with discountedPrice
+    const allProperties = await storage.getAllProperties();
+    const urgentProperties = allProperties
+      .filter(property => property.discountedPrice && property.discountedPrice > 0)
+      .slice(0, limit)
+      .map(property => ({
+        id: property.id,
+        title: property.title,
+        location: property.location,
+        price: property.price,
+        discountedPrice: property.discountedPrice || Math.round(property.price * 0.75), // 25% discount
+        propertyType: property.propertyType,
+        bedrooms: property.bedrooms,
+        bathrooms: property.bathrooms,
+        area: property.area,
+        imageUrl: property.imageUrls && property.imageUrls.length > 0 ? property.imageUrls[0] : '',
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+      }));
+    
+    res.json(urgentProperties);
+  }));
+
   // Get recent properties
   app.get("/api/properties/recent", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;

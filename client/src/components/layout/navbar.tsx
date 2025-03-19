@@ -153,6 +153,14 @@ export default function Navbar() {
               <PlusCircle className="mr-2 h-4 w-4" />
               Post Property FREE
             </Link>
+            <Link to="/about" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
+              <Home className="mr-2 h-4 w-4" />
+              About Us
+            </Link>
+            <Link to="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
+              <Mail className="mr-2 h-4 w-4" />
+              Contact Us
+            </Link>
             {user && (
               <Link to="/recommendations" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
                 <Star className="mr-2 h-4 w-4" />
