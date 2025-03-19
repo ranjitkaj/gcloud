@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
-import { Building2, MapPin, Grid3X3, Grid2X2, ArrowRight, BedDouble, Bath, SquareFeet } from 'lucide-react';
+import { Building2, MapPin, Grid3X3, Grid2X2, ArrowRight, BedDouble, Bath, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -178,7 +178,7 @@ export default function NewlyListedProperties() {
                       <span>{property.bathrooms} {property.bathrooms === 1 ? 'Bath' : 'Baths'}</span>
                     </div>
                     <div className="flex items-center text-gray-700 text-sm">
-                      <SquareFeet className="h-4 w-4 mr-1" />
+                      <Square className="h-4 w-4 mr-1" />
                       <span>{property.area} sqft</span>
                     </div>
                   </div>
