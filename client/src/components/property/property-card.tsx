@@ -11,7 +11,8 @@ import {
   Ruler, 
   Lock, 
   Crown,
-  Star
+  Star,
+  Sparkles
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { 
@@ -64,7 +65,13 @@ export default function PropertyCard({
 
   return (
     <Link href={`/property/${property.id}`}>
-      <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+      <div className={`bg-white rounded-xl overflow-hidden shadow-md border ${
+        isAiRecommended 
+          ? 'border-indigo-200 hover:shadow-indigo-100' 
+          : 'border-gray-100'
+        } hover:shadow-lg transition-shadow duration-300 cursor-pointer ${
+        isAiRecommended ? 'ring-1 ring-indigo-100' : ''
+      }`}>
         <div className="relative pb-[60%]">
           {/* Featured Badge */}
           {property.featured && (
@@ -78,6 +85,22 @@ export default function PropertyCard({
             <Badge className="absolute top-2 right-2 z-10 bg-yellow-500 text-white">
               <Crown className="mr-1 h-3 w-3" /> PREMIUM
             </Badge>
+          )}
+          
+          {/* AI Recommendation Badge */}
+          {isAiRecommended && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge className="absolute top-2 right-2 z-10 bg-indigo-600 text-white flex items-center gap-1 cursor-help">
+                    <Sparkles className="h-3 w-3" /> AI RECOMMENDED
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Personalized for you based on your browsing history and preferences</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           
           {/* Property Image with blur/lock for premium properties */}

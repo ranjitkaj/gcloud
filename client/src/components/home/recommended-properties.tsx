@@ -8,32 +8,42 @@ import { Loader2 } from "lucide-react";
 export default function RecommendedProperties() {
   const { user } = useAuth();
   
-  const { data: recommendations, isLoading, error } = useQuery({
+  const { data: recommendations = [], isLoading, error } = useQuery<Property[]>({
     queryKey: ["/api/recommendations"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!user, // Only fetch if user is logged in
   });
 
   // Fallback to featured properties if user is not logged in or there was an error
-  const { data: featuredProperties, isLoading: isFeaturedLoading } = useQuery({
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery<Property[]>({
     queryKey: ["/api/properties/featured"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !user || !!error,
   });
   
-  const properties = recommendations || featuredProperties || [];
+  const properties = user && recommendations.length > 0 ? recommendations : featuredProperties;
   const isLoadingProperties = (user && isLoading) || (!user && isFeaturedLoading);
-  const title = user ? "Recommended For You" : "Featured Properties";
+  const title = user && recommendations.length > 0 ? "Recommended For You" : "Featured Properties";
 
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
           {user && (
-            <p className="text-gray-600">
-              Based on your browsing history and saved properties
-            </p>
+            <div className="mt-2 md:mt-0">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-indigo-600" />
+                <p className="text-gray-600">
+                  Personalized recommendations based on your browsing history and saved properties
+                </p>
+              </div>
+              {recommendations.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Our AI analyzes your preferences to find properties that match your taste
+                </p>
+              )}
+            </div>
           )}
         </div>
 
@@ -44,7 +54,11 @@ export default function RecommendedProperties() {
         ) : properties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property: Property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard 
+                key={property.id} 
+                property={property} 
+                isAiRecommended={!!user && recommendations.length > 0 && recommendations.some(r => r.id === property.id)}
+              />
             ))}
           </div>
         ) : (
