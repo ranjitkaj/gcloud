@@ -43,7 +43,7 @@ export default function Navbar() {
           {/* Post Property Free Button and Support */}
           <div className="hidden md:flex items-center space-x-3 mr-3">
             <Link to="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-              Post Property Free
+              Post Property FREE
             </Link>
             
             <DropdownMenu>
@@ -139,7 +139,7 @@ export default function Navbar() {
           <div className="py-2 border-t border-gray-100 mt-2">
             <Link to="/post-property-free" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center">
               <PlusCircle className="mr-2 h-4 w-4" />
-              Post Property Free
+              Post Property FREE
             </Link>
             {user?.role === 'admin' && (
               <Link to="/admin" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
