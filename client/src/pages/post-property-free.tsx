@@ -27,7 +27,7 @@ import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
 const propertySchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
   description: z.string().min(20, { message: "Description must be at least 20 characters" }),
-  propertyType: z.enum(["Apartment", "Villa", "House", "Plot", "Commercial", "Office"]),
+  propertyType: z.enum(["apartment", "villa", "house", "plot", "commercial", "office"]),
   forSaleOrRent: z.enum(["Sale", "Rent"]),
   price: z.string().min(1, { message: "Price is required" }),
   location: z.string().min(5, { message: "Location must be at least 5 characters" }),
