@@ -5,7 +5,7 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
-import { User as SelectUser } from "@shared/schema";
+import { User as SelectUser, verificationMethods } from "@shared/schema";
 
 declare global {
   namespace Express {
@@ -25,10 +25,34 @@ async function hashPassword(password: string) {
   return `${buf.toString("hex")}.${salt}`;
 }
 
-async function sendOTP(email: string, otp: string) {
-  // TODO: Implement actual email sending
-  console.log(`OTP for ${email}: ${otp}`);
+// Function to send OTP via email
+async function sendEmailOTP(email: string, otp: string) {
+  // TODO: Implement actual email sending with a service like SendGrid
+  console.log(`EMAIL OTP for ${email}: ${otp}`);
   return true;
+}
+
+// Function to send OTP via WhatsApp
+async function sendWhatsAppOTP(phone: string, otp: string) {
+  // TODO: Implement actual WhatsApp messaging with a service like Twilio
+  console.log(`WHATSAPP OTP for ${phone}: ${otp}`);
+  return true;
+}
+
+// Generic function to send OTP based on method
+async function sendOTP(recipient: string, otp: string, method: 'email' | 'whatsapp' | 'sms') {
+  switch (method) {
+    case 'email':
+      return sendEmailOTP(recipient, otp);
+    case 'whatsapp':
+      return sendWhatsAppOTP(recipient, otp);
+    case 'sms':
+      // TODO: Implement SMS sending (could use Twilio or similar)
+      console.log(`SMS OTP for ${recipient}: ${otp}`);
+      return true;
+    default:
+      throw new Error(`Unsupported OTP method: ${method}`);
+  }
 }
 
 async function comparePasswords(supplied: string, stored: string) {
@@ -73,35 +97,67 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      const { username, email, phone, password, verificationMethod = "email", ...otherFields } = req.body;
+      
+      // Validate the verification method
+      if (!verificationMethods.includes(verificationMethod)) {
+        return res.status(400).json({ message: `Invalid verification method. Supported methods: ${verificationMethods.join(', ')}` });
+      }
+
+      // Check for existing user
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      const otp = await generateOTP();
-      await storage.createOtp({
-        userId: -1, // Temporary ID until user is created
-        otp,
-        type: "email",
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
-      });
-      
-      await sendOTP(req.body.email, otp);
-
-      const existingEmail = await storage.getUserByEmail(req.body.email);
+      // Check for existing email
+      const existingEmail = await storage.getUserByEmail(email);
       if (existingEmail) {
         return res.status(400).json({ message: "Email already in use" });
       }
 
+      // Create user account first
       const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
+        username,
+        email,
+        phone,
+        password: await hashPassword(password),
+        ...otherFields
       });
 
+      // Generate OTP
+      const otp = await generateOTP();
+      
+      // Create OTP record
+      await storage.createOtp({
+        userId: user.id,
+        otp,
+        type: verificationMethod,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      });
+      
+      // Send OTP via the selected method
+      if (verificationMethod === "email") {
+        await sendOTP(email, otp, "email");
+      } else if (verificationMethod === "whatsapp" && phone) {
+        await sendOTP(phone, otp, "whatsapp");
+      } else if (verificationMethod === "sms" && phone) {
+        await sendOTP(phone, otp, "sms");
+      } else {
+        return res.status(400).json({ 
+          message: `${verificationMethod} verification requires a valid phone number` 
+        });
+      }
+
+      // Log in the user
       req.login(user, (err) => {
         if (err) return next(err);
         const { password, ...userWithoutPassword } = user;
-        res.status(201).json(userWithoutPassword);
+        res.status(201).json({
+          ...userWithoutPassword,
+          otpSent: true,
+          verificationMethod
+        });
       });
     } catch (error) {
       console.error('Auth error:', error);
@@ -113,7 +169,7 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: any, user: SelectUser | false, info: any) => {
       if (err) {
         return next(err);
       }
@@ -143,13 +199,117 @@ export function setupAuth(app: Express) {
     res.json(userWithoutPassword);
   });
 
+  app.post("/api/resend-otp", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const userId = req.user.id;
+      const { type = "email" } = req.body;
+
+      if (!verificationMethods.includes(type)) {
+        return res.status(400).json({ 
+          message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
+        });
+      }
+
+      // Generate new OTP
+      const otp = await generateOTP();
+      
+      // Get previous OTP to update it
+      const existingOtp = await storage.getOtpByUserAndType(userId, type);
+      
+      if (existingOtp) {
+        // Invalidate old OTP
+        await storage.invalidateOtp(existingOtp.id);
+      }
+      
+      // Create new OTP record
+      await storage.createOtp({
+        userId,
+        otp,
+        type,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      });
+      
+      // Send OTP via the selected method
+      if (type === "email") {
+        await sendOTP(req.user.email, otp, "email");
+        res.json({ success: true, message: "OTP sent to your email" });
+      } else if (type === "whatsapp" && req.user.phone) {
+        await sendOTP(req.user.phone, otp, "whatsapp");
+        res.json({ success: true, message: "OTP sent to your WhatsApp" });
+      } else if (type === "sms" && req.user.phone) {
+        await sendOTP(req.user.phone, otp, "sms");
+        res.json({ success: true, message: "OTP sent to your phone" });
+      } else {
+        return res.status(400).json({ 
+          message: `${type} verification requires a valid phone number` 
+        });
+      }
+    } catch (error) {
+      console.error('OTP resend error:', error);
+      res.status(500).json({ 
+        message: "Failed to resend OTP",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   app.post("/api/verify-otp", async (req, res) => {
-    const { email, otp } = req.body;
-    const isValid = await storage.verifyOtp(email, otp);
-    if (isValid) {
-      res.json({ success: true });
-    } else {
-      res.status(400).json({ message: "Invalid OTP" });
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const userId = req.user.id;
+      const { otp, type = "email" } = req.body;
+
+      if (!otp) {
+        return res.status(400).json({ message: "OTP is required" });
+      }
+
+      if (!verificationMethods.includes(type)) {
+        return res.status(400).json({ 
+          message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
+        });
+      }
+
+      // Verify the OTP
+      const isValid = await storage.verifyOtp(userId, otp, type);
+      
+      if (!isValid) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+
+      // Update user verification status based on the type
+      let updatedUser;
+      
+      if (type === "email") {
+        updatedUser = await storage.verifyUserEmail(userId);
+      } else if (type === "whatsapp" || type === "sms") {
+        updatedUser = await storage.verifyUserPhone(userId);
+      }
+
+      if (!updatedUser) {
+        return res.status(500).json({ message: "Failed to update verification status" });
+      }
+
+      // Return success response with updated user data
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.json({ 
+        success: true, 
+        message: `${type} verification successful`,
+        user: userWithoutPassword
+      });
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      res.status(500).json({ 
+        message: "Verification failed",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 }
