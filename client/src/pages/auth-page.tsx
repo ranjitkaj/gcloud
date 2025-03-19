@@ -105,10 +105,42 @@ export default function AuthPage() {
       setIsLoginLoading(true);
       setAuthError(null);
       await login(data);
-      navigate('/dashboard');
+      
+      // Success toast
+      toast({
+        title: 'Login successful',
+        description: 'You have been logged in successfully.'
+      });
+      
+      // Create property recommendation notification
+      try {
+        await fetch('/api/notifications/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: 'Property Recommendations',
+            message: 'We have some new property recommendations based on your preferences',
+            type: 'property',
+            linkTo: '/',
+          }),
+        });
+      } catch (notifError) {
+        console.error('Failed to create notification:', notifError);
+      }
+      
+      // Navigate to homepage instead of dashboard
+      navigate('/');
     } catch (error) {
       setAuthError('Login failed. Please check your credentials.');
       console.error('Login error:', error);
+      
+      toast({
+        title: 'Login failed',
+        description: 'Please check your credentials and try again.',
+        variant: 'destructive'
+      });
     } finally {
       setIsLoginLoading(false);
     }
@@ -178,12 +210,33 @@ export default function AuthPage() {
     signupWithVerification(registeredUser, method);
   };
   
-  const handleVerificationCompleted = () => {
+  const handleVerificationCompleted = async () => {
+    // First notify the user of successful verification
     toast({
       title: 'Account verified',
       description: 'Your account has been verified successfully.',
     });
-    navigate('/dashboard');
+
+    // Try to create recommendation notification
+    try {
+      await fetch('/api/notifications/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: 'Welcome to 99acres',
+          message: 'Check out personalized property recommendations based on your preferences',
+          type: 'system',
+          linkTo: '/',
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to create notification:', error);
+    }
+
+    // Redirect to homepage where they can see recommendations
+    navigate('/');
   };
   
   const handleVerificationCancelled = () => {
