@@ -259,19 +259,19 @@ export default function Footer() {
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0 text-sm">
               <Link
-                href="/about"
+                to="/about"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 About Us
               </Link>
               <Link
-                href="/contact"
+                to="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Contact Us
               </Link>
               <Link
-                href="/post-property-free"
+                to="/post-property-free"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Post Property Free
