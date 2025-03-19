@@ -128,6 +128,7 @@ export const properties = pgTable("properties", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   price: integer("price").notNull(),
+  discountedPrice: integer("discounted_price"), // For urgency sales (25% off)
   rentOrSale: text("rent_or_sale").notNull().default("for_sale"),
   status: text("status").notNull().default("for_sale"), 
   location: text("location").notNull(),
