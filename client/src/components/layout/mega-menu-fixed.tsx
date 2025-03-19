@@ -365,7 +365,8 @@ function CompanyMiniCard({ company }: { company: Company }) {
 }
 
 export function MegaMenu({ isMobile = false }: MegaMenuProps) {
-  const [location] = useLocation();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   
   // Fetch featured properties

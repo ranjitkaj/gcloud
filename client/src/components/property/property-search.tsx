@@ -27,7 +27,6 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Parse URL parameters if any
   useEffect(() => {
