@@ -42,7 +42,7 @@ export default function NotificationCenter() {
     if (!user) return;
     
     try {
-      await apiRequest('/api/notifications/read-all', {}, { method: 'POST' });
+      await apiRequest('/api/notifications/read-all', null, { method: 'POST' });
       refetch();
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);

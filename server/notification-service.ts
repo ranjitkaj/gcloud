@@ -78,8 +78,7 @@ export async function createNotification(req: Request, res: Response) {
       message,
       type,
       userId: recipientId,
-      linkTo: linkTo || null,
-      isRead: false
+      linkTo: linkTo || undefined
     });
 
     res.status(201).json(notification);
@@ -112,8 +111,7 @@ export async function sendRoleNotifications(req: Request, res: Response) {
         message,
         type,
         userId: user.id,
-        linkTo: linkTo || null,
-        isRead: false
+        linkTo: linkTo || undefined
       })
     );
 
