@@ -51,8 +51,7 @@ export default function Navbar() {
               </button>
             )}
             <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl text-primary font-bold font-heading">HomeDirectly</span>
-              <span className="hidden sm:block px-2 py-1 text-xs font-medium bg-green-500 text-white rounded-md">No Broker</span>
+              <img src="/logo.png" alt="UrgentSales.in" className="h-12 w-auto" />
             </Link>
           </div>
 

@@ -1,172 +1,173 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'wouter';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { MapPin, Search, Navigation } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PropertySearch from '@/components/property/property-search';
 
 export default function HeroSection() {
-  const [location, setLocation] = useState('');
-  const [propertyType, setPropertyType] = useState('');
-  const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [, navigate] = useLocation();
   const { toast } = useToast();
-
-  // Function to get user's current location
-  const getUserLocation = () => {
-    if (!navigator.geolocation) {
-      toast({
-        title: "Location Not Available",
-        description: "Geolocation is not supported by your browser",
-        variant: "destructive",
-      });
-      return;
+  
+  // Slideshow data
+  const slides = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
+      title: "Premium Properties",
+      subtitle: "Exclusive Listings at Competitive Prices",
+      buttonText: "View Premium",
+      buttonLink: "/properties?premium=true",
+      color: "from-blue-900 to-blue-700"
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
+      title: "Urgent Sales",
+      subtitle: "Time-Limited Offers with Massive Discounts",
+      buttonText: "View Urgent Sales",
+      buttonLink: "/properties?status=urgent_sale",
+      color: "from-red-900 to-red-700"
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
+      title: "New Launches",
+      subtitle: "Be the First to Explore Latest Properties",
+      buttonText: "View New Launches",
+      buttonLink: "/properties?status=new_launch",
+      color: "from-green-900 to-green-700"
     }
+  ];
+  
+  // Auto-advance slideshow
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 5000);
     
-    setIsLocationLoading(true);
-    
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          // Get latitude and longitude
-          const { latitude, longitude } = position.coords;
-          
-          // Use reverse geocoding to get the address
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
-          );
-          
-          if (response.ok) {
-            const data = await response.json();
-            
-            // Extract city or locality information
-            const city = data.address.city || 
-                        data.address.town || 
-                        data.address.village || 
-                        data.address.suburb ||
-                        data.address.neighbourhood ||
-                        data.address.state;
-                        
-            if (city) {
-              setLocation(city);
-              toast({
-                title: "Location Found",
-                description: `Using your current location: ${city}`,
-              });
-            } else {
-              setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-            }
-          } else {
-            // If geocoding fails, just use coordinates
-            setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-          }
-        } catch (error) {
-          console.error('Error getting location:', error);
-          toast({
-            title: "Location Error",
-            description: "Unable to fetch your location details. Please enter manually.",
-            variant: "destructive",
-          });
-        } finally {
-          setIsLocationLoading(false);
-        }
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-        setIsLocationLoading(false);
-        toast({
-          title: "Location Error",
-          description: "Unable to get your location. Please enable location services and try again.",
-          variant: "destructive",
-        });
-      }
-    );
+    return () => clearInterval(timer);
+  }, [slides.length]);
+  
+  // Navigation functions
+  const goToNextSlide = () => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
-
-  const handleSearch = () => {
-    const queryParams = new URLSearchParams();
-    
-    if (location) {
-      queryParams.append('city', location);
-    }
-    
-    if (propertyType) {
-      queryParams.append('propertyType', propertyType);
-    }
-    
-    navigate(`/properties?${queryParams.toString()}`);
+  
+  const goToPrevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
   return (
     <>
-      {/* Reduced Banner Section */}
-      <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-        <div className="absolute inset-0 overflow-hidden">
-          <img 
-            src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" 
-            alt="Modern luxury home" 
-            className="w-full h-full object-cover object-center opacity-30"
-          />
-        </div>
-        <div className="container mx-auto px-4 py-8 md:py-12 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold font-heading leading-tight mb-3">
-              Find Your Dream Home, <span className="text-primary-400">Without The Broker</span>
-            </h1>
-            <p className="text-base md:text-lg text-gray-200 mb-3">
-              Direct connections between owners and buyers. No commissions, no hassle.
-            </p>
-            <div className="flex space-x-4 mt-3">
-              <Link to="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Post Property FREE
-              </Link>
-              <Link to="/properties" className="inline-flex bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                View All Properties
-              </Link>
+      {/* Slideshow Banner Section */}
+      <section className="relative h-[400px] md:h-[500px] overflow-hidden">
+        {/* Slideshow Images */}
+        {slides.map((slide, index) => (
+          <div 
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <div className={`absolute inset-0 bg-gradient-to-r ${slide.color} opacity-70`}></div>
+            <img 
+              src={slide.image} 
+              alt={slide.title} 
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 flex items-center">
+              <div className="container mx-auto px-4">
+                <div className="max-w-xl text-white">
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 transition-all duration-500 ease-in-out transform translate-y-0">
+                    {slide.title}
+                  </h1>
+                  <p className="text-lg md:text-xl text-white/90 mb-6">
+                    {slide.subtitle}
+                  </p>
+                  <Link 
+                    to={slide.buttonLink} 
+                    className="inline-flex bg-white text-gray-900 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition-colors shadow-lg"
+                  >
+                    {slide.buttonText}
+                  </Link>
+                  <Link 
+                    to="/post-property-free" 
+                    className="inline-flex ml-4 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow-lg"
+                  >
+                    Post Property FREE
+                  </Link>
+                </div>
+              </div>
             </div>
+          </div>
+        ))}
+        
+        {/* Navigation Arrows */}
+        <button 
+          onClick={goToPrevSlide}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 rounded-full p-2 z-10 text-white"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button 
+          onClick={goToNextSlide}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 rounded-full p-2 z-10 text-white"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+        
+        {/* Slide Indicators */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center z-10">
+          <div className="flex space-x-2">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-3 h-3 rounded-full ${
+                  index === currentSlide ? 'bg-white' : 'bg-white/50'
+                } transition-all duration-300`}
+                aria-label={`Go to slide ${index + 1}`}
+              ></button>
+            ))}
           </div>
         </div>
         
         {/* Property Search - Integrated with banner */}
-        <div className="container mx-auto px-4 pb-6 relative z-20 -mb-16">
+        <div className="container mx-auto px-4 pb-6 absolute bottom-0 left-0 right-0 z-20 -mb-10">
           <PropertySearch className="shadow-xl" showAdvanced={false} />
         </div>
-
-        {/* Stats Bar */}
-        <div className="bg-white bg-opacity-95 py-4 md:py-6 relative z-10">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div className="p-2">
-                <p className="text-primary text-2xl md:text-3xl font-bold">10,000+</p>
-                <p className="text-gray-700">Properties Listed</p>
-              </div>
-              <div className="p-2">
-                <p className="text-primary text-2xl md:text-3xl font-bold">15,000+</p>
-                <p className="text-gray-700">Happy Customers</p>
-              </div>
-              <div className="p-2">
-                <p className="text-primary text-2xl md:text-3xl font-bold">₹1.2 Cr</p>
-                <p className="text-gray-700">Broker Fees Saved</p>
-              </div>
-              <div className="p-2">
-                <p className="text-primary text-2xl md:text-3xl font-bold">4.8/5</p>
-                <p className="text-gray-700">Customer Rating</p>
-              </div>
+      </section>
+      
+      {/* Stats Bar */}
+      <section className="bg-white py-4 md:py-6 shadow-md relative z-10 mt-10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="p-2">
+              <p className="text-primary text-2xl md:text-3xl font-bold">10,000+</p>
+              <p className="text-gray-700">Properties Listed</p>
+            </div>
+            <div className="p-2">
+              <p className="text-primary text-2xl md:text-3xl font-bold">15,000+</p>
+              <p className="text-gray-700">Happy Customers</p>
+            </div>
+            <div className="p-2">
+              <p className="text-primary text-2xl md:text-3xl font-bold">₹1.2 Cr</p>
+              <p className="text-gray-700">Broker Fees Saved</p>
+            </div>
+            <div className="p-2">
+              <p className="text-primary text-2xl md:text-3xl font-bold">4.8/5</p>
+              <p className="text-gray-700">Customer Rating</p>
             </div>
           </div>
         </div>
       </section>
       
       {/* Add spacing to accommodate the property search that overlaps */}
-      <div className="h-24 md:h-28 bg-gray-50"></div>
+      <div className="h-10 md:h-12 bg-gray-50"></div>
     </>
   );
 }
