@@ -85,7 +85,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/about"
+                  to="/about?type=residential"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   About Us
@@ -93,7 +94,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/contact"
+                  to="/contact?type=residential"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Contact Us
@@ -101,7 +103,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/?tag=urgent"
+                  href="/?tag=urgent?type=residential"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Urgency Sales

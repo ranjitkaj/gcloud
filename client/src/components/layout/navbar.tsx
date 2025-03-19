@@ -65,12 +65,12 @@ export default function Navbar() {
             )}
             <Link to="/" className="flex items-center space-x-2">
               <img
-                src="/images/logo.png"
+                src="/Images/logo.png"
                 alt="UrgentSales.in"
                 className="h-12 w-auto"
                 onError={(e) => {
                   console.error('Logo failed to load:', e);
-                  e.currentTarget.src = '/images/logo.png';
+                  e.currentTarget.src = '/Images/logo.png';
                 }}
               />
             </Link>
