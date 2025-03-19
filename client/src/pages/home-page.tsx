@@ -11,6 +11,7 @@ import TopCompanies from '@/components/home/top-companies';
 import Testimonials from '@/components/home/testimonials';
 import MobileApp from '@/components/home/mobile-app';
 import CTASection from '@/components/home/cta-section';
+import ServicesSection from '@/components/home/services-section';
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
       <main className="flex-grow">
         <HeroSection />
         <FeaturedListings />
+        <ServicesSection />
         <RecommendedProperties />
         <HowItWorks />
         <FeaturedAgents />

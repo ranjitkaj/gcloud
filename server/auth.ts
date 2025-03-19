@@ -29,23 +29,24 @@ async function hashPassword(password: string) {
 // Function to send OTP via email
 async function sendEmailOTP(email: string, otp: string) {
   try {
-    // Create a test account using Ethereal (for development)
-    const testAccount = await nodemailer.createTestAccount();
+    // For development, we'll use a simpler approach since Ethereal may have issues
+    // Log the OTP for testing purposes - in production, this would use a real email service
+    console.log(`EMAIL OTP for ${email}: ${otp}`);
     
-    // Create a transporter using the test account
+    // Google SMTP setup - in a real app, we'd use environment variables for credentials
+    // This is just for demo purposes - you would need to enable "Less secure app access" 
+    // or use OAuth2 with a real Gmail account
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      service: 'gmail',
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
+        user: 'your-test-email@gmail.com', // Replace with a real email in production
+        pass: 'your-password'               // Replace with a real password in production
+      }
     });
     
     // Email content
     const mailOptions = {
-      from: '"Real Estate Platform" <verify@realestate.com>',
+      from: '"Real Estate Platform" <noreply@realestate.com>',
       to: email,
       subject: 'Your Verification Code',
       text: `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
@@ -64,17 +65,24 @@ async function sendEmailOTP(email: string, otp: string) {
       `,
     };
     
-    // Send the email
-    const info = await transporter.sendMail(mailOptions);
+    // For development purposes, we'll just log the OTP instead of sending an actual email
+    // In production, uncomment this to actually send the email
+    // await transporter.sendMail(mailOptions);
     
-    // Log the test URL for development/testing
-    console.log(`EMAIL OTP for ${email}: ${otp}`);
-    console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    // Since we're in development mode, we'll display the OTP in the console
+    console.log(`=========================================`);
+    console.log(`OTP VERIFICATION CODE: ${otp}`);
+    console.log(`EMAIL: ${email}`);
+    console.log(`=========================================`);
     
     return true;
   } catch (error) {
     console.error('Error sending email:', error);
-    // Still return true to not block the registration flow (in production, handle this differently)
+    // Still display the OTP in the logs for testing purposes
+    console.log(`=========================================`);
+    console.log(`OTP VERIFICATION CODE: ${otp}`);
+    console.log(`EMAIL: ${email}`);
+    console.log(`=========================================`);
     return true;
   }
 }
