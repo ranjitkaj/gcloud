@@ -14,7 +14,7 @@ import {
 import { z } from "zod";
 import * as express from 'express';
 import { db } from './db';
-import { count } from 'drizzle-orm';
+import { count, sql } from 'drizzle-orm';
 import * as schema from '@shared/schema';
 import { 
   getNotifications, 
@@ -96,19 +96,17 @@ const getDatabaseTablesInfo = async (req: Request, res: Response) => {
     const reviewCount = (await db.select({ count: count() }).from(schema.agentReviews))[0].count;
     
     // Return the stats
-    return res.json({
-      tables: [
-        { name: 'users', count: userCount },
-        { name: 'properties', count: propertyCount },
-        { name: 'agents', count: agentCount },
-        { name: 'companies', count: companyCount },
-        { name: 'bookings', count: bookingCount },
-        { name: 'inquiries', count: inquiryCount },
-        { name: 'notifications', count: notificationCount },
-        { name: 'otps', count: otpCount },
-        { name: 'agent_reviews', count: reviewCount }
-      ]
-    });
+    return res.json([
+      { tableName: 'users', rowCount: userCount },
+      { tableName: 'properties', rowCount: propertyCount },
+      { tableName: 'agents', rowCount: agentCount },
+      { tableName: 'companies', rowCount: companyCount },
+      { tableName: 'bookings', rowCount: bookingCount },
+      { tableName: 'inquiries', rowCount: inquiryCount },
+      { tableName: 'notifications', rowCount: notificationCount },
+      { tableName: 'otps', rowCount: otpCount },
+      { tableName: 'agent_reviews', rowCount: reviewCount }
+    ]);
   } catch (error) {
     console.error('Error fetching database info:', error);
     res.status(500).json({ error: 'Failed to fetch database information' });
@@ -175,12 +173,7 @@ const getTableRecords = async (req: Request, res: Response) => {
 
     return res.json({
       records,
-      pagination: {
-        total: totalCount,
-        page,
-        limit,
-        pages: Math.ceil(totalCount / limit)
-      }
+      total: totalCount
     });
   } catch (error) {
     console.error(`Error fetching records from table:`, error);

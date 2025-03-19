@@ -51,6 +51,27 @@ export default function AdminDashboard() {
     queryKey: ['/api/properties/all'],
     enabled: !!user && user.role === 'admin',
   });
+  
+  // Fetch database tables info
+  const { data: dbTablesInfo, isLoading: dbTablesLoading } = useQuery({
+    queryKey: ['/api/admin/database/tables'],
+    enabled: !!user && user.role === 'admin',
+  });
+  
+  // State for table records viewing
+  const [selectedTable, setSelectedTable] = React.useState<string | null>(null);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [recordsPerPage, setRecordsPerPage] = React.useState(10);
+  
+  // Fetch records for selected table
+  const { 
+    data: tableRecords, 
+    isLoading: tableRecordsLoading,
+    refetch: refetchTableRecords
+  } = useQuery({
+    queryKey: ['/api/admin/database/tables', selectedTable, currentPage, recordsPerPage],
+    enabled: !!selectedTable && !!user && user.role === 'admin',
+  });
 
   // Filter properties based on search term
   const filteredProperties = React.useMemo(() => {
@@ -178,6 +199,10 @@ export default function AdminDashboard() {
           </TabsTrigger>
           <TabsTrigger value="all">All Properties</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="database">
+            <Database className="mr-2 h-4 w-4" />
+            Database
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="pending">
@@ -360,6 +385,147 @@ export default function AdminDashboard() {
               <div className="text-center py-4 text-muted-foreground">
                 User management coming soon
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="database">
+          <Card>
+            <CardHeader>
+              <CardTitle>Database Management</CardTitle>
+              <CardDescription>
+                View database tables and records
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {dbTablesLoading ? (
+                <div className="text-center py-4">Loading database information...</div>
+              ) : !dbTablesInfo ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  Unable to load database information. Please check your permissions.
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="flex flex-wrap gap-2">
+                    {dbTablesInfo.map((table: { tableName: string, rowCount: number }) => (
+                      <Button
+                        key={table.tableName}
+                        variant={selectedTable === table.tableName ? "default" : "outline"}
+                        onClick={() => {
+                          setSelectedTable(table.tableName);
+                          setCurrentPage(1);
+                        }}
+                        className="flex items-center"
+                      >
+                        <Database className="mr-2 h-4 w-4" />
+                        {table.tableName}
+                        <Badge className="ml-2" variant="secondary">
+                          {table.rowCount}
+                        </Badge>
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  {selectedTable && (
+                    <div className="mt-6 border rounded-lg">
+                      <div className="p-4 bg-muted/50 border-b flex justify-between items-center">
+                        <h3 className="font-medium flex items-center">
+                          <Database className="mr-2 h-4 w-4" />
+                          {selectedTable}
+                        </h3>
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground">Rows per page:</span>
+                            <select
+                              value={recordsPerPage}
+                              onChange={(e) => {
+                                setRecordsPerPage(Number(e.target.value));
+                                setCurrentPage(1);
+                              }}
+                              className="p-1 text-sm border rounded"
+                            >
+                              {[5, 10, 20, 50, 100].map((value) => (
+                                <option key={value} value={value}>
+                                  {value}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </Button>
+                            <span className="mx-2 text-sm">
+                              Page {currentPage} of {Math.ceil((tableRecords?.total || 0) / recordsPerPage) || 1}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                setCurrentPage((prev) =>
+                                  Math.min(prev + 1, Math.ceil((tableRecords?.total || 0) / recordsPerPage) || 1)
+                                )
+                              }
+                              disabled={
+                                currentPage ===
+                                Math.ceil((tableRecords?.total || 0) / recordsPerPage) || !tableRecords?.records.length
+                              }
+                            >
+                              Next
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {tableRecordsLoading ? (
+                        <div className="text-center py-8">Loading records...</div>
+                      ) : !tableRecords?.records.length ? (
+                        <div className="text-center py-8 text-muted-foreground">No records found</div>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                {Object.keys(tableRecords.records[0]).map((key) => (
+                                  <TableHead key={key}>{key}</TableHead>
+                                ))}
+                                <TableHead className="w-24">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {tableRecords.records.map((record: any, rowIndex: number) => (
+                                <TableRow key={rowIndex}>
+                                  {Object.values(record).map((value: any, cellIndex: number) => (
+                                    <TableCell key={cellIndex}>
+                                      {value === null 
+                                        ? <span className="text-muted-foreground italic">null</span> 
+                                        : Array.isArray(value)
+                                        ? JSON.stringify(value)
+                                        : typeof value === 'object' && value !== null
+                                        ? JSON.stringify(value)
+                                        : String(value)}
+                                    </TableCell>
+                                  ))}
+                                  <TableCell>
+                                    <Button variant="ghost" size="sm">
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
