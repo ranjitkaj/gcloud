@@ -16,7 +16,8 @@ import { db } from "./db";
 import { eq, and, desc, gte, lte, inArray, sql, or, like, exists, not } from "drizzle-orm";
 import session from "express-session";
 import createPgSession from "connect-pg-simple";
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import { randomInt } from "crypto";
 
 // Create PostgreSQL session store
@@ -237,12 +238,12 @@ export class DbStorage implements IStorage {
 
   async getAgentsBySpecialization(specialization: string): Promise<Agent[]> {
     return await db.select().from(agents)
-      .where(eq(agents.specialization, specialization));
+      .where(sql`${agents.specializations} @> ARRAY[${specialization}]::text[]`);
   }
 
   async getAgentsByArea(area: string): Promise<Agent[]> {
     return await db.select().from(agents)
-      .where(sql`${agents.areasServed} @> ARRAY[${area}]::text[]`);
+      .where(sql`${agents.areas} @> ARRAY[${area}]::text[]`);
   }
 
   async searchAgents(query: { 
@@ -254,11 +255,11 @@ export class DbStorage implements IStorage {
     let conditions = [];
     
     if (query.specialization) {
-      conditions.push(eq(agents.specialization, query.specialization));
+      conditions.push(sql`${agents.specializations} @> ARRAY[${query.specialization}]::text[]`);
     }
     
     if (query.area) {
-      conditions.push(sql`${agents.areasServed} @> ARRAY[${query.area}]::text[]`);
+      conditions.push(sql`${agents.areas} @> ARRAY[${query.area}]::text[]`);
     }
     
     if (query.minExperience) {
@@ -266,7 +267,7 @@ export class DbStorage implements IStorage {
     }
     
     if (query.minRating) {
-      conditions.push(gte(agents.averageRating, query.minRating));
+      conditions.push(gte(agents.rating, query.minRating));
     }
     
     return await db.select().from(agents)
@@ -596,15 +597,15 @@ export class DbStorage implements IStorage {
 
   async getInquiriesByUser(userId: number, asReceiver: boolean = false): Promise<Inquiry[]> {
     if (asReceiver) {
-      return await db.select().from(inquiries).where(eq(inquiries.recipientId, userId));
+      return await db.select().from(inquiries).where(eq(inquiries.toUserId, userId));
     } else {
-      return await db.select().from(inquiries).where(eq(inquiries.userId, userId));
+      return await db.select().from(inquiries).where(eq(inquiries.fromUserId, userId));
     }
   }
 
   async markInquiryAsRead(id: number): Promise<Inquiry | undefined> {
     const result = await db.update(inquiries)
-      .set({ isRead: true })
+      .set({ status: 'read' })
       .where(eq(inquiries.id, id))
       .returning();
     return result[0];
@@ -619,10 +620,10 @@ export class DbStorage implements IStorage {
     if (agent) {
       const reviews = await this.getAgentReviews(review.agentId);
       const totalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
-      const averageRating = totalRating / reviews.length;
+      const newRating = totalRating / reviews.length;
       
       await this.updateAgent(agent.id, {
-        averageRating,
+        rating: newRating,
         reviewCount: reviews.length
       });
     }
@@ -677,7 +678,8 @@ export class DbStorage implements IStorage {
       SELECT COUNT(*) as count FROM notifications 
       WHERE user_id = ${userId} AND is_read = false
     `);
-    return parseInt(result.rows?.[0]?.count || '0');
+    const countValue = result.rows && result.rows[0] ? result.rows[0].count : 0;
+    return typeof countValue === 'number' ? countValue : parseInt(countValue.toString() || '0');
   }
 
   async markNotificationAsRead(notificationId: number): Promise<any> {

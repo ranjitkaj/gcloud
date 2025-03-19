@@ -1,7 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import * as schema from '@shared/schema';
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import { log } from './vite';
 
 // Create a PostgreSQL connection pool
