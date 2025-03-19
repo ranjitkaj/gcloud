@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "wouter";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -365,8 +365,7 @@ function CompanyMiniCard({ company }: { company: Company }) {
 }
 
 export function MegaMenu({ isMobile = false }: MegaMenuProps) {
-  const location = useLocation();
-  const pathname = location.pathname;
+  const [pathname, setLocation] = useLocation(); // Using wouter's useLocation
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   
   // Fetch featured properties

@@ -40,14 +40,8 @@ export default function Navbar() {
             <MegaMenu />
           </div>
 
-          {/* Navigation Links and Post Property Button */}
+          {/* Post Property Button and Support Icon */}
           <div className="hidden md:flex items-center space-x-3 mr-3">
-            <Link to="/about" className="inline-flex text-gray-700 hover:text-primary font-medium py-2 px-3 rounded-lg transition-colors">
-              About
-            </Link>
-            <Link to="/contact" className="inline-flex text-gray-700 hover:text-primary font-medium py-2 px-3 rounded-lg transition-colors">
-              Contact
-            </Link>
             <Link to="/post-property-free" className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
               Post Property FREE
             </Link>
@@ -152,14 +146,6 @@ export default function Navbar() {
             <Link to="/post-property-free" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center">
               <PlusCircle className="mr-2 h-4 w-4" />
               Post Property FREE
-            </Link>
-            <Link to="/about" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
-              <Home className="mr-2 h-4 w-4" />
-              About Us
-            </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">
-              <Mail className="mr-2 h-4 w-4" />
-              Contact Us
             </Link>
             {user && (
               <Link to="/recommendations" className="text-gray-700 hover:text-primary font-medium transition-colors py-2 flex items-center mt-2">

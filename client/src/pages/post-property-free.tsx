@@ -254,7 +254,7 @@ export default function PostPropertyFree() {
       title: data.title,
       description: data.description,
       propertyType: data.propertyType,
-      rentOrSale: data.forSaleOrRent.toLowerCase(),
+      rent_or_sale: data.forSaleOrRent.toLowerCase(), // Fixed field name to match database column
       price: price,
       // If urgency sale, calculate 25% discount
       discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
@@ -1297,6 +1297,189 @@ export default function PostPropertyFree() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Property Listing Roadmap */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4">Your Property Listing Journey</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Follow these simple steps to get your property in front of millions of potential buyers and tenants
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <div className="bg-white rounded-xl p-6 shadow-md relative">
+                <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold mb-4">1</div>
+                <h3 className="text-xl font-semibold mb-3">Add Your Details</h3>
+                <p className="text-gray-600">
+                  Fill out the basic information about your property including location, size, and amenities.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-xl p-6 shadow-md relative">
+                <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold mb-4">2</div>
+                <h3 className="text-xl font-semibold mb-3">Upload Photos</h3>
+                <p className="text-gray-600">
+                  Add high-quality photos of your property to attract more potential buyers or tenants.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-xl p-6 shadow-md relative">
+                <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold mb-4">3</div>
+                <h3 className="text-xl font-semibold mb-3">Get Connected</h3>
+                <p className="text-gray-600">
+                  Start receiving inquiries from verified buyers and schedule property visits.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4">Success Stories</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Join thousands of satisfied property owners who successfully listed their properties
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-primary font-bold">RK</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Rajesh Kumar</h4>
+                    <p className="text-sm text-gray-500">Delhi</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 italic">
+                  "I received 15 inquiries within the first week of listing my apartment. The process was simple and effective!"
+                </p>
+                <div className="flex items-center mt-3">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-primary font-bold">SP</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Sunita Patel</h4>
+                    <p className="text-sm text-gray-500">Mumbai</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 italic">
+                  "Sold my property in just 3 weeks! The platform connected me with serious buyers who were genuinely interested."
+                </p>
+                <div className="flex items-center mt-3">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-primary font-bold">AJ</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Arun Joshi</h4>
+                    <p className="text-sm text-gray-500">Bangalore</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 italic">
+                  "As a first-time seller, I found the process extremely user-friendly. The customer support team was very helpful throughout."
+                </p>
+                <div className="flex items-center mt-3">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Get answers to common questions about listing your property
+              </p>
+            </div>
+            
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="text-left font-medium">
+                    Is it really free to list my property?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    Yes, our basic listing is completely free. You can upload your property details and photos at no cost. 
+                    We also offer premium listing options with enhanced visibility for faster results.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="item-2">
+                  <AccordionTrigger className="text-left font-medium">
+                    How long will my property listing stay active?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    Free listings remain active for 60 days. Premium listings stay active until your property is sold or rented, 
+                    or you choose to remove the listing.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="item-3">
+                  <AccordionTrigger className="text-left font-medium">
+                    Can I edit my listing after it's published?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    Yes, you can edit your property details, update photos, and change pricing at any time through your dashboard.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="item-4">
+                  <AccordionTrigger className="text-left font-medium">
+                    How do I manage inquiries from potential buyers?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    All inquiries will appear in your dashboard. You'll also receive email notifications for new inquiries. 
+                    You can respond directly through our platform or contact interested buyers using your preferred method.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="item-5">
+                  <AccordionTrigger className="text-left font-medium">
+                    What documents should I have ready when listing my property?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    It's helpful to have property ownership documents, floor plans, NOC certificates (if applicable), 
+                    and high-quality photos of your property ready before listing.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>
