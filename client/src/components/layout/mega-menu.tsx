@@ -36,7 +36,7 @@ import {
   Bed,
   Bath,
   Maximize,
-  Shield
+  Shield,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Property, Agent, Company } from "@shared/schema";
@@ -51,7 +51,7 @@ const buyMenuItems = [
     icon: <Home className="h-5 w-5 text-primary" />,
     query: { propertyType: "house" },
     highlights: ["Family-friendly", "Modern amenities", "Ready to move in"],
-    features: ["Community living", "Security", "Parks & recreation"]
+    features: ["Community living", "Security", "Parks & recreation"],
   },
   {
     title: "Apartments & Flats",
@@ -60,7 +60,7 @@ const buyMenuItems = [
     icon: <Building className="h-5 w-5 text-primary" />,
     query: { propertyType: "apartment" },
     highlights: ["Low maintenance", "Great investment", "Urban living"],
-    features: ["24x7 security", "Parking", "Clubhouse"]
+    features: ["24x7 security", "Parking", "Clubhouse"],
   },
   {
     title: "Villas & Independent Houses",
@@ -69,7 +69,7 @@ const buyMenuItems = [
     icon: <Building2 className="h-5 w-5 text-primary" />,
     query: { propertyType: "villa" },
     highlights: ["Luxury living", "Privacy", "Premium neighborhoods"],
-    features: ["Private garden", "Swimming pools", "Spacious interiors"]
+    features: ["Private garden", "Swimming pools", "Spacious interiors"],
   },
   {
     title: "Plots & Land",
@@ -77,8 +77,12 @@ const buyMenuItems = [
     description: "Investment plots and land parcels",
     icon: <MapPin className="h-5 w-5 text-primary" />,
     query: { propertyType: "plot" },
-    highlights: ["Appreciate over time", "Build custom home", "Asset investment"],
-    features: ["Clear titles", "Development potential", "Prime locations"]
+    highlights: [
+      "Appreciate over time",
+      "Build custom home",
+      "Asset investment",
+    ],
+    features: ["Clear titles", "Development potential", "Prime locations"],
   },
   {
     title: "Commercial Properties",
@@ -87,7 +91,7 @@ const buyMenuItems = [
     icon: <Briefcase className="h-5 w-5 text-primary" />,
     query: { propertyType: "commercial" },
     highlights: ["Business growth", "Strategic locations", "Rental income"],
-    features: ["Infrastructure", "Tech-ready", "Business districts"]
+    features: ["Infrastructure", "Tech-ready", "Business districts"],
   },
   {
     title: "Newly Launched Projects",
@@ -96,7 +100,7 @@ const buyMenuItems = [
     icon: <TrendingUp className="h-5 w-5 text-primary" />,
     query: { status: "new_launch" },
     highlights: ["Pre-launch prices", "Modern designs", "Future appreciation"],
-    features: ["Smart homes", "Green buildings", "Future-ready"]
+    features: ["Smart homes", "Green buildings", "Future-ready"],
   },
   {
     title: "Premium Properties",
@@ -105,7 +109,7 @@ const buyMenuItems = [
     icon: <Star className="h-5 w-5 text-primary" />,
     query: { premium: true },
     highlights: ["Exclusive listings", "Ultra-luxury", "Prestigious locations"],
-    features: ["Concierge service", "Designer interiors", "Brand associations"]
+    features: ["Concierge service", "Designer interiors", "Brand associations"],
   },
   {
     title: "Verified Properties",
@@ -113,8 +117,16 @@ const buyMenuItems = [
     description: "All details verified by our team",
     icon: <CheckCircle2 className="h-5 w-5 text-primary" />,
     query: { verified: true },
-    highlights: ["Reliable information", "Legal clarity", "Smooth transactions"],
-    features: ["Verified documents", "Transparent dealings", "Legal assistance"]
+    highlights: [
+      "Reliable information",
+      "Legal clarity",
+      "Smooth transactions",
+    ],
+    features: [
+      "Verified documents",
+      "Transparent dealings",
+      "Legal assistance",
+    ],
   },
 ];
 
@@ -126,8 +138,12 @@ const agentMenuItems = [
     description: "Connect with our highest rated property experts",
     icon: <Star className="h-5 w-5 text-primary" />,
     query: { sort: "rating" },
-    highlights: ["Customer satisfaction", "Proven expertise", "Trusted service"],
-    features: ["5-star ratings", "Client testimonials", "Performance metrics"]
+    highlights: [
+      "Customer satisfaction",
+      "Proven expertise",
+      "Trusted service",
+    ],
+    features: ["5-star ratings", "Client testimonials", "Performance metrics"],
   },
   {
     title: "Featured Agents",
@@ -136,7 +152,7 @@ const agentMenuItems = [
     icon: <Medal className="h-5 w-5 text-primary" />,
     query: { featured: true },
     highlights: ["Editor's choice", "Premium service", "Top performers"],
-    features: ["Premium service", "Curated selection", "Special incentives"]
+    features: ["Premium service", "Curated selection", "Special incentives"],
   },
   {
     title: "Agents by Area",
@@ -144,8 +160,12 @@ const agentMenuItems = [
     description: "Find specialists in your preferred location",
     icon: <MapPinned className="h-5 w-5 text-primary" />,
     query: { view: "by-area" },
-    highlights: ["Local expertise", "Area specialists", "Neighborhood knowledge"],
-    features: ["Market insights", "Local connections", "Area-specific data"]
+    highlights: [
+      "Local expertise",
+      "Area specialists",
+      "Neighborhood knowledge",
+    ],
+    features: ["Market insights", "Local connections", "Area-specific data"],
   },
   {
     title: "Most Experienced",
@@ -154,7 +174,11 @@ const agentMenuItems = [
     icon: <GraduationCap className="h-5 w-5 text-primary" />,
     query: { sort: "experience" },
     highlights: ["Industry veterans", "Market wisdom", "Seasoned negotiators"],
-    features: ["Transaction history", "Market cycles experience", "Long-term clients"]
+    features: [
+      "Transaction history",
+      "Market cycles experience",
+      "Long-term clients",
+    ],
   },
   {
     title: "Most Deals Closed",
@@ -163,7 +187,7 @@ const agentMenuItems = [
     icon: <ThumbsUp className="h-5 w-5 text-primary" />,
     query: { sort: "deals" },
     highlights: ["Proven results", "High volume", "Efficiency"],
-    features: ["Transaction analytics", "Success rate", "Fast closings"]
+    features: ["Transaction analytics", "Success rate", "Fast closings"],
   },
   {
     title: "Newly Joined",
@@ -172,7 +196,7 @@ const agentMenuItems = [
     icon: <Clock className="h-5 w-5 text-primary" />,
     query: { sort: "newest" },
     highlights: ["Fresh perspective", "Motivated service", "Extra attention"],
-    features: ["Digital savvy", "Modern approach", "Special promotions"]
+    features: ["Digital savvy", "Modern approach", "Special promotions"],
   },
 ];
 
@@ -185,7 +209,11 @@ const companyMenuItems = [
     icon: <Award className="h-5 w-5 text-primary" />,
     query: { sort: "rating" },
     highlights: ["Industry leaders", "Quality standards", "Trusted brands"],
-    features: ["Corporate guarantee", "Standardized process", "After-sales support"]
+    features: [
+      "Corporate guarantee",
+      "Standardized process",
+      "After-sales support",
+    ],
   },
   {
     title: "By City",
@@ -193,8 +221,12 @@ const companyMenuItems = [
     description: "Find reputable agencies in your city",
     icon: <MapPin className="h-5 w-5 text-primary" />,
     query: { view: "by-city" },
-    highlights: ["Local presence", "City specialists", "Neighborhood expertise"],
-    features: ["Local offices", "City-wide network", "Community involvement"]
+    highlights: [
+      "Local presence",
+      "City specialists",
+      "Neighborhood expertise",
+    ],
+    features: ["Local offices", "City-wide network", "Community involvement"],
   },
   {
     title: "Most Listings",
@@ -203,7 +235,7 @@ const companyMenuItems = [
     icon: <Layers3 className="h-5 w-5 text-primary" />,
     query: { sort: "listings" },
     highlights: ["Wide selection", "Market coverage", "Diverse options"],
-    features: ["Extensive inventory", "Market share", "Category leadership"]
+    features: ["Extensive inventory", "Market share", "Category leadership"],
   },
   {
     title: "Established Agencies",
@@ -212,7 +244,11 @@ const companyMenuItems = [
     icon: <Landmark className="h-5 w-5 text-primary" />,
     query: { sort: "established" },
     highlights: ["Legacy brands", "Market pioneers", "Proven stability"],
-    features: ["Institutional knowledge", "Historical insights", "Multi-generational clients"]
+    features: [
+      "Institutional knowledge",
+      "Historical insights",
+      "Multi-generational clients",
+    ],
   },
   {
     title: "Verified Companies",
@@ -220,8 +256,12 @@ const companyMenuItems = [
     description: "All credentials verified by our team",
     icon: <CheckCircle2 className="h-5 w-5 text-primary" />,
     query: { verified: true },
-    highlights: ["Authentic partners", "Legal compliance", "Secure transactions"],
-    features: ["KYC verified", "Legal documentation", "Regulatory compliance"]
+    highlights: [
+      "Authentic partners",
+      "Legal compliance",
+      "Secure transactions",
+    ],
+    features: ["KYC verified", "Legal documentation", "Regulatory compliance"],
   },
 ];
 
@@ -232,16 +272,28 @@ const projectMenuItems = [
     href: "/projects/new-launches",
     description: "Newly launched residential projects",
     icon: <TrendingUp className="h-5 w-5 text-primary" />,
-    highlights: ["Pre-launch offers", "Early booking discounts", "Special schemes"],
-    features: ["Premium locations", "Modern architecture", "Smart home features"]
+    highlights: [
+      "Pre-launch offers",
+      "Early booking discounts",
+      "Special schemes",
+    ],
+    features: [
+      "Premium locations",
+      "Modern architecture",
+      "Smart home features",
+    ],
   },
   {
     title: "Luxury Projects",
     href: "/projects/luxury",
     description: "Premium residential developments",
     icon: <Star className="h-5 w-5 text-primary" />,
-    highlights: ["High-end amenities", "Exclusive locations", "Designer interiors"],
-    features: ["Concierge services", "Private pools", "Premium security"]
+    highlights: [
+      "High-end amenities",
+      "Exclusive locations",
+      "Designer interiors",
+    ],
+    features: ["Concierge services", "Private pools", "Premium security"],
   },
   {
     title: "Affordable Housing",
@@ -249,24 +301,32 @@ const projectMenuItems = [
     description: "Budget-friendly housing projects",
     icon: <Home className="h-5 w-5 text-primary" />,
     highlights: ["Cost-effective", "Good connectivity", "Essential amenities"],
-    features: ["Government schemes", "Easy financing", "Value for money"]
+    features: ["Government schemes", "Easy financing", "Value for money"],
   },
   {
     title: "Township Projects",
     href: "/projects/townships",
     description: "Self-contained residential townships",
     icon: <Building2 className="h-5 w-5 text-primary" />,
-    highlights: ["All-inclusive living", "Multiple unit types", "Comprehensive facilities"],
-    features: ["Schools", "Shopping centers", "Healthcare facilities"]
+    highlights: [
+      "All-inclusive living",
+      "Multiple unit types",
+      "Comprehensive facilities",
+    ],
+    features: ["Schools", "Shopping centers", "Healthcare facilities"],
   },
   {
     title: "Commercial Projects",
     href: "/projects/commercial",
     description: "Office spaces and retail developments",
     icon: <Briefcase className="h-5 w-5 text-primary" />,
-    highlights: ["Business hubs", "Strategic locations", "Modern infrastructure"],
-    features: ["Tech parks", "Corporate offices", "Retail spaces"]
-  }
+    highlights: [
+      "Business hubs",
+      "Strategic locations",
+      "Modern infrastructure",
+    ],
+    features: ["Tech parks", "Corporate offices", "Retail spaces"],
+  },
 ];
 
 // Mega menu items for Resources
@@ -315,12 +375,20 @@ function PropertyMiniCard({ property }: { property: Property }) {
     <div className="border rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="relative h-24">
         <img
-          src={property.imageUrls?.[0] || 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}
+          src={
+            property.imageUrls?.[0] ||
+            "https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+          }
           alt={property.title}
           className="w-full h-full object-cover"
         />
         {property.premium && (
-          <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-500 text-white">Premium</Badge>
+          <Badge
+            variant="secondary"
+            className="absolute top-2 right-2 bg-amber-500 text-white"
+          >
+            Premium
+          </Badge>
         )}
       </div>
       <div className="p-2">
@@ -329,7 +397,7 @@ function PropertyMiniCard({ property }: { property: Property }) {
         <div className="flex items-center justify-between mt-1">
           <span className="text-xs font-medium flex items-center">
             <IndianRupee className="h-3 w-3 mr-0.5" />
-            {property.price.toLocaleString('en-IN')}
+            {property.price.toLocaleString("en-IN")}
           </span>
           <div className="flex items-center space-x-1">
             {property.bedrooms && (
@@ -339,7 +407,10 @@ function PropertyMiniCard({ property }: { property: Property }) {
               </span>
             )}
             {property.bathrooms && (
-              <span className="text-xs flex items-center ml-1" title="Bathrooms">
+              <span
+                className="text-xs flex items-center ml-1"
+                title="Bathrooms"
+              >
                 <Bath className="h-3 w-3 mr-0.5" />
                 {property.bathrooms}
               </span>
@@ -368,12 +439,19 @@ function AgentMiniCard({ agent }: { agent: Agent }) {
       </div>
       <div className="min-w-0">
         <h3 className="font-medium text-xs truncate">Agent {agent.userId}</h3>
-        <p className="text-xs text-gray-500 truncate">{agent.specializations?.join(', ') || 'Property Expert'}</p>
+        <p className="text-xs text-gray-500 truncate">
+          {agent.specializations?.join(", ") || "Property Expert"}
+        </p>
         <div className="flex items-center mt-0.5">
           <div className="flex">
-            {[...Array(Math.min(5, Math.round(agent.rating || 0)))].map((_, i) => (
-              <Star key={i} className="h-2.5 w-2.5 text-amber-500 fill-amber-500" />
-            ))}
+            {[...Array(Math.min(5, Math.round(agent.rating || 0)))].map(
+              (_, i) => (
+                <Star
+                  key={i}
+                  className="h-2.5 w-2.5 text-amber-500 fill-amber-500"
+                />
+              ),
+            )}
           </div>
           <span className="text-xs ml-1">{agent.reviewCount || 0} reviews</span>
         </div>
@@ -394,7 +472,10 @@ function CompanyMiniCard({ company }: { company: Company }) {
         <p className="text-xs text-gray-500 truncate">{company.city}</p>
         <div className="flex items-center mt-0.5">
           {company.verified && (
-            <Badge variant="outline" className="text-[8px] h-4 border-green-500 text-green-600 flex items-center">
+            <Badge
+              variant="outline"
+              className="text-[8px] h-4 border-green-500 text-green-600 flex items-center"
+            >
               <Shield className="h-2 w-2 mr-0.5" /> Verified
             </Badge>
           )}
@@ -414,72 +495,94 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
   // Fetch featured properties
   const { data: properties = [] } = useQuery<Property[]>({
-    queryKey: ['/api/properties/featured'],
-    enabled: !isMobile
+    queryKey: ["/api/properties/featured"],
+    enabled: !isMobile,
   });
 
   // Fetch featured agents
   const { data: agents = [] } = useQuery<Agent[]>({
-    queryKey: ['/api/agents/featured'],
-    enabled: !isMobile
+    queryKey: ["/api/agents/featured"],
+    enabled: !isMobile,
   });
 
   // Fetch featured companies
   const { data: companies = [] } = useQuery<Company[]>({
-    queryKey: ['/api/companies/featured'],
-    enabled: !isMobile
+    queryKey: ["/api/companies/featured"],
+    enabled: !isMobile,
   });
 
   // Create a search URL with parameters
   const createSearchUrl = (category: any) => {
-    if (!category || !category.query) return '/search-results';
-    
+    if (!category || !category.query) return "/search-results";
+
     const searchParams = new URLSearchParams();
-    
+
     // Add all query parameters to the search URL
     for (const [key, value] of Object.entries(category.query)) {
       searchParams.append(key, String(value));
     }
-    
+
     return `/search-results?${searchParams.toString()}`;
   };
-  
+
   // Filter properties based on the active category query
   const getFilteredProperties = (category: any) => {
     if (!category || !category.query) return [];
 
-    return properties.filter(property => {
-      for (const [key, value] of Object.entries(category.query)) {
-        if (key === 'propertyType' && property.propertyType !== value) return false;
-        if (key === 'premium' && property.premium !== value) return false;
-        if (key === 'verified' && property.verified !== value) return false;
-        if (key === 'forSaleOrRent' && property.rentOrSale !== value) return false;
-        // Add more filters as needed
-      }
-      return true;
-    }).slice(0, 2); // Display only 2 properties per category
+    return properties
+      .filter((property) => {
+        for (const [key, value] of Object.entries(category.query)) {
+          if (key === "propertyType" && property.propertyType !== value)
+            return false;
+          if (key === "premium" && property.premium !== value) return false;
+          if (key === "verified" && property.verified !== value) return false;
+          if (key === "forSaleOrRent" && property.rentOrSale !== value)
+            return false;
+          // Add more filters as needed
+        }
+        return true;
+      })
+      .slice(0, 2); // Display only 2 properties per category
   };
 
   if (isMobile) {
     // Mobile view with simple list - no complex navigation components
     return (
       <div className="flex flex-col space-y-3 pt-2 pb-3">
-        <Link to="/properties" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-          Buy
+        <Link
+          to="/properties"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
+          Buyer
         </Link>
-        <Link to="/agents" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link
+          to="/agents"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
           Agents
         </Link>
-        <Link to="/companies" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link
+          to="/companies"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
           Companies
         </Link>
-        <Link to="/add-property" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
-          Sell
+        <Link
+          to="/add-property"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
+          Seller
         </Link>
-        <Link to="/projects" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link
+          to="/projects"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
           Projects
         </Link>
-        <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
+        <Link
+          to="/resources"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
           Resources
         </Link>
       </div>
@@ -494,27 +597,33 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              pathname.startsWith("/properties") && "text-primary font-medium"
+              pathname.startsWith("/properties") && "text-primary font-medium",
             )}
           >
-            Buy
+            Buyer
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="grid w-[850px] grid-cols-6 p-4 md:grid-cols-6">
               <div className="col-span-2 p-2">
-                <div className="mb-2 mt-1 text-base font-medium">Property Types</div>
+                <div className="mb-2 mt-1 text-base font-medium">
+                  Property Types
+                </div>
                 <div className="space-y-1">
                   {buyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link to={createSearchUrl(item)}> {/* Use dynamic search URL with filters */}
-                          <div 
+                        <Link to={createSearchUrl(item)}>
+                          {" "}
+                          {/* Use dynamic search URL with filters */}
+                          <div
                             className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted"
                             onMouseEnter={() => setActiveCategory(item.title)}
                           >
                             {item.icon}
                             <div>
-                              <div className="text-sm font-medium">{item.title}</div>
+                              <div className="text-sm font-medium">
+                                {item.title}
+                              </div>
                               <p className="line-clamp-1 text-xs text-muted-foreground">
                                 {item.description}
                               </p>
@@ -536,29 +645,47 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     <div className="mb-3">
                       <h4 className="text-sm font-medium mb-1.5">Highlights</h4>
                       <div className="flex flex-wrap gap-1.5">
-                        {buyMenuItems.find(item => item.title === activeCategory)?.highlights.map((highlight, idx) => (
-                          <Badge key={idx} variant="outline" className="bg-primary-50 text-xs">
-                            {highlight}
-                          </Badge>
-                        ))}
+                        {buyMenuItems
+                          .find((item) => item.title === activeCategory)
+                          ?.highlights.map((highlight, idx) => (
+                            <Badge
+                              key={idx}
+                              variant="outline"
+                              className="bg-primary-50 text-xs"
+                            >
+                              {highlight}
+                            </Badge>
+                          ))}
                       </div>
                     </div>
 
                     <div className="mb-4">
                       <h4 className="text-sm font-medium mb-1.5">Features</h4>
                       <div className="grid grid-cols-2 gap-1">
-                        {buyMenuItems.find(item => item.title === activeCategory)?.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-center text-xs text-gray-600">
-                            <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" /> {feature}
-                          </div>
-                        ))}
+                        {buyMenuItems
+                          .find((item) => item.title === activeCategory)
+                          ?.features.map((feature, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center text-xs text-gray-600"
+                            >
+                              <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />{" "}
+                              {feature}
+                            </div>
+                          ))}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      {getFilteredProperties(buyMenuItems.find(item => item.title === activeCategory)).map((property) => (
+                      {getFilteredProperties(
+                        buyMenuItems.find(
+                          (item) => item.title === activeCategory,
+                        ),
+                      ).map((property) => (
                         <div key={property.id} className="col-span-1">
-                          <Link to={`/properties/${property.id}`}> {/* Changed to react-router-dom Link */}
+                          <Link to={`/properties/${property.id}`}>
+                            {" "}
+                            {/* Changed to react-router-dom Link */}
                             <PropertyMiniCard property={property} />
                           </Link>
                         </div>
@@ -569,7 +696,9 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   <div className="grid grid-cols-2 gap-3">
                     {properties.slice(0, 4).map((property) => (
                       <div key={property.id} className="col-span-1">
-                        <Link to={`/properties/${property.id}`}> {/* Changed to react-router-dom Link */}
+                        <Link to={`/properties/${property.id}`}>
+                          {" "}
+                          {/* Changed to react-router-dom Link */}
                           <PropertyMiniCard property={property} />
                         </Link>
                       </div>
@@ -585,7 +714,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              pathname.startsWith("/agents") && "text-primary font-medium"
+              pathname.startsWith("/agents") && "text-primary font-medium",
             )}
           >
             Agents
@@ -593,16 +722,22 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuContent>
             <div className="grid w-[600px] grid-cols-6 p-4 md:grid-cols-6">
               <div className="col-span-2 p-2">
-                <div className="mb-2 mt-1 text-base font-medium">Find Agents</div>
+                <div className="mb-2 mt-1 text-base font-medium">
+                  Find Agents
+                </div>
                 <div className="space-y-1">
                   {agentMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link to={createSearchUrl(item)}> {/* Use dynamic search URL with filters */}
+                        <Link to={createSearchUrl(item)}>
+                          {" "}
+                          {/* Use dynamic search URL with filters */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
-                              <div className="text-sm font-medium">{item.title}</div>
+                              <div className="text-sm font-medium">
+                                {item.title}
+                              </div>
                               <p className="line-clamp-1 text-xs text-muted-foreground">
                                 {item.description}
                               </p>
@@ -622,7 +757,9 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {agents.slice(0, 4).map((agent) => (
                     <div key={agent.id} className="col-span-1">
-                      <Link to={`/agents/${agent.id}`}> {/* Changed to react-router-dom Link */}
+                      <Link to={`/agents/${agent.id}`}>
+                        {" "}
+                        {/* Changed to react-router-dom Link */}
                         <AgentMiniCard agent={agent} />
                       </Link>
                     </div>
@@ -637,7 +774,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              pathname.startsWith("/companies") && "text-primary font-medium"
+              pathname.startsWith("/companies") && "text-primary font-medium",
             )}
           >
             Companies
@@ -645,16 +782,22 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuContent>
             <div className="grid w-[600px] grid-cols-6 p-4 md:grid-cols-6">
               <div className="col-span-2 p-2">
-                <div className="mb-2 mt-1 text-base font-medium">Find Companies</div>
+                <div className="mb-2 mt-1 text-base font-medium">
+                  Find Companies
+                </div>
                 <div className="space-y-1">
                   {companyMenuItems.map((item) => (
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
-                        <Link to={createSearchUrl(item)}> {/* Use dynamic search URL with filters */}
+                        <Link to={createSearchUrl(item)}>
+                          {" "}
+                          {/* Use dynamic search URL with filters */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
                             <div>
-                              <div className="text-sm font-medium">{item.title}</div>
+                              <div className="text-sm font-medium">
+                                {item.title}
+                              </div>
                               <p className="line-clamp-1 text-xs text-muted-foreground">
                                 {item.description}
                               </p>
@@ -674,7 +817,9 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {companies.slice(0, 4).map((company) => (
                     <div key={company.id} className="col-span-1">
-                      <Link to={`/companies/${company.id}`}> {/* Changed to react-router-dom Link */}
+                      <Link to={`/companies/${company.id}`}>
+                        {" "}
+                        {/* Changed to react-router-dom Link */}
                         <CompanyMiniCard company={company} />
                       </Link>
                     </div>
@@ -687,11 +832,14 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link to="/add-property" className={cn(
-              navigationMenuTriggerStyle(),
-              pathname === "/add-property" && "text-primary font-medium"
-            )}>
-              Sell
+            <Link
+              to="/add-property"
+              className={cn(
+                navigationMenuTriggerStyle(),
+                pathname === "/add-property" && "text-primary font-medium",
+              )}
+            >
+              Seller
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -700,23 +848,29 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
-              pathname.startsWith("/resources") && "text-primary font-medium"
+              pathname.startsWith("/resources") && "text-primary font-medium",
             )}
           >
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="w-[400px] p-4">
-              <div className="mb-2 mt-1 text-base font-medium">Guides & Articles</div>
+              <div className="mb-2 mt-1 text-base font-medium">
+                Guides & Articles
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 {resourceMenuItems.map((item) => (
                   <div key={item.title}>
                     <NavigationMenuLink asChild>
-                      <Link to={item.href}> {/* Changed to react-router-dom Link */}
+                      <Link to={item.href}>
+                        {" "}
+                        {/* Changed to react-router-dom Link */}
                         <div className="flex cursor-pointer items-start space-x-3 rounded-md p-3 hover:bg-muted">
                           {item.icon}
                           <div>
-                            <div className="text-sm font-medium">{item.title}</div>
+                            <div className="text-sm font-medium">
+                              {item.title}
+                            </div>
                             <p className="line-clamp-1 text-xs text-muted-foreground">
                               {item.description}
                             </p>
@@ -730,8 +884,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-
-
       </NavigationMenuList>
     </NavigationMenu>
   );

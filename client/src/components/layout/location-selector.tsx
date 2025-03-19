@@ -10,13 +10,27 @@ import {
 
 const districts = {
   telangana: [
-    "Hyderabad", "Rangareddy", "Medchal", "Warangal", "Karimnagar", 
-    "Nizamabad", "Khammam", "Nalgonda", "Mahbubnagar"
+    "Hyderabad",
+    "Rangareddy",
+    "Medchal",
+    "Warangal",
+    "Karimnagar",
+    "Nizamabad",
+    "Khammam",
+    "Nalgonda",
+    "Mahbubnagar",
   ],
   andhraPradesh: [
-    "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Kurnool", 
-    "Kakinada", "Rajahmundry", "Nellore", "Anantapur"
-  ]
+    "Visakhapatnam",
+    "Vijayawada",
+    "Guntur",
+    "Tirupati",
+    "Kurnool",
+    "Kakinada",
+    "Rajahmundry",
+    "Nellore",
+    "Anantapur",
+  ],
 };
 
 export default function LocationSelector() {
@@ -46,7 +60,8 @@ export default function LocationSelector() {
                     <button
                       key={district}
                       className={`block w-full text-left px-2 py-1 text-sm rounded hover:bg-accent ${
-                        selectedState === "telangana" && selectedDistrict === district
+                        selectedState === "telangana" &&
+                        selectedDistrict === district
                           ? "bg-accent"
                           : ""
                       }`}
@@ -67,7 +82,8 @@ export default function LocationSelector() {
                     <button
                       key={district}
                       className={`block w-full text-left px-2 py-1 text-sm rounded hover:bg-accent ${
-                        selectedState === "andhraPradesh" && selectedDistrict === district
+                        selectedState === "andhraPradesh" &&
+                        selectedDistrict === district
                           ? "bg-accent"
                           : ""
                       }`}

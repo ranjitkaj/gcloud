@@ -21,6 +21,7 @@ import {
   MessageSquare,
   Star,
   ChevronLeft,
+  Headphones,
 } from "lucide-react";
 import { MegaMenu } from "./mega-menu";
 import NotificationCenter from "@/components/ui/notification-center";
@@ -70,8 +71,8 @@ export default function Navbar() {
                 alt="UrgentSales.in"
                 className="h-12 w-auto"
                 onError={(e) => {
-                  console.error('Logo failed to load:', e);
-                  e.currentTarget.src = '/src/Images/logo.png';
+                  console.error("Logo failed to load:", e);
+                  e.currentTarget.src = "/src/Images/logo.png";
                 }}
               />
             </Link>
@@ -98,7 +99,7 @@ export default function Navbar() {
                   variant="ghost"
                   className="relative h-10 w-10 rounded-full"
                 >
-                  <HelpCircle className="h-5 w-5" />
+                  <Headphones className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -113,7 +114,7 @@ export default function Navbar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
-                    (window.location.href = "mailto:support@homedirectly.com")
+                    (window.location.href = "mailto:support@urgentsales.com")
                   }
                 >
                   <Mail className="mr-2 h-4 w-4" />
