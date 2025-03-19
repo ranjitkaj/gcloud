@@ -71,8 +71,8 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
       }
     }
     
-    // Redirect to search-results page instead of properties page
-    navigate(`/search-results?${queryParams.toString()}`);
+    // Redirect to properties page for search functionality
+    navigate(`/properties?${queryParams.toString()}`);
   };
 
   const formatPrice = (value: number) => {
