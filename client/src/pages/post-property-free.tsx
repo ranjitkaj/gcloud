@@ -13,6 +13,7 @@ import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -461,6 +462,38 @@ export default function PostPropertyFree() {
                       <Input type="number" placeholder="2500000" {...field} />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="mt-4 bg-red-50 border border-red-100 rounded-lg p-4">
+              <FormField
+                control={form.control}
+                name="isUrgentSale"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-red-200 p-4 bg-white">
+                    <FormControl>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          id="urgent-sale"
+                        />
+                        <label
+                          htmlFor="urgent-sale"
+                          className="text-sm font-medium leading-none cursor-pointer flex items-center"
+                        >
+                          <Clock className="h-4 w-4 text-red-600 mr-1" />
+                          <span className="text-red-600 font-semibold">List as Urgency Sale (25% discount)</span>
+                        </label>
+                      </div>
+                    </FormControl>
+                    <div className="text-sm text-gray-600 mt-2">
+                      Listing as an urgency sale will apply a 25% discount to your property price. 
+                      Your property will be featured in the Urgency Sales section for 7 days, 
+                      attracting serious buyers looking for time-limited deals.
+                    </div>
                   </FormItem>
                 )}
               />
