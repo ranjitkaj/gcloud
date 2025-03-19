@@ -65,12 +65,9 @@ export default function Navbar() {
             )}
             <Link to="/" className="flex items-center space-x-2">
               <img
-                src="/Images/logo.png"
+                src="/logo.png"
                 alt="UrgentSales.in"
                 className="h-12 w-auto"
-                onError={(e) => {
-                  e.currentTarget.src = '/logo.png';
-                }}
               />
             </Link>
           </div>
