@@ -38,7 +38,9 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
     const bedroomsParam = params.get('minBedrooms');
 
     if (cityParam) setLocation(cityParam);
-    if (typeParam) setPropertyType(typeParam);
+    if (typeParam && propertyTypes.includes(typeParam as any)) {
+      setPropertyType(typeParam as typeof propertyTypes[number]);
+    }
     if (minPriceParam) setMinPrice(parseInt(minPriceParam));
     if (maxPriceParam) setMaxPrice(parseInt(maxPriceParam));
     if (bedroomsParam) setBedrooms(parseInt(bedroomsParam));
@@ -102,7 +104,10 @@ export default function PropertySearch({ className = '', showAdvanced = false }:
             </div>
           </div>
           <div className="flex flex-row space-x-2">
-            <Select value={propertyType} onValueChange={setPropertyType}>
+            <Select 
+              value={propertyType} 
+              onValueChange={(value: typeof propertyTypes[number]) => setPropertyType(value)}
+            >
               <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[180px]">
                 <SelectValue placeholder="Property Type" />
               </SelectTrigger>

@@ -90,7 +90,7 @@ export default function PostPropertyFree() {
     defaultValues: {
       title: "",
       description: "",
-      propertyType: "Apartment",
+      propertyType: "apartment",
       forSaleOrRent: "Sale",
       price: "",
       location: "",
@@ -256,12 +256,12 @@ export default function PostPropertyFree() {
                   className="w-full p-2 border border-gray-300 rounded-md"
                   {...form.register("propertyType")}
                 >
-                  <option value="Apartment">Apartment</option>
-                  <option value="Villa">Villa</option>
-                  <option value="House">House</option>
-                  <option value="Plot">Plot</option>
-                  <option value="Commercial">Commercial</option>
-                  <option value="Office">Office</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="villa">Villa</option>
+                  <option value="house">House</option>
+                  <option value="plot">Plot</option>
+                  <option value="commercial">Commercial</option>
+                  <option value="office">Office</option>
                 </select>
               </div>
               
