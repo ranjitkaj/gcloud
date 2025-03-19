@@ -19,7 +19,7 @@ export default function HeroSection() {
       subtitle: "Exclusive Listings at Competitive Prices",
       buttonText: "View Premium",
       buttonLink: "/properties?premium=true",
-      color: "from-blue-900 to-blue-700"
+      // color: "from-blue-900 to-blue-700"
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ export default function HeroSection() {
       subtitle: "Time-Limited Offers with Massive Discounts",
       buttonText: "View Urgent Sales",
       buttonLink: "/properties?status=urgent_sale",
-      color: "from-red-900 to-red-700"
+      // color: "from-red-900 to-red-700"
     },
     {
       id: 3,
@@ -37,7 +37,7 @@ export default function HeroSection() {
       subtitle: "Be the First to Explore Latest Properties",
       buttonText: "View New Launches",
       buttonLink: "/properties?status=new_launch",
-      color: "from-green-900 to-green-700"
+      // color: "from-green-900 to-green-700"
     }
   ];
   
