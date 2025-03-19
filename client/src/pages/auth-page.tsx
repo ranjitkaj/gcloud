@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useRoute } from 'wouter';
+import { useLocation } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -57,9 +57,12 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
-  const [location, navigate] = useWouterNavigate();
+  const [_, setLocation] = useLocation();
   const { user, login, signup, isLoading } = useAuth();
   const { toast } = useToast();
+  
+  // Helper function to navigate with wouter
+  const navigate = (path: string) => setLocation(path);
 
   // Track the registration flow state
   const [registrationState, setRegistrationState] = useState<'form' | 'verification-method' | 'verification'>('form');
