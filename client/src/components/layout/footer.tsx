@@ -104,7 +104,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/?tag=urgent?type=residential"
-                  onClick={() => window.scrollTo(0, 0)}
+                  onClick={() => window.scrollTo(1000, 1000)}
                   className="hover:text-white transition-colors"
                 >
                   Urgency Sales
