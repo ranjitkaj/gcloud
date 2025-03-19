@@ -57,7 +57,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/properties"
+                  href="/properties?type="
                   className="hover:text-white transition-colors"
                 >
                   Search Properties
