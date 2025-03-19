@@ -150,17 +150,20 @@ export default function PostPropertyFree() {
       price: parseInt(data.price),
       location: data.location,
       city: data.location.split(',').pop()?.trim() || '',
+      address: data.location, // Using location as address too
       pincode: data.pincode,
       bedrooms: data.bedrooms ? parseInt(data.bedrooms) : undefined,
       bathrooms: data.bathrooms ? parseInt(data.bathrooms) : undefined,
       area: parseInt(data.area),
-      areaUnit: data.areaUnit,
       imageUrls: propertyImages.map(img => img.preview || ''),
+      videoUrls: [], // Empty array for now
+      amenities: [], // Empty array for now
       contactName: data.contactName,
       contactPhone: data.contactPhone,
       subscriptionLevel: 'free',
-      status: 'available',
-      approvalStatus: 'pending'
+      status: 'available', // Setting initial status
+      approvalStatus: 'pending',
+      userId: user?.id // Required field
     };
     
     console.log("Property data submitted:", propertyData);
