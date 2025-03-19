@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { ClipboardList, Camera, CheckCircle2, Users2, ChevronLeft, ChevronRight } from 'lucide-react';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -37,8 +38,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from '@/components/ui/separator';
-import { Check, ChevronLeft, ChevronRight, ArrowDown, Phone, Mail, MessageSquare, 
-  Home, MapPin, Building, Camera, Upload, Clock, Users, BadgeCheck } from 'lucide-react';
+import { Check, ArrowDown, Phone, Mail, MessageSquare, 
+  Home, MapPin, Building, Upload, Clock, Users, BadgeCheck } from 'lucide-react';
 import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
 
 // Property type schema
