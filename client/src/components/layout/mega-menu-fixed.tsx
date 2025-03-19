@@ -10,6 +10,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import LocationSelector from "./location-selector";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Building2, 
@@ -423,6 +424,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         <Link to="/resources" className="text-gray-700 hover:text-primary font-medium transition-colors py-2">
           Resources
         </Link>
+        <LocationSelector />>
 
       </div>
     );
