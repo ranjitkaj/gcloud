@@ -105,7 +105,7 @@ export default function RecommendationsPage() {
               Sign in to get personalized property recommendations
             </p>
           </div>
-          <Link href="/auth-page">
+          <Link to="/auth">
             <Button className="flex items-center gap-2">
               <UserCheck size={16} />
               Sign In to Continue
@@ -151,7 +151,7 @@ export default function RecommendationsPage() {
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild>
-              <Link href="/auth-page">Get Started</Link>
+              <Link to="/auth">Get Started</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -170,7 +170,7 @@ export default function RecommendationsPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
-            <Link href="/">
+            <Link to="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
             </Link>
@@ -207,7 +207,7 @@ export default function RecommendationsPage() {
               aiRecommendations.map((property) => (
                 <Link 
                   key={property.id} 
-                  href={`/properties/${property.id}`}
+                  to={`/property/${property.id}`}
                   onClick={() => trackPropertyView(property.id)}
                 >
                   <PropertyCard 
@@ -258,7 +258,7 @@ export default function RecommendationsPage() {
               regularRecommendations.map((property) => (
                 <Link 
                   key={property.id} 
-                  href={`/properties/${property.id}`}
+                  to={`/property/${property.id}`}
                   onClick={() => trackPropertyView(property.id)}
                 >
                   <PropertyCard property={property} />
