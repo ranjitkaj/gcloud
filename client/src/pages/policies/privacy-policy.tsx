@@ -106,72 +106,85 @@ export default function PrivacyPolicy() {
               <li>
                 For internal analytics, marketing, and promotional campaigns
               </li>
-              <li>	To detect fraud, unauthorized access, or security breaches</li>
+              <li>
+                {" "}
+                To detect fraud, unauthorized access, or security breaches
+              </li>
+              <li>
+                {" "}
+                To fulfill any contractual obligations or service requests
+              </li>
             </ul>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              3. How We Use Your Information
+              5. Lawful Basis for Processing
             </h2>
             <p className="text-gray-700 mb-4">
-              We may use the information we collect for various purposes,
-              including:
+              Processing of data is based on:
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
-              <li>Providing and maintaining our services</li>
-              <li>Processing transactions and managing your account</li>
-              <li>Facilitating communication between buyers and sellers</li>
-              <li>Personalizing your experience and recommending properties</li>
+              <li>User consent</li>
+              <li>Performance of a contract</li>
+              <li>Legal obligation</li>
               <li>
-                Sending you newsletters, promotions, and marketing
-                communications
+                Legitimate interests of UrgentSales.in, including marketing,
+                fraud prevention, and network security
               </li>
-              <li>Improving our platform and developing new features</li>
-              <li>Analyzing usage patterns and trends</li>
-              <li>Preventing fraud and enhancing security</li>
-              <li>Complying with legal obligations</li>
             </ul>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              4. Information Sharing and Disclosure
+              6. Disclosure and Sharing of Information
             </h2>
-            <p className="text-gray-700 mb-4">
-              We may share your information with:
-            </p>
+            <p className="text-gray-700 mb-4">We may disclose user data to:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
               <li>
-                Other users as necessary to facilitate property transactions
-              </li>
-              <li>Service providers who assist us in operating our platform</li>
-              <li>Business partners and affiliates</li>
-              <li>
-                Legal authorities when required by law or to protect our rights
+                <b>Service providers: </b>bFor payment processing, property
+                verification, marketing, or IT services
               </li>
               <li>
-                In connection with a business merger, sale, or acquisition
+                <b>Legal authorities:</b> To comply with applicable law, enforce
+                rights, or respond to lawful requests
+              </li>
+              <li>
+                <b> Affiliates/Subsidiaries: </b> For business operations,
+                offers, or joint services
+              </li>
+              <li>
+                <b>• Prospective acquirers: </b>In case of mergers,
+                acquisitions, or asset sales
+              </li>
+              <li>
+                <b>• Marketing partners:</b> For promotional offers, with
+                consent
               </li>
             </ul>
             <p className="text-gray-700 mb-4">
-              We do not sell your personal information to third parties.
+              We do not sell user data to third parties for monetary gain.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              5. Your Choices and Rights
+              7. Data Retention
             </h2>
             <p className="text-gray-700 mb-4">
-              You have certain rights regarding your personal information,
-              including:
+              We retain personal data only as long as necessary to fulfill the
+              purpose for which it was collected or to comply with legal,
+              regulatory, tax, accounting, or reporting obligations. Post this
+              period, data is securely erased or anonymized.
             </p>
-            <ul className="list-disc pl-6 mb-4 text-gray-700">
-              <li>Accessing and updating your personal information</li>
-              <li>Opting out of marketing communications</li>
-              <li>Requesting deletion of your account and data</li>
-              <li>Managing cookie preferences</li>
-              <li>Objecting to certain data processing activities</li>
-            </ul>
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+              8. Data Security
+            </h2>
             <p className="text-gray-700 mb-4">
-              To exercise these rights, please contact us using the information
-              provided at the end of this policy.
+              UrgentSales.in employs<b> industry-standard security measures,</b>{" "}
+              including
+              <b>
+                {" "}
+                encryption, firewalls, access controls, and secure servers
+              </b>{" "}
+              to protect user data from unauthorized access, disclosure,
+              alteration, or destruction.
             </p>
+         
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               6. Data Security

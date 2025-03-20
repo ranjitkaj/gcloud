@@ -44,7 +44,7 @@ export default function TopProperties() {
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">
-          Top Listing Properties
+          Top Urgent Seller's
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">

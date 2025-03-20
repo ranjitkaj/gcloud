@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 import { Link } from "wouter";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -119,16 +121,18 @@ export default function ReportProblem() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="container mx-auto px-4 md:px-6 max-w-4xl">
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
           {/* Breadcrumb */}
           <div className="mb-6 text-sm text-gray-500">
-            <Link href="/" className="hover:text-primary">
-              Home
-            </Link>{" "}
-            {" > "}
-            <span className="text-gray-700">Report a Problem</span>
+            <button
+              onClick={() => window.history.back()}
+              className="hover:text-primary focus:outline-none"
+            >
+              ← Back
+            </button>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -424,6 +428,7 @@ export default function ReportProblem() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
