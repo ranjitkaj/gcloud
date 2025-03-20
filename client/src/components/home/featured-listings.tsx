@@ -18,14 +18,17 @@ export default function FeaturedListings() {
               Newly Listed Properties – The Best Property for You!
             </h5>
             <p className="text-gray-600">
-              Explore our newly listed properties, handpicked to offer you the best in comfort, luxury, and convenience. Whether you're looking for a modern apartment, a spacious villa, or a prime investment opportunity, we've got the best property for you. Don't miss out on these fresh listings—your dream home awaits!"
-
-
+              Explore our newly listed properties, handpicked to offer you the
+              best in comfort, luxury, and convenience. Whether you're looking
+              for a modern apartment, a spacious villa, or a prime investment
+              opportunity, we've got the best property for you. Don't miss out
+              on these fresh listings—your dream home awaits!"
             </p>
           </div>
           <div className="mt-4 md:mt-0">
             <Link
               href="/properties"
+              onClick={() => window.scrollTo(0, 0)}
               className="text-primary hover:text-primary/90 font-medium flex items-center"
             >
               View all properties

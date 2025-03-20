@@ -11,9 +11,9 @@ import { useToast } from "@/hooks/use-toast";
 
 const districts = {
   telangana: [
-    "Hyderabad",
     "Adilabad",
     "Bhadradri Kothagudem",
+    "Hyderabad",
     "Jagitial",
     "Jangaon",
     "Jayashankar Bhupalpally",
@@ -45,15 +45,17 @@ const districts = {
     "Yadadri Bhuvanagiri",
   ],
   andhraPradesh: [
-    "Anantapur",
     "Alluri Sitarama Raju",
     "Anakapalli",
+    "Anantapur",
+    "Annamayya",
     "Bapatla",
     "Chittoor",
     "East Godavari",
     "Eluru",
     "Guntur",
     "Kakinada",
+    "Konaseema",
     "Krishna",
     "Kurnool",
     "Nandyal",
@@ -69,8 +71,6 @@ const districts = {
     "Vizianagaram",
     "West Godavari",
     "YSR Kadapa",
-    "Konaseema",
-    "Annamayya",
   ],
 };
 
@@ -136,6 +136,19 @@ export default function LocationSelector() {
     detectUserLocation();
   }, []);
 
+  // Function to handle district selection without changing the navbar display
+  const handleDistrictSelect = (state: string, district: string) => {
+    setSelectedState(state);
+    setSelectedDistrict(district);
+    // We're not updating cityLocation here, so the navbar display remains unchanged
+
+    // Optional: You can add logic here to use the selected district for filtering/searching
+    // without changing what's displayed in the navbar
+    console.log(`Selected district: ${district} in ${state}`);
+
+    // You might want to store this selection in context or state for other components
+  };
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -164,11 +177,9 @@ export default function LocationSelector() {
                             ? "bg-primary/10 border-primary/20 text-primary"
                             : "border-gray-200 text-gray-600 hover:bg-gray-50"
                         }`}
-                      onClick={() => {
-                        setSelectedState("telangana");
-                        setSelectedDistrict(district);
-                        setCityLocation(district);
-                      }}
+                      onClick={() =>
+                        handleDistrictSelect("telangana", district)
+                      }
                     >
                       {district}
                     </button>
@@ -192,11 +203,9 @@ export default function LocationSelector() {
                             ? "bg-primary/10 border-primary/20 text-primary"
                             : "border-gray-200 text-gray-600 hover:bg-gray-50"
                         }`}
-                      onClick={() => {
-                        setSelectedState("andhraPradesh");
-                        setSelectedDistrict(district);
-                        setCityLocation(district);
-                      }}
+                      onClick={() =>
+                        handleDistrictSelect("andhraPradesh", district)
+                      }
                     >
                       {district}
                     </button>

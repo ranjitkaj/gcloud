@@ -16,14 +16,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Column 1: Company Info */}
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">HomeDirectly</h3>
+            <h3 className="text-xl font-bold text-white mb-4">
+              Urgent Sales.IN
+            </h3>
             <p className="mb-4">
               India's leading platform for direct property transactions without
               broker commissions.
             </p>
             <div className="flex space-x-4 mt-4">
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61574427475230"
                 className="text-gray-300 hover:text-white transition-colors"
               >
                 <Facebook size={20} />
@@ -171,11 +173,14 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin size={18} className="mt-1 mr-3 flex-shrink-0" />
-                <span>123 , Ammerpet, Hyderabad - 500016, India</span>
+                <span>
+                  Address: #301, Madhavaram Towers, Kukatpally Y Junction,
+                  Moosapet, Hyderabad-500018
+                </span>
               </li>
               <li className="flex items-center">
                 <Phone size={18} className="mr-3 flex-shrink-0" />
-                <span>+91 8800123456</span>
+                <span>Phone: +91-99512 11555</span>
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="mr-3 flex-shrink-0" />

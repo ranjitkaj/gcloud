@@ -54,6 +54,7 @@ export default function PropertyCategories() {
               key={category.type} 
               href={`/properties?propertyType=${category.type}`}
               className="group"
+              onClick={() => window.scrollTo(0, 0)}
             >
               <div className="bg-gray-50 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div className="relative pb-[75%]">

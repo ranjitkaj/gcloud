@@ -68,15 +68,6 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Back Button and Logo */}
           <div className="flex items-center space-x-2">
-            {canGoBack && (
-              <button
-                onClick={goBack}
-                className="mr-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="Go back"
-              >
-                <ChevronLeft className="h-5 w-5 text-gray-600" />
-              </button>
-            )}
             <Link to="/" className="flex items-center space-x-2">
               <img
                 src="/src/Images/logo.png"

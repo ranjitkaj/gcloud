@@ -137,7 +137,7 @@ export default function HeroSection() {
                 prev === 0 ? slides.length - 1 : prev - 1,
               )
             }
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 rounded-full p-2 z-10 text-white"
+            className="absolute left-1 top-1/2 transform -translate-y-1/2  hover:bg-black/50 rounded-full p-2 z-10 text-white"
             aria-label="Previous slide"
           >
             <ChevronLeft className="h-6 w-6" />
@@ -146,7 +146,7 @@ export default function HeroSection() {
             onClick={() =>
               setCurrentSlide((prev) => (prev + 1) % slides.length)
             }
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 rounded-full p-2 z-10 text-white"
+            className="absolute right-1 top-1/2 transform -translate-y-1/2  hover:bg-black/50 rounded-full p-2 z-10 text-white"
             aria-label="Next slide"
           >
             <ChevronRight className="h-6 w-6" />
@@ -160,7 +160,6 @@ export default function HeroSection() {
           <PropertySearch
             className="shadow-lg backdrop-blur-md"
             showAdvanced={false}
-            responsive
           />
         </div>
       </div>
