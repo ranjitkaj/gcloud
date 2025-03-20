@@ -1,56 +1,63 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
-import PropertyCard from "@/components/property/property-card";
-import { Property } from "@shared/schema";
+import { PropertyCard } from "@/components/property/property-card";
+import { getQueryFn } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
-import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
 
 export default function TopPropertiesList() {
   const { category } = useParams();
-
-  const { data: properties, isLoading } = useQuery<Property[]>({
-    queryKey: [`/api/properties/top/${category}`],
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  
+  const { data: properties, isLoading } = useQuery({
+    queryKey: [`/api/properties/top/${category}`, selectedCity],
+    queryFn: getQueryFn(),
   });
 
-  const getCategoryTitle = () => {
-    switch (category) {
-      case 'top10': return 'Top 10';
-      case 'top20': return 'Top 20';
-      case 'top30': return 'Top 30';
-      case 'top50': return 'Top 50';
-      case 'top100': return 'Top 100';
-      default: return 'Top Properties';
-    }
-  };
+  const pageTitle = {
+    top10: "Top 10 Premium Properties",
+    top20: "Top 20 High-Value Properties",
+    top30: "Top 30 Most Viewed Properties",
+    top50: "Top 50 Trending Properties",
+    top100: "Top 100 Best Rated Properties"
+  }[category || ""] || "Top Properties";
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow py-8 bg-gray-50">
-        <div className="container mx-auto px-4">
-          {isLoading ? (
-            <div className="flex justify-center items-center min-h-[400px]">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : properties ? (
-            <>
-              <h1 className="text-3xl font-bold mb-8">{getCategoryTitle()} Properties</h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {properties.map((property) => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-8">
-              <h2 className="text-2xl font-bold mb-4">No Properties Found</h2>
-              <p>There are currently no properties in this category.</p>
-            </div>
-          )}
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">{pageTitle}</h1>
+        <Select value={selectedCity} onValueChange={setSelectedCity}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by city" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Cities</SelectItem>
+            <SelectItem value="bangalore">Bangalore</SelectItem>
+            <SelectItem value="mumbai">Mumbai</SelectItem>
+            <SelectItem value="delhi">Delhi</SelectItem>
+            <SelectItem value="gurgaon">Gurgaon</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
-      </main>
-      <Footer />
+      ) : properties?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {properties.map((property) => (
+            <PropertyCard key={property.id} property={property} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12 text-gray-500">
+          No properties available in this category
+          {selectedCity && ` for ${selectedCity}`}
+        </div>
+      )}
     </div>
   );
 }

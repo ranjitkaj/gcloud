@@ -94,7 +94,7 @@ const getDatabaseTablesInfo = async (req: Request, res: Response) => {
     const notificationCount = (await db.select({ count: count() }).from(schema.notifications))[0].count;
     const otpCount = (await db.select({ count: count() }).from(schema.otps))[0].count;
     const reviewCount = (await db.select({ count: count() }).from(schema.agentReviews))[0].count;
-    
+
     // Return the stats
     return res.json([
       { tableName: 'users', rowCount: userCount },
@@ -186,7 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
   app.use(express.json());
-  
+
   // Database admin routes
   app.get('/api/admin/database/tables', isAuthenticated, hasRole(['admin']), asyncHandler(getDatabaseTablesInfo));
   app.get('/api/admin/database/tables/:table', isAuthenticated, hasRole(['admin']), asyncHandler(getTableRecords));
@@ -194,21 +194,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/create-checkout-session', isAuthenticated, asyncHandler(async (req, res) => {
     await createCheckoutSession(req, res);
   }));
-  
+
   // =========== Notification Routes ===========
-  
+
   // Get user notifications
   app.get('/api/notifications', isAuthenticated, asyncHandler(getNotifications));
-  
+
   // Mark a notification as read
   app.post('/api/notifications/:notificationId/read', isAuthenticated, asyncHandler(markNotificationAsRead));
-  
+
   // Mark all notifications as read
   app.post('/api/notifications/read-all', isAuthenticated, asyncHandler(markAllNotificationsAsRead));
-  
+
   // Create a notification (admin only)
   app.post('/api/notifications', isAuthenticated, hasRole(['admin']), asyncHandler(createNotification));
-  
+
   // Send role-specific notifications (admin only)
   app.post('/api/notifications/role', isAuthenticated, hasRole(['admin']), asyncHandler(sendRoleNotifications));
 
@@ -224,7 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/properties/top/:category", asyncHandler(async (req, res) => {
     const { category } = req.params;
     const { city } = req.query;
-    
+
     // Dummy data for top properties
     const dummyProperties = [
       {
@@ -240,7 +240,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         area: 3500,
         imageUrls: ["https://images.unsplash.com/photo-1613977257363-707ba9348227"],
         premium: true,
-        verified: true
+        verified: true,
+        saleType: "Sale"
       },
       {
         id: 2,
@@ -255,7 +256,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         area: 2200,
         imageUrls: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267"],
         premium: true,
-        verified: true
+        verified: true,
+        saleType: "Sale"
       },
       {
         id: 3,
@@ -268,7 +270,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         area: 2800,
         imageUrls: ["https://images.unsplash.com/photo-1497366216548-37526070297c"],
         premium: true,
-        verified: true
+        verified: true,
+        saleType: "Rent"
       },
       {
         id: 4,
@@ -283,7 +286,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         area: 4000,
         imageUrls: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c"],
         premium: true,
-        verified: true
+        verified: true,
+        saleType: "Sale"
       },
       {
         id: 5,
@@ -298,7 +302,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         area: 4500,
         imageUrls: ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9"],
         premium: true,
-        verified: true
+        verified: true,
+        saleType: "Sale"
       }
     ];
 
@@ -314,41 +319,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // Filter by city if provided
     let filteredProperties = city 
-      ? dummyProperties.filter(p => p.city.toLowerCase() === city.toLowerCase())
+      ? dummyProperties.filter(p => p.city.toLowerCase() === city.toString().toLowerCase())
       : dummyProperties;
 
-    // Return limited results
+    // Send the properties
     res.json(filteredProperties.slice(0, limit));
-
-    // For demo purposes, get some properties and enhance them
-    const properties = await storage.getAllProperties();
-    const enhancedProperties = properties
-      .slice(0, Math.min(limit, properties.length))
-      .map(property => ({
-        ...property,
-        premium: Math.random() > 0.5,
-        subscriptionLevel: ['premium', 'paid', 'free'][Math.floor(Math.random() * 3)],
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
-      }));
-    
-    // Sort properties by subscription level and rating
-    const sortedProperties = properties.sort((a, b) => {
-      // First sort by subscription level
-      const subscriptionOrder = { premium: 3, paid: 2, free: 1 };
-      const subscriptionDiff = 
-        (subscriptionOrder[b.subscriptionLevel as keyof typeof subscriptionOrder] || 0) - 
-        (subscriptionOrder[a.subscriptionLevel as keyof typeof subscriptionOrder] || 0);
-      
-      if (subscriptionDiff !== 0) return subscriptionDiff;
-      
-      // Then by premium flag
-      if (b.premium !== a.premium) return b.premium ? 1 : -1;
-      
-      // Finally by creation date (newer first)
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-
-    res.json(sortedProperties.slice(0, limit));
   }));
 
   // Get featured properties
@@ -368,10 +343,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get urgent properties (properties with discounted prices)
   app.get("/api/properties/urgent", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-    
+
     // Use the dedicated method to get urgent properties
     const urgentProperties = await storage.getUrgentSaleProperties(limit);
-    
+
     // Map to the expected format for the frontend
     const formattedProperties = urgentProperties.map(property => ({
       id: property.id,
@@ -386,7 +361,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       imageUrl: property.imageUrls && property.imageUrls.length > 0 ? property.imageUrls[0] : '',
       expiresAt: property.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Use property expiration date or default to 7 days
     }));
-    
+
     res.json(formattedProperties);
   }));
 
@@ -408,46 +383,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // Build search query
     const query: any = {};
-    
+
     // Handle location search (can be either city or location parameter)
     if (city) query.city = city as string;
     if (location) query.city = location as string; // Alternative param name
-    
+
     // Handle property type
     if (propertyType) query.propertyType = propertyType as string;
-    
+
     // Handle price range
     if (minPrice) query.minPrice = parseInt(minPrice as string);
     if (maxPrice) query.maxPrice = parseInt(maxPrice as string);
-    
+
     // Handle room counts
     if (minBedrooms) query.minBedrooms = parseInt(minBedrooms as string);
     if (maxBedrooms) query.maxBedrooms = parseInt(maxBedrooms as string);
     if (minBathrooms) query.minBathrooms = parseInt(minBathrooms as string);
     if (maxBathrooms) query.maxBathrooms = parseInt(maxBathrooms as string);
-    
+
     // Handle area
     if (minArea) query.minArea = parseInt(minArea as string);
     if (maxArea) query.maxArea = parseInt(maxArea as string);
-    
+
     // Handle property category (rent vs sale)
     // Support both parameter names for backwards compatibility
     if (rentOrSale) query.rentOrSale = rentOrSale as string;
     if (forSaleOrRent) query.rentOrSale = forSaleOrRent as string;
-    
+
     // Handle property status
     if (status) query.status = status as string;
-    
+
     // Handle amenities
     if (amenities) query.amenities = (amenities as string).split(',');
 
     // Get properties based on search criteria
     const properties = await storage.searchProperties(query);
-    
+
     // Apply sorting if needed
     if (sortBy) {
       let sortedProperties = [...properties];
-      
+
       switch (sortBy) {
         case 'price_low':
           sortedProperties.sort((a, b) => parseInt(a.price) - parseInt(b.price));
@@ -459,7 +434,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           sortedProperties.sort((a, b) => parseInt(a.area) - parseInt(b.area));
           break;
         case 'area_high':
-          sortedProperties.sort((a, b) => parseInt(b.area) - parseInt(a.area));
+          sortedProperties.sort((a, b) => parseInt(b.area) - parseInt(b.area));
           break;
         case 'newest':
         default:
@@ -471,15 +446,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
           break;
       }
-      
+
       // Apply pagination
       const pageNum = parseInt(page as string);
       const limitNum = parseInt(limit as string);
       const startIndex = (pageNum - 1) * limitNum;
       const endIndex = startIndex + limitNum;
-      
+
       const paginatedProperties = sortedProperties.slice(startIndex, endIndex);
-      
+
       // Return paginated results with total count
       return res.json({
         properties: paginatedProperties,
@@ -489,15 +464,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalPages: Math.ceil(sortedProperties.length / limitNum)
       });
     }
-    
+
     // If no sorting is specified, just apply pagination
     const pageNum = parseInt(page as string);
     const limitNum = parseInt(limit as string);
     const startIndex = (pageNum - 1) * limitNum;
     const endIndex = startIndex + limitNum;
-    
+
     const paginatedProperties = properties.slice(startIndex, endIndex);
-    
+
     // Return paginated results
     res.json({
       properties: paginatedProperties,
@@ -587,7 +562,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }));
 
   // =========== Property Approval Routes ===========
-  
+
   // Get properties pending approval (admin only)
   app.get("/api/properties/pending", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
     const properties = await storage.getAllProperties();
@@ -595,63 +570,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const pendingProperties = properties.filter(property => property.approvalStatus === 'pending');
     res.json(pendingProperties);
   }));
-  
+
   // Get all properties with approval status (admin only)
   app.get("/api/properties/all", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
     const properties = await storage.getAllProperties();
     res.json(properties);
   }));
-  
+
   // Approve a property (admin only)
   app.post("/api/properties/:id/approve", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid property ID" });
     }
-    
+
     const property = await storage.getProperty(id);
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
     }
-    
+
     if (property.approvalStatus === 'approved') {
       return res.status(400).json({ message: "Property is already approved" });
     }
-    
+
     // Update property with approval information
     const updatedProperty = await storage.updateProperty(id, {
       approvalStatus: 'approved',
       approvedBy: req.user.id,
       approvalDate: new Date()
     });
-    
+
     res.json({
       message: "Property has been approved successfully",
       property: updatedProperty
     });
   }));
-  
+
   // Reject a property (admin only)
   app.post("/api/properties/:id/reject", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid property ID" });
     }
-    
+
     const { rejectionReason } = req.body;
     if (!rejectionReason || rejectionReason.trim() === '') {
       return res.status(400).json({ message: "Rejection reason is required" });
     }
-    
+
     const property = await storage.getProperty(id);
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
     }
-    
+
     if (property.approvalStatus === 'rejected') {
       return res.status(400).json({ message: "Property is already rejected" });
     }
-    
+
     // Update property with rejection information
     const updatedProperty = await storage.updateProperty(id, {
       approvalStatus: 'rejected',
@@ -659,7 +634,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       rejectionReason: rejectionReason,
       approvalDate: new Date()
     });
-    
+
     res.json({
       message: "Property has been rejected",
       property: updatedProperty
@@ -899,72 +874,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const recommendations = await storage.getRecommendedProperties(req.user.id, limit);
     res.json(recommendations);
   }));
-  
+
   // Get AI-powered personalized recommendations
   app.get("/api/recommendations/ai", isAuthenticated, asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-    
+
     // Import and initialize the AI recommendation service
     const { getRecommendationService } = await import('./recommendation-service');
     const recommendationService = getRecommendationService(storage);
-    
+
     const aiRecommendations = await recommendationService.getPersonalizedRecommendations(req.user.id, limit);
     res.json(aiRecommendations);
   }));
-  
+
   // Track user property interaction for improving recommendations
   app.post("/api/recommendations/track", isAuthenticated, asyncHandler(async (req, res) => {
     const { propertyId, interactionType } = req.body;
-    
+
     if (!propertyId || !interactionType) {
       return res.status(400).json({ message: "Property ID and interaction type are required" });
     }
-    
+
     // Validate interaction type
     if (!['view', 'save', 'inquiry'].includes(interactionType)) {
       return res.status(400).json({ message: "Invalid interaction type" });
     }
-    
+
     // Check if property exists
     const property = await storage.getProperty(propertyId);
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
     }
-    
+
     // Import and initialize the AI recommendation service
     const { getRecommendationService } = await import('./recommendation-service');
     const recommendationService = getRecommendationService(storage);
-    
+
     // Track the interaction
     await recommendationService.updateModelWithInteraction(
       req.user.id,
       propertyId,
       interactionType
     );
-    
+
     // Also record view in database if it's a view interaction
     if (interactionType === 'view') {
       await storage.addPropertyView(req.user.id, propertyId);
     }
   }));
-  
+
   // Trigger training of the AI recommendation model
   app.post("/api/recommendations/train", isAuthenticated, asyncHandler(async (req, res) => {
     // Only admins and agents can trigger model training
     if (!['admin', 'agent'].includes(req.user.role)) {
       return res.status(403).json({ message: "Permission denied. Only admins and agents can trigger model training." });
     }
-    
+
     // Import and initialize the AI recommendation service
     const { getRecommendationService } = await import('./recommendation-service');
     const recommendationService = getRecommendationService(storage);
-    
+
     try {
       // Train the model asynchronously
       recommendationService.trainModel().catch(err => {
         console.error('Error training model:', err);
       });
-      
+
       res.json({ message: "Model training initiated successfully" });
     } catch (error) {
       console.error('Error initiating model training:', error);
