@@ -33,7 +33,6 @@ export default function PropertySearch({
   const [isFilterOpen, setIsFilterOpen] = useState(false); // Added filter state
   const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all"); // Added sale type state
 
-
   // Use Wouter's navigation hook
   const [_, setUrlLocation] = useLocation();
 
@@ -248,7 +247,7 @@ export default function PropertySearch({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-2">
-                  For Sale/Rent
+                  For Sale/Buy
                 </label>
                 <Select
                   value={saleType}
@@ -262,7 +261,7 @@ export default function PropertySearch({
                   <SelectContent>
                     <SelectItem value="all">All Properties</SelectItem>
                     <SelectItem value="Sale">For Sale</SelectItem>
-                    <SelectItem value="Rent">For Rent</SelectItem>
+                    <SelectItem value="Rent">For Buy</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
