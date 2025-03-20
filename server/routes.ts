@@ -225,6 +225,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { category } = req.params;
     const { city } = req.query;
     
+    // Dummy data for top properties
+    const dummyProperties = [
+      {
+        id: 1,
+        title: "Luxury Villa with Pool",
+        description: "Magnificent 4BHK villa with private pool",
+        price: 25000000,
+        location: "Whitefield",
+        city: "Bangalore",
+        propertyType: "villa",
+        bedrooms: 4,
+        bathrooms: 4,
+        area: 3500,
+        imageUrls: ["https://images.unsplash.com/photo-1613977257363-707ba9348227"],
+        premium: true,
+        verified: true
+      },
+      {
+        id: 2,
+        title: "Sea View Apartment",
+        description: "Premium 3BHK apartment with sea view",
+        price: 18000000,
+        location: "Marine Drive",
+        city: "Mumbai",
+        propertyType: "apartment",
+        bedrooms: 3,
+        bathrooms: 3,
+        area: 2200,
+        imageUrls: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267"],
+        premium: true,
+        verified: true
+      },
+      {
+        id: 3,
+        title: "Modern Office Space",
+        description: "Ready-to-move office space in prime location",
+        price: 15000000,
+        location: "Cyber City",
+        city: "Gurgaon",
+        propertyType: "commercial",
+        area: 2800,
+        imageUrls: ["https://images.unsplash.com/photo-1497366216548-37526070297c"],
+        premium: true,
+        verified: true
+      },
+      {
+        id: 4,
+        title: "Garden View Penthouse",
+        description: "Exclusive 4BHK penthouse with roof garden",
+        price: 35000000,
+        location: "Koramangala",
+        city: "Bangalore",
+        propertyType: "apartment",
+        bedrooms: 4,
+        bathrooms: 4,
+        area: 4000,
+        imageUrls: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c"],
+        premium: true,
+        verified: true
+      },
+      {
+        id: 5,
+        title: "Smart Home Villa",
+        description: "Ultra-modern 5BHK villa with smart features",
+        price: 42000000,
+        location: "Electronic City",
+        city: "Bangalore",
+        propertyType: "villa",
+        bedrooms: 5,
+        bathrooms: 5,
+        area: 4500,
+        imageUrls: ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9"],
+        premium: true,
+        verified: true
+      }
+    ];
+
     let limit = 10;
     switch (category) {
       case 'top10': limit = 10; break;
@@ -234,6 +311,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       case 'top100': limit = 100; break;
       default: limit = 10;
     }
+
+    // Filter by city if provided
+    let filteredProperties = city 
+      ? dummyProperties.filter(p => p.city.toLowerCase() === city.toLowerCase())
+      : dummyProperties;
+
+    // Return limited results
+    res.json(filteredProperties.slice(0, limit));
 
     // For demo purposes, get some properties and enhance them
     const properties = await storage.getAllProperties();
