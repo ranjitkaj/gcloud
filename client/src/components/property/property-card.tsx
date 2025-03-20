@@ -9,7 +9,7 @@ interface PropertyCardProps {
   isAiRecommended?: boolean;
 }
 
-export default function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
+export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
   return (
     <Link href={`/properties/${property.id}`}>
       <Card className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
@@ -72,3 +72,5 @@ export default function PropertyCard({ property, isAiRecommended }: PropertyCard
     </Link>
   );
 }
+
+export default PropertyCard;
