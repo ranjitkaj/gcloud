@@ -30,6 +30,9 @@ export default function PropertySearch({
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false); // Added filter state
+  const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all"); // Added sale type state
+
 
   // Use Wouter's navigation hook
   const [_, setUrlLocation] = useLocation();
@@ -122,6 +125,10 @@ export default function PropertySearch({
       queryParams.append("propertyType", propertyType);
     }
 
+    if (saleType !== "all") {
+      queryParams.append("saleType", saleType);
+    }
+
     if (showAdvanced) {
       if (minPrice > 0) {
         queryParams.append("minPrice", minPrice.toString());
@@ -202,6 +209,13 @@ export default function PropertySearch({
             </div>
           </div>
           <div className="flex flex-row space-x-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="min-w-[100px] py-6"
+            >
+              Filter
+            </Button>
             <Select
               value={propertyType}
               onValueChange={(value: (typeof propertyTypes)[number]) =>
@@ -229,30 +243,49 @@ export default function PropertySearch({
           </div>
         </div>
 
-        {showAdvanced && (
+        {isFilterOpen && ( // Added filter section
           <div className="pt-4 border-t border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2">
+                  For Sale/Rent
+                </label>
+                <Select
+                  value={saleType}
+                  onValueChange={(value: "all" | "Sale" | "Rent") =>
+                    setSaleType(value)
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Properties</SelectItem>
+                    <SelectItem value="Sale">For Sale</SelectItem>
+                    <SelectItem value="Rent">For Rent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Price Range
                 </label>
-                <div className="px-2">
-                  <Slider
-                    defaultValue={[minPrice, maxPrice]}
-                    max={10000000}
-                    step={100000}
-                    onValueChange={(values) => {
-                      setMinPrice(values[0]);
-                      setMaxPrice(values[1]);
-                    }}
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Min"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(Number(e.target.value))}
                   />
-                  <div className="flex justify-between mt-2 text-sm text-gray-500">
-                    <span>{formatPrice(minPrice)}</span>
-                    <span>{formatPrice(maxPrice)}</span>
-                  </div>
+                  <span>-</span>
+                  <Input
+                    type="number"
+                    placeholder="Max"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  />
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Bedrooms
