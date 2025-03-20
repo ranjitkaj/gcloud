@@ -111,7 +111,7 @@ export default function ServicesSection() {
       title: "Property Investment Services",
       description: "Trusted renovation and property improvement services",
       imageSrc:
-        "https://images.unsplash.com/photo-1593642532931-0b916c786722?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdkfHx8fGV8fDB8fHx8&auto=format&fit=crop&w=600&q=80",
+        "https://example.com/images/property-investment-services.jpg",
     },
   ];
 
