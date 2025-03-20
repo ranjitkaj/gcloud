@@ -184,18 +184,33 @@ export default function PrivacyPolicy() {
               to protect user data from unauthorized access, disclosure,
               alteration, or destruction.
             </p>
-         
+            <p>
+              However,
+              <b>
+                {" "}
+                no method of transmission over the Internet is 100% secure,
+              </b>{" "}
+              and we disclaim any liability for breach beyond our reasonable
+              control.
+            </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              6. Data Security
+              9. User Rights
             </h2>
-            <p className="text-gray-700 mb-4">
-              We implement appropriate security measures to protect your
-              personal information from unauthorized access, alteration,
-              disclosure, or destruction. However, no method of transmission
-              over the internet or electronic storage is 100% secure, and we
-              cannot guarantee absolute security.
-            </p>
+            <p className="text-gray-700 mb-4">You have the right to:</p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Access, update, or correct your personal data</li>
+              <li>
+                Withdraw consent at any time (withdrawal will not affect past
+                processing)
+              </li>
+              <li>
+                Request data deletion, subject to legal retention obligations
+              </li>
+              <li>
+                Opt-out of marketing communications via [email/preferences link]
+              </li>
+            </ul>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               7. Data Retention
