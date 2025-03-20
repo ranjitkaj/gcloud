@@ -113,13 +113,16 @@ export default function HeroSection() {
           <p className="text-2xl md:text-1xl lg:text-4xl font-bold">
             {slides[currentSlide].title}
           </p>
-          <h3 className="text-base md:text-lg mt-3">
-            Find{" "}
-            <span className={`${colors[colorIndex]} font-bold`}>
-              {slides[currentSlide].subtitleWords[wordIndex]}
-            </span>{" "}
-            now!
-          </h3>
+          <div className="bg-black/50 backdrop-blur-sm p-6 rounded-lg mt-4 max-w-2xl mx-auto w-full">
+            <h3 className="text-base md:text-lg mb-6">
+              Find{" "}
+              <span className={`${colors[colorIndex]} font-bold`}>
+                {slides[currentSlide].subtitleWords[wordIndex]}
+              </span>{" "}
+              now!
+            </h3>
+            <PropertySearch className="bg-transparent" showAdvanced={false} />
+          </div>
 
           {/* Navigation Buttons */}
           <button
@@ -145,15 +148,7 @@ export default function HeroSection() {
         </div>
       </section>
 
-      {/* Property Search Bar */}
-      <div className="absolute left-0 right-0 bottom-0 transform translate-y-1/2 z-20 px-4">
-        <div className="container mx-auto">
-          <PropertySearch
-            className="shadow-lg backdrop-blur-md"
-            showAdvanced={false}
-          />
-        </div>
-      </div>
+      
     </div>
   );
 }
