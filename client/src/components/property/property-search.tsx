@@ -33,7 +33,6 @@ export default function PropertySearch({
   const [isFilterOpen, setIsFilterOpen] = useState(false); // Added filter state
   const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all"); // Added sale type state
 
-
   // Use Wouter's navigation hook
   const [_, setUrlLocation] = useLocation();
 

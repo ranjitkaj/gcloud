@@ -160,6 +160,7 @@ export default function HeroSection() {
           <PropertySearch
             className="shadow-lg backdrop-blur-md"
             showAdvanced={false}
+            responsive
           />
         </div>
       </div>
