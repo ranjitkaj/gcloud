@@ -31,13 +31,13 @@ export default function Footer() {
                 <Facebook size={20} />
               </a>
               <a
-                href="#"
+                href="https://x.com/Urgentsales"
                 className="text-gray-300 hover:text-white transition-colors"
               >
                 <Twitter size={20} />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/urgentsales/?hl=en"
                 className="text-gray-300 hover:text-white transition-colors"
               >
                 <Instagram size={20} />
@@ -124,6 +124,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/properties?type=apartment"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Apartments
@@ -132,6 +133,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/properties?type=house"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Houses & Villas
@@ -140,6 +142,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/properties?type=plot"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Plots & Land
@@ -148,6 +151,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/properties?type=commercial"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Commercial Spaces
@@ -157,6 +161,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/properties"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
                   Farmhouses
