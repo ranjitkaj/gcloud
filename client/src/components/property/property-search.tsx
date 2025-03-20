@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // Added useRef
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ export default function PropertySearch({
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // Added filter state
   const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all"); // Added sale type state
+  const containerRef = useRef<HTMLDivElement>(null); // Added ref
 
   // Use Wouter's navigation hook
   const [_, setUrlLocation] = useLocation();
@@ -158,6 +159,7 @@ export default function PropertySearch({
 
   return (
     <div
+      ref={containerRef} // Added ref here
       className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className}`}
     >
       <div className="flex flex-col space-y-4">
