@@ -12,6 +12,7 @@ import { Toaster } from "@/components/ui/toaster";
 // Pages
 import HomePage from "@/pages/home-page";
 import NotFound from "@/pages/not-found";
+import TopPropertiesList from "@/pages/top-properties-list";
 import AuthPage from "@/pages/auth-page";
 import AddProperty from "@/pages/add-property";
 import PostPropertyFree from "@/pages/post-property-free";
@@ -66,6 +67,11 @@ function App() {
           {/* Admin Routes */}
           <Route path="/admin" component={AdminDashboard} />
           
+          {/* Top Properties Routes */}
+          <Route path="/top-properties/:category">
+            <TopPropertiesList />
+          </Route>
+
           {/* 404 Route */}
           <Route component={NotFound} />
         </Switch>
