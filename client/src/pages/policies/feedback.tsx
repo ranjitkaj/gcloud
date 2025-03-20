@@ -85,7 +85,7 @@ export default function Feedback() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       <div className="container mx-auto px-4 md:px-6 max-w-4xl">
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8">

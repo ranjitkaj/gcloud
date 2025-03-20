@@ -56,15 +56,42 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
+                <h2 className="text-3xl font-bold mb-6">
+                  About Urgentsales.in
+                </h2>
                 <p className="text-gray-600 mb-4">
-                  Established in 2025, UrgentSales.in is India's fastest-growing and most trusted online real estate platform, dedicated to simplifying property transactions across the nation. Our vision is to create a seamless and transparent real estate experience, connecting millions of buyers, sellers, and brokers through an innovative, easy-to-use platform featuring verified property listings spanning in Andrapradesh & Telengana.
+                  Established in 2025, UrgentSales.in is India's fastest-growing
+                  and most trusted online real estate platform, dedicated to
+                  simplifying property transactions across the nation. Our
+                  vision is to create a seamless and transparent real estate
+                  experience, connecting millions of buyers, sellers, and
+                  brokers through an innovative, easy-to-use platform featuring
+                  verified property listings spanning in Andrapradesh &
+                  Telengana.
                 </p>
                 <p className="text-gray-600 mb-4">
-                  At UrgentSales.in, we go far beyond simply providing property listings. We offer comprehensive real estate services, including personalized property recommendations, expert advisory services, and professional property management solutions. Powered by cutting-edge technology such as Virtual Reality (VR) and Artificial Intelligence (AI), we ensure an immersive, intelligent, and highly personalized property search experience.
+                  At UrgentSales.in, we go far beyond simply providing property
+                  listings. We offer comprehensive real estate services,
+                  including personalized property recommendations, expert
+                  advisory services, and professional property management
+                  solutions. Powered by cutting-edge technology such as Virtual
+                  Reality (VR) and Artificial Intelligence (AI), we ensure an
+                  immersive, intelligent, and highly personalized property
+                  search experience.
                 </p>
                 <p className="text-gray-600 mb-4">
-                  Our unique brokerage-free approach is designed to empower you. By providing real-time market insights, transparent pricing, and thoroughly verified listings, we help you make informed decisions with confidence and ease. It’s  a STARTUP company and UrgentSales.in has grown rapidly to become more than just a property portal—we've created a dynamic real estate ecosystem trusted by millions.
+                  Our unique brokerage-free approach is designed to empower you.
+                  By providing real-time market insights, transparent pricing,
+                  and thoroughly verified listings, we help you make informed
+                  decisions with confidence and ease. It’s a STARTUP company and
+                  UrgentSales.in has grown rapidly to become more than just a
+                  property portal—we've created a dynamic real estate ecosystem
+                  trusted by millions.
+                </p>
+                <p className="text-gray-600 mb-4">
+                  We remain committed to excellence, transparency, and
+                  innovation, continuously transforming how India buys, sells,
+                  and rents properties.
                 </p>
                 <div className="mt-8">
                   <h3 className="text-xl font-semibold mb-4">Core Values</h3>
@@ -116,7 +143,7 @@ export default function AboutPage() {
                 <span>Urgent Sales Program</span>
               </div>
               <h2 className="text-3xl font-bold mb-4">
-                About Our Urgency Sales Initiative
+                Our Urgency Sales Initiative
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 Our unique Urgency Sales program helps property owners who need
@@ -127,9 +154,9 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div>
                 <img
-                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
                   alt="Urgency Sale Property"
-                  className="rounded-xl shadow-lg"
+                  className="rounded-xl shadow-lg w-full h-auto"
                 />
               </div>
               <div>
@@ -195,127 +222,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Our Impact in Numbers</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                We're proud of the positive change we're bringing to the Indian
-                real estate market.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-                  <Home className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-4xl font-bold mb-2">12K+</div>
-                <div className="text-gray-500">Properties Listed</div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-4xl font-bold mb-2">45K+</div>
-                <div className="text-gray-500">Happy Users</div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-                  <Building className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-4xl font-bold mb-2">28+</div>
-                <div className="text-gray-500">Cities Covered</div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-                  <BarChart className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-4xl font-bold mb-2">₹860Cr+</div>
-                <div className="text-gray-500">Transaction Value</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Our Leadership Team</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Meet the passionate professionals driving our mission forward.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-gray-50 rounded-xl overflow-hidden shadow-sm group">
-                <div className="h-64 overflow-hidden">
-                  <img
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
-                    alt="CEO"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1">Rajiv Sharma</h3>
-                  <p className="text-primary font-medium mb-3">
-                    CEO & Co-Founder
-                  </p>
-                  <p className="text-gray-600 text-sm">
-                    Former SVP at Housing.com with 15+ years in real estate
-                    tech, passionate about reimagining property transactions for
-                    the digital age.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl overflow-hidden shadow-sm group">
-                <div className="h-64 overflow-hidden">
-                  <img
-                    src="https://randomuser.me/api/portraits/women/44.jpg"
-                    alt="CTO"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1">Priya Malhotra</h3>
-                  <p className="text-primary font-medium mb-3">
-                    CTO & Co-Founder
-                  </p>
-                  <p className="text-gray-600 text-sm">
-                    AI and ML expert with experience at Google and Amazon,
-                    leading our tech innovations in property matching and market
-                    analysis.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl overflow-hidden shadow-sm group">
-                <div className="h-64 overflow-hidden">
-                  <img
-                    src="https://randomuser.me/api/portraits/men/22.jpg"
-                    alt="COO"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1">Arjun Kapoor</h3>
-                  <p className="text-primary font-medium mb-3">COO</p>
-                  <p className="text-gray-600 text-sm">
-                    Real estate veteran with background in property development
-                    and operations across major Indian metros.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
         <section className="py-20 bg-primary">
           <div className="container mx-auto px-4">
@@ -341,7 +247,7 @@ export default function AboutPage() {
                 <Link to="/post-property-free">
                   <Button
                     size="lg"
-                    className="bg-primary-foreground text-white border border-white hover:bg-white hover:text-primary"
+                    className="bg-white text-primary hover:bg-gray-100"
                   >
                     List Your Property
                   </Button>
