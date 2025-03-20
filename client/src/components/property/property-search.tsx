@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { MapPin, Search, Filter } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
 
 interface PropertySearchProps {
@@ -30,7 +30,6 @@ export default function PropertySearch({
   const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Use Wouter's navigation hook
   const [_, setUrlLocation] = useLocation();
@@ -203,14 +202,6 @@ export default function PropertySearch({
             </div>
           </div>
           <div className="flex flex-row space-x-2">
-            <Button
-              variant="outline"
-              className="bg-gray-50 border border-gray-300 text-gray-700 h-12 hover:bg-gray-100 px-4"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
             <Select
               value={propertyType}
               onValueChange={(value: (typeof propertyTypes)[number]) =>
