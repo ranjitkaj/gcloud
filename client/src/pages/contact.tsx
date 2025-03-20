@@ -34,8 +34,12 @@ const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z.string().min(10, { message: "Please enter a valid phone number" }),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters" }),
-  message: z.string().min(10, { message: "Message must be at least 10 characters" }),
+  subject: z
+    .string()
+    .min(5, { message: "Subject must be at least 5 characters" }),
+  message: z
+    .string()
+    .min(10, { message: "Message must be at least 10 characters" }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -58,25 +62,27 @@ export default function ContactPage() {
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-    
+
     // Simulate API call
     try {
       // This would be a real API call in production
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Show success message
       toast({
         title: "Message Sent",
-        description: "We've received your message and will get back to you shortly.",
+        description:
+          "We've received your message and will get back to you shortly.",
         variant: "default",
       });
-      
+
       // Reset form
       form.reset();
     } catch (error) {
       toast({
         title: "Error",
-        description: "There was an error sending your message. Please try again.",
+        description:
+          "There was an error sending your message. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -92,9 +98,13 @@ export default function ContactPage() {
         <section className="py-16 bg-gradient-to-b from-primary/5 to-white">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                Contact Us
+              </h1>
               <p className="text-lg text-gray-600">
-                We're here to help you with any questions about properties, listing process, or our services. Reach out to our team and we'll respond as soon as possible.
+                We're here to help you with any questions about properties,
+                listing process, or our services. Reach out to our team and
+                we'll respond as soon as possible.
               </p>
             </div>
           </div>
@@ -111,7 +121,9 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-xl font-semibold">Our Office</h3>
                 </div>
-                <p className="text-gray-600 mb-2">123 Tech Park, Silicon Valley</p>
+                <p className="text-gray-600 mb-2">
+                  123 Tech Park, Silicon Valley
+                </p>
                 <p className="text-gray-600 mb-2">Koramangala, Bangalore</p>
                 <p className="text-gray-600">Karnataka, India - 560034</p>
               </div>
@@ -124,9 +136,13 @@ export default function ContactPage() {
                   <h3 className="text-xl font-semibold">Email Us</h3>
                 </div>
                 <p className="text-gray-600 mb-2">General Inquiries:</p>
-                <p className="text-primary font-medium mb-3">info@realestate.com</p>
+                <p className="text-primary font-medium mb-3">
+                  info@realestate.com
+                </p>
                 <p className="text-gray-600 mb-2">Support:</p>
-                <p className="text-primary font-medium">support@realestate.com</p>
+                <p className="text-primary font-medium">
+                  support@realestate.com
+                </p>
               </div>
 
               <div className="bg-gray-50 p-6 rounded-xl">
@@ -137,7 +153,9 @@ export default function ContactPage() {
                   <h3 className="text-xl font-semibold">Call Us</h3>
                 </div>
                 <p className="text-gray-600 mb-2">Customer Support:</p>
-                <p className="text-primary font-medium mb-3">+91 80 1234 5678</p>
+                <p className="text-primary font-medium mb-3">
+                  +91 80 1234 5678
+                </p>
                 <p className="text-gray-600 mb-2">Property Assistance:</p>
                 <p className="text-primary font-medium">+91 80 8765 4321</p>
               </div>
@@ -155,7 +173,9 @@ export default function ContactPage() {
               </div>
               <h2 className="text-3xl font-bold mb-4">Urgency Sales Contact</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Need to sell your property quickly? Our Urgency Sales team is here to help you list and sell your property with our special 25% off program.
+                Need to sell your property quickly? Our Urgency Sales team is
+                here to help you list and sell your property with our special
+                25% off program.
               </p>
             </div>
 
@@ -166,9 +186,11 @@ export default function ContactPage() {
                     <Badge className="bg-red-600 text-white mr-3">
                       <Sparkles className="h-3 w-3 mr-1" />
                     </Badge>
-                    <h3 className="text-xl font-semibold">Dedicated Urgency Sales Support</h3>
+                    <h3 className="text-xl font-semibold">
+                      Dedicated Urgency Sales Support
+                    </h3>
                   </div>
-                  
+
                   <div className="space-y-4 mb-6">
                     <div className="flex items-start">
                       <Phone className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
@@ -177,38 +199,44 @@ export default function ContactPage() {
                         <p className="text-gray-600">+91 80 9876 5432</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <Mail className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">Urgent Inquiries</p>
-                        <p className="text-gray-600">urgent@realestate.com</p>
+                        <p className="text-gray-600">urgentsale.in@gmail.com</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <MessageSquare className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">WhatsApp Support</p>
-                        <p className="text-gray-600">+91 99 8877 6655</p>
+                        <p className="text-gray-600">+91 99512 11555</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <Clock className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">Extended Hours</p>
-                        <p className="text-gray-600">9AM - 9PM, 7 days a week</p>
+                        <p className="text-gray-600">
+                          9AM - 9PM, 7 days a week
+                        </p>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-8">
-                    <h4 className="font-semibold mb-3">Urgency Sales Benefits:</h4>
+                    <h4 className="font-semibold mb-3">
+                      Urgency Sales Benefits:
+                    </h4>
                     <ul className="space-y-2">
                       <li className="flex items-start">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mr-2 mt-0.5" />
-                        <span>Priority listing verification (24 hour turnaround)</span>
+                        <span>
+                          Priority listing verification (24 hour turnaround)
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mr-2 mt-0.5" />
@@ -216,21 +244,27 @@ export default function ContactPage() {
                       </li>
                       <li className="flex items-start">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mr-2 mt-0.5" />
-                        <span>Dedicated sales representative for your property</span>
+                        <span>
+                          Dedicated sales representative for your property
+                        </span>
                       </li>
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="bg-gray-100 p-8">
-                  <img 
-                    src="https://images.unsplash.com/photo-1553531384-397c80973a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                    alt="Urgency Sales Team" 
+                  <img
+                    src="https://images.unsplash.com/photo-1553531384-397c80973a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                    alt="Urgency Sales Team"
                     className="rounded-lg shadow-md mb-6 w-full h-48 object-cover"
                   />
-                  <h3 className="text-xl font-semibold mb-4">Schedule an Urgency Consultation</h3>
+                  <h3 className="text-xl font-semibold mb-4">
+                    Schedule an Urgency Consultation
+                  </h3>
                   <p className="text-gray-600 mb-6">
-                    Our Urgency Sales specialists will guide you through the entire process of listing, marketing, and selling your property within your desired timeframe.
+                    Our Urgency Sales specialists will guide you through the
+                    entire process of listing, marketing, and selling your
+                    property within your desired timeframe.
                   </p>
                   <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
                     Book Consultation
@@ -248,13 +282,17 @@ export default function ContactPage() {
               <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold mb-4">Send Us a Message</h2>
                 <p className="text-gray-600">
-                  Have a question or need assistance? Fill out the form below and our team will get back to you as soon as possible.
+                  Have a question or need assistance? Fill out the form below
+                  and our team will get back to you as soon as possible.
                 </p>
               </div>
-              
+
               <div className="bg-gray-50 rounded-xl p-6 md:p-8 shadow-sm">
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
@@ -269,7 +307,7 @@ export default function ContactPage() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="email"
@@ -277,13 +315,16 @@ export default function ContactPage() {
                           <FormItem>
                             <FormLabel>Email Address</FormLabel>
                             <FormControl>
-                              <Input placeholder="john@example.com" {...field} />
+                              <Input
+                                placeholder="urgentsale.in@gmail.com"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="phone"
@@ -297,7 +338,7 @@ export default function ContactPage() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="subject"
@@ -305,14 +346,17 @@ export default function ContactPage() {
                           <FormItem>
                             <FormLabel>Subject</FormLabel>
                             <FormControl>
-                              <Input placeholder="Property Inquiry" {...field} />
+                              <Input
+                                placeholder="Property Inquiry"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
-                    
+
                     <FormField
                       control={form.control}
                       name="message"
@@ -320,20 +364,20 @@ export default function ContactPage() {
                         <FormItem>
                           <FormLabel>Message</FormLabel>
                           <FormControl>
-                            <Textarea 
-                              placeholder="Tell us how we can help you..." 
+                            <Textarea
+                              placeholder="Tell us how we can help you..."
                               className="min-h-32 resize-none"
-                              {...field} 
+                              {...field}
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full md:w-auto bg-primary text-white" 
+
+                    <Button
+                      type="submit"
+                      className="w-full md:w-auto bg-primary text-white"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? "Sending..." : "Send Message"}
@@ -357,33 +401,35 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-2xl font-semibold">Business Hours</h3>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Monday - Friday</span>
                       <span>9:00 AM - 6:00 PM</span>
                     </div>
                     <div className="border-t border-gray-200"></div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Saturday</span>
                       <span>10:00 AM - 4:00 PM</span>
                     </div>
                     <div className="border-t border-gray-200"></div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Sunday</span>
                       <span>Closed</span>
                     </div>
                     <div className="border-t border-gray-200"></div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Urgency Sales Support</span>
-                      <span className="text-red-600">9:00 AM - 9:00 PM (Daily)</span>
+                      <span className="text-red-600">
+                        9:00 AM - 9:00 PM (Daily)
+                      </span>
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <div className="flex items-center mb-6">
                     <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
@@ -391,20 +437,21 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-2xl font-semibold">Download Our App</h3>
                   </div>
-                  
+
                   <p className="text-gray-600 mb-6">
-                    Get instant property alerts, chat with agents, and browse listings on the go with our mobile app.
+                    Get instant property alerts, chat with agents, and browse
+                    listings on the go with our mobile app.
                   </p>
-                  
+
                   <div className="flex space-x-4">
-                    <img 
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/2560px-Google_Play_Store_badge_EN.svg.png" 
-                      alt="Get it on Google Play" 
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/2560px-Google_Play_Store_badge_EN.svg.png"
+                      alt="Get it on Google Play"
                       className="h-10"
                     />
-                    <img 
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2560px-Download_on_the_App_Store_Badge.svg.png" 
-                      alt="Download on App Store" 
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2560px-Download_on_the_App_Store_Badge.svg.png"
+                      alt="Download on App Store"
                       className="h-10"
                     />
                   </div>
