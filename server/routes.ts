@@ -220,21 +220,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(properties);
   }));
 
-  // Get top properties
+  // Get top properties by category
   app.get("/api/properties/top/:category", asyncHandler(async (req, res) => {
     const { category } = req.params;
     const { city } = req.query;
     
     let limit = 10;
     switch (category) {
+      case 'top10': limit = 10; break;
       case 'top20': limit = 20; break;
       case 'top30': limit = 30; break;
       case 'top50': limit = 50; break;
-      case 'top70plus': limit = 70; break;
+      case 'top100': limit = 100; break;
+      default: limit = 10;
     }
 
+    // Get properties sorted by rating and subscription level
     const properties = await storage.getTopProperties(limit, city as string);
-    res.json(properties);
+    
+    // Sort properties by subscription level and rating
+    const sortedProperties = properties.sort((a, b) => {
+      // First sort by subscription level
+      const subscriptionOrder = { premium: 3, paid: 2, free: 1 };
+      const subscriptionDiff = 
+        (subscriptionOrder[b.subscriptionLevel as keyof typeof subscriptionOrder] || 0) - 
+        (subscriptionOrder[a.subscriptionLevel as keyof typeof subscriptionOrder] || 0);
+      
+      if (subscriptionDiff !== 0) return subscriptionDiff;
+      
+      // Then by premium flag
+      if (b.premium !== a.premium) return b.premium ? 1 : -1;
+      
+      // Finally by creation date (newer first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+    res.json(sortedProperties.slice(0, limit));
   }));
 
   // Get featured properties
