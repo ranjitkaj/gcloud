@@ -211,7 +211,7 @@ export default function PropertySearch({
             <Button
               variant="outline"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="min-w-[100px] py-6"
+              className="min-w-[100px] py-6 md:py-4"
             >
               Filter
             </Button>
@@ -243,8 +243,14 @@ export default function PropertySearch({
         </div>
 
         {isFilterOpen && ( // Added filter section
-          <div className="pt-4 border-t border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="pt-4 border-t border-gray-100 bg-white rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-4 px-4">
+              <h3 className="font-semibold">Filters</h3>
+              <Button variant="ghost" size="sm" onClick={() => setIsFilterOpen(false)}>
+                Close
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-2">
                   For Sale/Buy
