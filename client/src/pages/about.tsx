@@ -15,6 +15,20 @@ import {
   CheckCircle,
 } from "lucide-react";
 
+// Assumed PropertyOwnerCTA component
+const PropertyOwnerCTA = () => (
+  <section className="py-8 bg-gray-100">
+    <div className="container mx-auto px-4 text-center">
+      <h2 className="text-2xl font-semibold mb-4">Become a Property Owner</h2>
+      <p className="text-gray-600 mb-6">List your property with us today!</p>
+      <Link to="/post-property-free">
+        <Button size="lg" className="bg-primary text-white">List Now</Button>
+      </Link>
+    </div>
+  </section>
+);
+
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -50,6 +64,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+        <PropertyOwnerCTA /> {/* Added PropertyOwnerCTA */}
 
         {/* Our Mission */}
         <section className="py-16 bg-white">
