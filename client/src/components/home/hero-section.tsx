@@ -113,14 +113,13 @@ export default function HeroSection() {
           <p className="text-2xl md:text-1xl lg:text-4xl font-bold">
             {slides[currentSlide].title}
           </p>
-          <h3 className="text-base md:text-lg mt-3 mb-16">
+          <h3 className="text-base md:text-lg mt-3">
             Find{" "}
             <span className={`${colors[colorIndex]} font-bold`}>
               {slides[currentSlide].subtitleWords[wordIndex]}
             </span>{" "}
             now!
           </h3>
-          <div className="w-24 h-[1px] bg-white/30 mb-16"></div>
 
           {/* Navigation Buttons */}
           <button
