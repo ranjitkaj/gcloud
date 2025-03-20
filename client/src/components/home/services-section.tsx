@@ -109,9 +109,10 @@ export default function ServicesSection() {
     {
       icon: <Settings className="h-6 w-6" />,
       title: "Property Investment Services",
-      description: "Trusted renovation and property improvement services",
+      description:
+        "Comprehensive analysis and insights for property investments",
       imageSrc:
-        "https://example.com/images/property-investment-services.jpg",
+        "https://images.unsplash.com/photo-1557682250-3f73a5e96ac7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
     },
   ];
 

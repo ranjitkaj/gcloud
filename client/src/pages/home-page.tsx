@@ -14,6 +14,7 @@ import MobileApp from "@/components/home/mobile-app";
 import CTASection from "@/components/home/cta-section";
 import ServicesSection from "@/components/home/services-section";
 import NewlyListedProperties from "@/components/home/newly-listed-properties";
+import propertyowners from "@/components/home/property-owner-cta";
 
 export default function HomePage() {
   return (
@@ -21,8 +22,9 @@ export default function HomePage() {
       <Navbar />
       <main className="flex-grow">
         <HeroSection />
-        <FeaturedListings />
+        <<TopProperties />
         <TopProperties />
+        <FeaturedListings />
         <NewlyListedProperties />
         <ServicesSection />
         <RecommendedProperties />
