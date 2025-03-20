@@ -14,7 +14,7 @@ export default function FeaturedListings() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
-            <h5 className="text-3xl font-bold font-heading text-gray-900 mb-2">
+            <h5 className="text-2xl font-bold font-heading text-gray-900 mb-2">
               Newly Listed Properties – The Best Property for You!
             </h5>
             <p className="text-gray-600">

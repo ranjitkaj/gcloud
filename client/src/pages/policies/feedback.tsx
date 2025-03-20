@@ -91,11 +91,12 @@ export default function Feedback() {
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
           {/* Breadcrumb */}
           <div className="mb-6 text-sm text-gray-500">
-            <Link href="/" className="hover:text-primary">
-              Home
-            </Link>{" "}
-            {" > "}
-            <span className="text-gray-700">Feedback</span>
+            <button
+              onClick={() => window.history.back()}
+              className="hover:text-primary focus:outline-none"
+            >
+              ← Back
+            </button>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">

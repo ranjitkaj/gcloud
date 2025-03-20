@@ -1,17 +1,21 @@
 import { Link } from "wouter";
+import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 
 export default function TermsConditions() {
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="container mx-auto px-4 md:px-6 max-w-4xl">
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
           {/* Breadcrumb */}
           <div className="mb-6 text-sm text-gray-500">
-            <Link href="/" className="hover:text-primary">
-              Home
-            </Link>{" "}
-            {" > "}
-            <span className="text-gray-700">Terms & Conditions</span>
+            <button
+              onClick={() => window.history.back()}
+              className="hover:text-primary focus:outline-none"
+            >
+              ← Back
+            </button>
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
@@ -176,6 +180,7 @@ export default function TermsConditions() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

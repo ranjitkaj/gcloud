@@ -47,7 +47,7 @@ const slides = [
 ];
 
 const colors = [
-  "text-red-500",
+  "text-yellow-500",
   // "text-red-400",
   // "text-green-400",
   // "text-yellow-400",
@@ -110,17 +110,16 @@ export default function HeroSection() {
 
         {/* Text Overlay */}
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white z-20 px-6">
-          <p className="text-2xl md:text-1xl lg:text-4xl font-bold">
+          <p className="text-1.8xl md:text-1xl lg:text-4xl font-bold">
             {slides[currentSlide].title}
           </p>
-          <h3 className="text-base md:text-lg mt-3 mb-16">
+          <h3 className="text-base md:text-lg mt-3">
             Find{" "}
             <span className={`${colors[colorIndex]} font-bold`}>
               {slides[currentSlide].subtitleWords[wordIndex]}
             </span>{" "}
             now!
           </h3>
-          <div className="w-24 h-[1px] bg-white/30 mb-16"></div>
 
           {/* Navigation Buttons */}
           <button
@@ -132,7 +131,7 @@ export default function HeroSection() {
             className="absolute left-1 top-1/2 transform -translate-y-1/2  hover:bg-black/50 rounded-full p-2 z-10 text-white"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="h-6 w-6" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={() =>

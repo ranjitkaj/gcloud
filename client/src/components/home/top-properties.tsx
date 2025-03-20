@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Property } from "@shared/schema";
@@ -31,8 +30,10 @@ export default function TopProperties() {
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">Top Properties</h2>
-        
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">
+          Top Listing Properties
+        </h2>
+
         <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
           {TOP_CATEGORIES.map((category) => (
             <Button
@@ -57,14 +58,18 @@ export default function TopProperties() {
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>
-            
+
             {properties.length > 6 && (
               <div className="text-center mt-8">
                 <Button
-                  onClick={() => navigate(`/properties/top/${selectedCategory}`)}
+                  onClick={() =>
+                    navigate(`/properties/top/${selectedCategory}`)
+                  }
                   variant="outline"
                 >
-                  View All {TOP_CATEGORIES.find(c => c.id === selectedCategory)?.label} Properties
+                  View All{" "}
+                  {TOP_CATEGORIES.find((c) => c.id === selectedCategory)?.label}{" "}
+                  Properties
                 </Button>
               </div>
             )}
