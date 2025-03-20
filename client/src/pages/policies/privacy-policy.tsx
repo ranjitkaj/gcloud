@@ -20,9 +20,6 @@ export default function PrivacyPolicy() {
             
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">1. Information We Collect</h2>
             <p className="text-gray-700 mb-4">
-              
-            </p>
-            <p className="text-gray-700 mb-4">
               We may collect personal information that you voluntarily provide to us when you:
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
