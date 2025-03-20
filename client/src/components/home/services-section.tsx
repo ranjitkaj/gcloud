@@ -54,28 +54,28 @@ export default function ServicesSection() {
       icon: <Building className="h-6 w-6" />,
       title: "Property Management",
       description:
-        "Professional management services for landlords and property owners",
+        "Our professional real estate rental agency offers exceptional management services tailored specifically for landlords and property owners. From tenant screening to routine maintenance, we manage everything seamlessly so you can enjoy stress-free property ownership.",
       imageSrc:
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
     },
     {
       icon: <Search className="h-6 w-6" />,
       title: "Property Search",
-      description: "Find your dream property with our advanced search engine",
+      description: "Looking for a reliable real estate broker near me or nearby real estate office? Discover your perfect home or commercial space effortlessly using our advanced property search engine, powered by the expertise of our trusted real estate consultants.",
       imageSrc:
         "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     },
     {
       icon: <Home className="h-6 w-6" />,
-      title: "Home Valuation",
-      description: "Get an accurate estimate of your property's market value",
+      title: "Commercial and Industrial Real Estate",
+      description: "As an established industrial real estate agency, we connect businesses with ideal commercial and industrial properties. Whether you're looking for offices, warehouses, retail spaces, or factories, our expert team helps you secure prime locations to grow your real estate business effectively.",
       imageSrc:
         "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     },
     {
       icon: <Key className="h-6 w-6" />,
-      title: "Agents Services",
-      description: "Comprehensive rental solutions for tenants and landlords",
+      title: "Real Estate Investment Advisory",
+      description: "Leveraging our expertise as a real estate digital marketing agency, we ensure optimal visibility for your property listings. Using innovative marketing strategies, we attract qualified buyers and tenants quickly and efficiently.",
       imageSrc:
         "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
     },
@@ -84,7 +84,7 @@ export default function ServicesSection() {
   const advancedServices = [
     {
       icon: <Shield className="h-6 w-6" />,
-      title: "Legal Assistance",
+      title: "Digital Marketing Solutions",
       description: "Expert legal advice for real estate transactions",
       imageSrc:
         "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
@@ -118,8 +118,11 @@ export default function ServicesSection() {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our comprehensive range of real estate services designed to
-            make your property journey smooth and successful.
+            Explore a wide range of comprehensive services provided by our
+            top-rated real estate agency, one of the leading real estate
+            companies in India. Whether you’re searching for residential,
+            commercial, or industrial properties, our experienced real estate
+            brokers and real estate consultants have you covered.
           </p>
         </div>
 
@@ -137,10 +140,12 @@ export default function ServicesSection() {
               Why Choose Our Services?
             </h3>
             <p className="text-gray-700 mb-6">
-              Our experienced team provides tailored solutions for all your real
-              estate needs. With expertise in property valuation, legal
-              assistance, and financial planning, we ensure a seamless
-              experience for buyers, sellers, and investors.
+              We’re ranked among real estate top companies in India, known for
+              our transparency, professionalism, and client-centric approach.
+              Whether it's residential, commercial, or industrial, we simplify
+              your property journey with unmatched dedication and local market
+              knowledge. Choose our services—your trusted partner in real estate
+              India.
             </p>
             <ul className="space-y-2">
               {services.slice(0, 4).map((service, index) => (

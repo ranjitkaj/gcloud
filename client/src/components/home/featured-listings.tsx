@@ -10,19 +10,17 @@ export default function FeaturedListings() {
   });
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-20 md:py-18 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold font-heading text-gray-900 mb-2">
+            <h5 className="text-3xl font-bold font-heading text-gray-900 mb-2">
               Newly Listed Properties – The Best Property for You!
-            </h2>
+            </h5>
             <p className="text-gray-600">
-              Explore our newly listed properties, handpicked to offer you the
-              best in comfort, luxury, and convenience. Whether you're looking
-              for a modern apartment, a spacious villa, or a prime investment
-              opportunity, we've got the best property for you. Don't miss out
-              on these fresh listings—your dream home awaits!"
+              Explore our newly listed properties, handpicked to offer you the best in comfort, luxury, and convenience. Whether you're looking for a modern apartment, a spacious villa, or a prime investment opportunity, we've got the best property for you. Don't miss out on these fresh listings—your dream home awaits!"
+
+
             </p>
           </div>
           <div className="mt-4 md:mt-0">

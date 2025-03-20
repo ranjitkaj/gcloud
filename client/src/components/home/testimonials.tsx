@@ -12,7 +12,7 @@ export default function Testimonials() {
   const testimonials: Testimonial[] = [
     {
       id: 1,
-      content: "I saved over ₹4 lakhs in broker commission when selling my apartment. The platform connected me directly with serious buyers, and the entire process was smooth.",
+      content: "I was searching for a reliable real estate agency when I found urgentsales.in. Their expert brokers helped me quickly find my ideal apartment at a great price. The process was smooth, hassle-free, and highly professional. I strongly recommend urgentsales.in to anyone looking to save time and money.",
       name: "Rajesh Sharma",
       role: "Property Seller",
       location: "Mumbai",
@@ -21,7 +21,7 @@ export default function Testimonials() {
     },
     {
       id: 2,
-      content: "As a first-time buyer, I was nervous about dealing directly with owners. But the platform made it easy with helpful guides and support. Found my dream home within a month!",
+      content: "Listing my property on urgentsales.in was the best decision I made. The experienced real estate consultants understood my requirements clearly and connected me with genuine buyers immediately. My property sold faster than expected, and I got the best deal. Great service!",
       name: "Priya Patel",
       role: "Property Buyer",
       location: "Bangalore",
@@ -30,7 +30,7 @@ export default function Testimonials() {
     },
     {
       id: 3,
-      content: "I had tried traditional brokers for months without luck. Listed my property here and got three serious inquiries in just a week. Sold at a better price than expected!",
+      content: "Urgentsales.in provided exceptional service throughout my property investment journey. The consultants were knowledgeable, trustworthy, and always available. Their market insights helped me secure an excellent commercial space quickly. I'm thoroughly satisfied and highly recommend their services.",
       name: "Vikram Singh",
       role: "Property Seller",
       location: "Delhi",
@@ -65,7 +65,8 @@ export default function Testimonials() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold font-heading text-gray-900 mb-4">What Our Customers Say</h2>
-          <p className="text-gray-600 text-lg">Real success stories from people who saved time and money</p>
+          <p className="text-gray-600 text-lg">Real success stories from customers who found their ideal properties with our trusted real estate brokers and consultants, saving valuable time, money, and effort.
+</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
