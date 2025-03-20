@@ -39,7 +39,6 @@ export default function PrivacyPolicy() {
               described in this Policy. If you do not agree, you must
               immediately cease use of the Platform.
             </p>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               2. Legal Compliance
             </h2>
@@ -115,7 +114,6 @@ export default function PrivacyPolicy() {
                 To fulfill any contractual obligations or service requests
               </li>
             </ul>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               5. Lawful Basis for Processing
             </h2>
@@ -131,7 +129,6 @@ export default function PrivacyPolicy() {
                 fraud prevention, and network security
               </li>
             </ul>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               6. Disclosure and Sharing of Information
             </h2>
@@ -161,7 +158,6 @@ export default function PrivacyPolicy() {
             <p className="text-gray-700 mb-4">
               We do not sell user data to third parties for monetary gain.
             </p>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               7. Data Retention
             </h2>
@@ -193,7 +189,6 @@ export default function PrivacyPolicy() {
               and we disclaim any liability for breach beyond our reasonable
               control.
             </p>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               9. User Rights
             </h2>
@@ -211,52 +206,21 @@ export default function PrivacyPolicy() {
                 Opt-out of marketing communications via [email/preferences link]
               </li>
             </ul>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              7. Data Retention
+              10. Cookies & Tracking Technologies
             </h2>
             <p className="text-gray-700 mb-4">
-              We retain your personal information for as long as necessary to
-              fulfill the purposes outlined in this Privacy Policy, unless a
-              longer retention period is required or permitted by law.
-            </p>
-
-            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              8. Children's Privacy
-            </h2>
+              UrgentSales.in uses cookies and similar technologies to:
+            </p>{" "}
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li>Maintain user sessions</li>
+              <li>Improve website performance and content relevance</li>
+              <li>Deliver targeted advertisements</li>
+            </ul>
             <p className="text-gray-700 mb-4">
-              Our platform is not intended for children under 18 years of age.
-              We do not knowingly collect personal information from children
-              under 18. If you believe we have collected information from a
-              child under 18, please contact us immediately.
+              Users can <b>disable cookies</b> via browser settings, but this
+              may affect functionality.
             </p>
-
-            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              9. Changes to This Privacy Policy
-            </h2>
-            <p className="text-gray-700 mb-4">
-              We may update this Privacy Policy from time to time. We will
-              notify you of any changes by posting the new Privacy Policy on
-              this page and updating the "Last Updated" date. You are advised to
-              review this Privacy Policy periodically for any changes.
-            </p>
-
-            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              10. Contact Us
-            </h2>
-            <p className="text-gray-700 mb-4">
-              If you have any questions or concerns about this Privacy Policy,
-              please contact us at:
-            </p>
-            <p className="text-gray-700 mb-4">
-              Email: privacy@homedirectly.com
-              <br />
-              Phone: +91 8800123456
-              <br />
-              Address: 123 Tech Park, Whitefield, Bangalore - 560066, India
-            </p>
-
-            <p className="text-gray-700 mt-8">Last Updated: March 19, 2025</p>
           </div>
         </div>
       </div>
