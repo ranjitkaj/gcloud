@@ -610,6 +610,19 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getTopProperties(limit: number = 10, city?: string): Promise<Property[]> {
+    let query = db.select()
+      .from(schema.properties)
+      .where(sql`subscription_level != 'free'`)
+      .orderBy(sql`subscription_amount desc`);
+      
+    if (city) {
+      query = query.where(sql`city = ${city}`);
+    }
+    
+    return query.limit(limit);
+  }
+
   async getFeaturedProperties(limit: number = 6): Promise<Property[]> {
     const featured = Array.from(this.properties.values())
       .filter((property) => property.featured)

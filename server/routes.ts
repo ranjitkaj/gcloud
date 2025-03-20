@@ -220,6 +220,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(properties);
   }));
 
+  // Get top properties
+  app.get("/api/properties/top/:category", asyncHandler(async (req, res) => {
+    const { category } = req.params;
+    const { city } = req.query;
+    
+    let limit = 10;
+    switch (category) {
+      case 'top20': limit = 20; break;
+      case 'top30': limit = 30; break;
+      case 'top50': limit = 50; break;
+      case 'top70plus': limit = 70; break;
+    }
+
+    const properties = await storage.getTopProperties(limit, city as string);
+    res.json(properties);
+  }));
+
   // Get featured properties
   app.get("/api/properties/featured", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 6;

@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import HeroSection from "@/components/home/hero-section";
 import FeaturedListings from "@/components/home/featured-listings";
+import TopProperties from "@/components/home/top-properties";
 import RecommendedProperties from "@/components/home/recommended-properties";
 import HowItWorks from "@/components/home/how-it-works";
 import ListPropertyCTA from "@/components/home/list-property-cta";
@@ -21,6 +22,7 @@ export default function HomePage() {
       <main className="flex-grow">
         <HeroSection />
         <FeaturedListings />
+        <TopProperties />
         <NewlyListedProperties />
         <ServicesSection />
         <RecommendedProperties />
