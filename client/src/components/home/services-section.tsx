@@ -61,21 +61,24 @@ export default function ServicesSection() {
     {
       icon: <Search className="h-6 w-6" />,
       title: "Property Search",
-      description: "Looking for a reliable real estate broker near me or nearby real estate office? Discover your perfect home or commercial space effortlessly using our advanced property search engine, powered by the expertise of our trusted real estate consultants.",
+      description:
+        "Looking for a reliable real estate broker near me or nearby real estate office? Discover your perfect home or commercial space effortlessly using our advanced property search engine, powered by the expertise of our trusted real estate consultants.",
       imageSrc:
         "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     },
     {
       icon: <Home className="h-6 w-6" />,
       title: "Commercial and Industrial Real Estate",
-      description: "As an established industrial real estate agency, we connect businesses with ideal commercial and industrial properties. Whether you're looking for offices, warehouses, retail spaces, or factories, our expert team helps you secure prime locations to grow your real estate business effectively.",
+      description:
+        "As an established industrial real estate agency, we connect businesses with ideal commercial and industrial properties. Whether you're looking for offices, warehouses, retail spaces, or factories, our expert team helps you secure prime locations to grow your real estate business effectively.",
       imageSrc:
         "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     },
     {
       icon: <Key className="h-6 w-6" />,
       title: "Real Estate Investment Advisory",
-      description: "Leveraging our expertise as a real estate digital marketing agency, we ensure optimal visibility for your property listings. Using innovative marketing strategies, we attract qualified buyers and tenants quickly and efficiently.",
+      description:
+        "Leveraging our expertise as a real estate digital marketing agency, we ensure optimal visibility for your property listings. Using innovative marketing strategies, we attract qualified buyers and tenants quickly and efficiently.",
       imageSrc:
         "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
     },
@@ -84,31 +87,31 @@ export default function ServicesSection() {
   const advancedServices = [
     {
       icon: <Shield className="h-6 w-6" />,
-      title: "Digital Marketing Solutions",
+      title: "Property Legal Solutions",
       description: "Expert legal advice for real estate transactions",
       imageSrc:
         "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     },
     {
       icon: <HandHelping className="h-6 w-6" />,
-      title: "Consultant Services",
+      title: "Financial Management Services",
       description: "Professional guidance for property investment decisions",
       imageSrc:
         "https://images.unsplash.com/photo-1573164574230-db1d5e960238?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
     },
     {
       icon: <DollarSign className="h-6 w-6" />,
-      title: "Financial Planning",
+      title: "Property Management Services",
       description: "Mortgage advice and financial planning for property buyers",
       imageSrc:
         "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
     },
     {
       icon: <Settings className="h-6 w-6" />,
-      title: "Renovation Services",
+      title: "Property Investment Services",
       description: "Trusted renovation and property improvement services",
       imageSrc:
-        "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+        "https://images.unsplash.com/photo-1593642532931-0b916c786722?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdkfHx8fGV8fDB8fHx8&auto=format&fit=crop&w=600&q=80",
     },
   ];
 
