@@ -51,7 +51,7 @@ export default function TopProperties() {
           {categories.map((category) => (
             <Link
               key={category.id}
-              href={`/properties/${category.id}`}
+              href={`/top-properties/${category.id}`}
               className={`${category.bgColor} rounded-xl p-6 transition-transform hover:scale-105 cursor-pointer`}
             >
               <div className="flex flex-col items-center text-center">

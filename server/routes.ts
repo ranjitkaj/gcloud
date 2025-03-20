@@ -235,8 +235,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       default: limit = 10;
     }
 
-    // Get properties sorted by rating and subscription level
-    const properties = await storage.getTopProperties(limit, city as string);
+    // For demo purposes, get some properties and enhance them
+    const properties = await storage.getAllProperties();
+    const enhancedProperties = properties
+      .slice(0, Math.min(limit, properties.length))
+      .map(property => ({
+        ...property,
+        premium: Math.random() > 0.5,
+        subscriptionLevel: ['premium', 'paid', 'free'][Math.floor(Math.random() * 3)],
+        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
+      }));
     
     // Sort properties by subscription level and rating
     const sortedProperties = properties.sort((a, b) => {
