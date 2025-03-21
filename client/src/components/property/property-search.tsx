@@ -14,8 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Slider } from "@/components/ui/slider";
-import { MapPin, Search, Filter } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
 
 interface PropertySearchProps {
@@ -207,50 +206,50 @@ export default function PropertySearch({
           <div className="flex flex-row space-x-2">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="min-w-[50px] py-6 ">
-                  <Filter className="h-4 w-4 mr-2 mb-4" />
+                <Button variant="outline" className="min-w-[50px] py-6">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="mr-2"
+                  >
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                  </svg>
                 </Button>
-                {/* <Button
-                  variant="outline"
-                  className="rounded-l-none border-l-0 px-3 py-6 bg-gray-50 hover:bg-gray-100"
-                  onClick={getUserLocation}
-                  disabled={isLocationLoading}
-                >
-                  {isLocationLoading ? (
-                    <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full mr-0"></div>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-primary"
-                    >
-                      <circle cx="12" cy="12" r="8"></circle>
-                      <line x1="12" y1="2" x2="12" y2="4"></line>
-                      <line x1="12" y1="20" x2="12" y2="22"></line>
-                      <line x1="2" y1="12" x2="4" y2="12"></line>
-                      <line x1="20" y1="12" x2="22" y2="12"></line>
-                    </svg>
-                  )}
-                </Button> */}
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-7" align="end">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Property Type</h4>
+              <PopoverContent
+                className="w-[90vw] max-w-[400px] p-6 bg-white rounded-lg shadow-xl md:w-[400px]"
+                align="end"
+                side="bottom"
+                sideOffset={8}
+                collisionPadding={16}
+              >
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm text-gray-700">
+                      Property Type
+                    </h4>
                     <Select
                       value={propertyType}
                       onValueChange={(value: (typeof propertyTypes)[number]) =>
                         setPropertyType(value)
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -263,15 +262,17 @@ export default function PropertySearch({
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">For Sale/Rent</h4>
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm text-gray-700">
+                      For Sale/Rent
+                    </h4>
                     <Select
                       value={saleType}
                       onValueChange={(value: "all" | "Sale" | "Rent") =>
                         setSaleType(value)
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -282,32 +283,41 @@ export default function PropertySearch({
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Price Range</h4>
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm text-gray-700">
+                      Price Range
+                    </h4>
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
                         placeholder="Min"
                         value={minPrice}
                         onChange={(e) => setMinPrice(Number(e.target.value))}
+                        className="w-full"
                       />
-                      <span>-</span>
+                      <span className="text-gray-500">-</span>
                       <Input
                         type="number"
                         placeholder="Max"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        className="w-full"
                       />
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {formatPrice(minPrice)} - {formatPrice(maxPrice)}
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Bedrooms</h4>
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm text-gray-700">
+                      Bedrooms
+                    </h4>
                     <Select
                       value={bedrooms.toString()}
                       onValueChange={(value) => setBedrooms(parseInt(value))}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Any" />
                       </SelectTrigger>
                       <SelectContent>
