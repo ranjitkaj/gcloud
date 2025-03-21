@@ -206,7 +206,7 @@ export default function PropertySearch({
           <div className="flex flex-row space-x-2">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="min-w-[50px] py-6">
+                <Button variant="outline" className="min-w-[50px] py-6 relative">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -233,10 +233,12 @@ export default function PropertySearch({
               </PopoverTrigger>
               <PopoverContent
                 className="w-[90vw] max-w-[400px] p-6 bg-white rounded-lg shadow-xl md:w-[400px]"
-                align="end"
+                align="start"
                 side="bottom"
-                sideOffset={8}
-                collisionPadding={16}
+                sideOffset={4}
+                alignOffset={0}
+                avoidCollisions={true}
+                sticky="always"
               >
                 <div className="space-y-6">
                   <div className="space-y-3">
