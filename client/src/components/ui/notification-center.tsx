@@ -29,16 +29,11 @@ export default function NotificationCenter() {
     queryKey: ['/api/notifications'],
     queryFn: () => {
       if (!user) return Promise.resolve([]);
-      console.log("Fetching notifications for user:", user.id);
       return apiRequest('GET', '/api/notifications')
         .then(res => res.json())
-        .then(data => {
-          console.log("Notifications response:", data);
-          return Array.isArray(data) ? data : [];
-        });
+        .then(data => Array.isArray(data) ? data : []);
     },
     enabled: !!user,
-    refetchInterval: 30000, // Refetch every 30 seconds
   });
 
   const unreadCount = notifications.filter((n: Notification) => !n.isRead).length;

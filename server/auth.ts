@@ -27,7 +27,7 @@ async function hashPassword(password: string) {
 }
 
 // Function to send OTP via email
-async function sendEmailOTP(email: string, otp: string, userId?: number) {
+async function sendEmailOTP(email: string, otp: string) {
   try {
     // Log the OTP for testing purposes in the console
     console.log(`EMAIL OTP for ${email}: ${otp}`);
@@ -41,42 +41,22 @@ async function sendEmailOTP(email: string, otp: string, userId?: number) {
       }
     });
     
-    // Create a direct verification link if userId is provided
-    const verificationLink = userId 
-      ? `${process.env.HOST_URL || 'http://localhost:5000'}/api/verify-email?token=${otp}&userId=${userId}`
-      : null;
-    
-    console.log(`Generated verification link: ${verificationLink || 'No link (userId not provided)'}`);
-    
     // Email content
     const mailOptions = {
       from: '"Real Estate Platform" <srinathballa20@gmail.com>',
       to: email,
-      subject: 'Your Real Estate Platform Verification',
-      text: verificationLink 
-        ? `Click this link to verify your email: ${verificationLink}\n\nAlternatively, you can use this code: ${otp}. This code will expire in 10 minutes.`
-        : `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
+      subject: 'Your Real Estate Platform Verification Code',
+      text: `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
           <h2 style="color: #4a6ee0;">Real Estate Platform - Verification</h2>
           <p>Hello,</p>
-          <p>Thank you for registering with our platform.</p>
-          ${verificationLink ? `
-          <p><strong>Click the button below to verify your email:</strong></p>
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${verificationLink}" style="background-color: #4a6ee0; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
-              Verify My Email
-            </a>
-          </div>
-          <p>Or copy and paste this URL into your browser:</p>
-          <p style="background-color: #f7f7f7; padding: 10px; word-break: break-all; font-size: 12px;">${verificationLink}</p>
-          <p>Alternatively, you can use the verification code below:</p>
-          ` : `<p>Please use the verification code below to complete your account setup:</p>`}
+          <p>Thank you for registering with our platform. Please use the verification code below to complete your account setup:</p>
           <div style="background-color: #f7f7f7; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0; border-radius: 4px;">
             ${otp}
           </div>
-          <p>This verification will expire in <strong>10 minutes</strong>.</p>
-          <p>If you didn't request this verification, please ignore this email.</p>
+          <p>This code will expire in <strong>10 minutes</strong>.</p>
+          <p>If you didn't request this code, please ignore this email.</p>
           <p>Best regards,<br>The Real Estate Team</p>
         </div>
       `,
@@ -100,7 +80,7 @@ async function sendEmailOTP(email: string, otp: string, userId?: number) {
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`EMAIL: ${email}`);
-    console.log(`SENDING STATUS: Failed - ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log(`SENDING STATUS: Failed - ${error.message}`);
     console.log(`=========================================`);
     return true; // Still return true to not block the flow
   }
@@ -114,10 +94,10 @@ async function sendWhatsAppOTP(phone: string, otp: string) {
 }
 
 // Generic function to send OTP based on method
-async function sendOTP(recipient: string, otp: string, method: 'email' | 'whatsapp' | 'sms', userId?: number) {
+async function sendOTP(recipient: string, otp: string, method: 'email' | 'whatsapp' | 'sms') {
   switch (method) {
     case 'email':
-      return sendEmailOTP(recipient, otp, userId);
+      return sendEmailOTP(recipient, otp);
     case 'whatsapp':
       return sendWhatsAppOTP(recipient, otp);
     case 'sms':
@@ -212,11 +192,11 @@ export function setupAuth(app: Express) {
       
       // Send OTP via the selected method
       if (verificationMethod === "email") {
-        await sendOTP(email, otp, "email", user.id);
+        await sendOTP(email, otp, "email");
       } else if (verificationMethod === "whatsapp" && phone) {
-        await sendOTP(phone, otp, "whatsapp", user.id);
+        await sendOTP(phone, otp, "whatsapp");
       } else if (verificationMethod === "sms" && phone) {
-        await sendOTP(phone, otp, "sms", user.id);
+        await sendOTP(phone, otp, "sms");
       } else {
         return res.status(400).json({ 
           message: `${verificationMethod} verification requires a valid phone number` 
@@ -275,239 +255,103 @@ export function setupAuth(app: Express) {
 
   app.post("/api/resend-otp", async (req, res) => {
     try {
-      // Check if user is authenticated
       if (!req.isAuthenticated()) {
-        console.log("OTP resend failed: User not authenticated");
-        return res.status(401).json({ success: false, message: "User not authenticated" });
+        return res.status(401).json({ message: "User not authenticated" });
       }
 
-      // Get request parameters
       const userId = req.user.id;
       const { type = "email" } = req.body;
-      
-      // Log the OTP resend request for debugging
-      console.log(`OTP Resend request for user ${userId}:`, {
-        userId,
-        type,
-        authenticatedAs: req.user.username,
-        email: req.user.email,
-        phone: req.user.phone
-      });
 
-      // Validate verification method
       if (!verificationMethods.includes(type)) {
-        console.log(`OTP resend failed: Invalid verification type: ${type}`);
         return res.status(400).json({ 
-          success: false,
           message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
         });
       }
 
       // Generate new OTP
       const otp = await generateOTP();
-      console.log(`Generated new OTP for user ${userId}: ${otp}`);
       
       // Get previous OTP to update it
       const existingOtp = await storage.getOtpByUserAndType(userId, type);
       
       if (existingOtp) {
         // Invalidate old OTP
-        console.log(`Invalidating existing OTP for user ${userId}, type: ${type}`);
         await storage.invalidateOtp(existingOtp.id);
       }
       
       // Create new OTP record
-      console.log(`Creating new OTP record for user ${userId}`);
-      const otpRecord = await storage.createOtp({
+      await storage.createOtp({
         userId,
         otp,
         type,
         expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
       });
       
-      console.log(`Created OTP record with ID: ${otpRecord.id}`);
-      
       // Send OTP via the selected method
-      let sendResult = false;
-      let recipient = '';
-      
       if (type === "email") {
-        recipient = req.user.email;
-        console.log(`Sending OTP via email to: ${recipient}`);
-        sendResult = await sendOTP(recipient, otp, "email", userId);
-        
-        // In development, include the OTP in the response for testing
-        const response: { 
-          success: boolean; 
-          message: string;
-          otp?: string;
-        } = { 
-          success: true, 
-          message: "OTP sent to your email",
-        };
-        
-        if (process.env.NODE_ENV !== 'production') {
-          response.otp = otp; // Only include OTP in development
-        }
-        
-        res.json(response);
+        await sendOTP(req.user.email, otp, "email");
+        res.json({ success: true, message: "OTP sent to your email" });
       } else if (type === "whatsapp" && req.user.phone) {
-        recipient = req.user.phone;
-        console.log(`Sending OTP via WhatsApp to: ${recipient}`);
-        sendResult = await sendOTP(recipient, otp, "whatsapp");
-        
-        const response: { 
-          success: boolean; 
-          message: string;
-          otp?: string;
-        } = { 
-          success: true, 
-          message: "OTP sent to your WhatsApp" 
-        };
-        
-        if (process.env.NODE_ENV !== 'production') {
-          response.otp = otp;
-        }
-        
-        res.json(response);
+        await sendOTP(req.user.phone, otp, "whatsapp");
+        res.json({ success: true, message: "OTP sent to your WhatsApp" });
       } else if (type === "sms" && req.user.phone) {
-        recipient = req.user.phone;
-        console.log(`Sending OTP via SMS to: ${recipient}`);
-        sendResult = await sendOTP(recipient, otp, "sms");
-        
-        const response: { 
-          success: boolean; 
-          message: string;
-          otp?: string;
-        } = { 
-          success: true, 
-          message: "OTP sent to your phone" 
-        };
-        
-        if (process.env.NODE_ENV !== 'production') {
-          response.otp = otp;
-        }
-        
-        res.json(response);
+        await sendOTP(req.user.phone, otp, "sms");
+        res.json({ success: true, message: "OTP sent to your phone" });
       } else {
-        console.log(`OTP resend failed: Missing contact information for type ${type}`);
         return res.status(400).json({ 
-          success: false,
-          message: `${type} verification requires a valid ${type === 'email' ? 'email address' : 'phone number'}` 
+          message: `${type} verification requires a valid phone number` 
         });
       }
-      
-      console.log(`OTP sending result: ${sendResult ? 'Success' : 'Failed'}, Recipient: ${recipient}`);
     } catch (error) {
       console.error('OTP resend error:', error);
       res.status(500).json({ 
-        success: false,
         message: "Failed to resend OTP",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
 
-  // Email verification endpoint (retains the OTP flow but handles redirects)
-  app.get("/api/verify-email", async (req, res) => {
-    try {
-      const { token, userId } = req.query;
-      
-      console.log("Email verification link clicked:", { token, userId });
-      
-      // Instead of verifying here, we'll redirect to the auth page with OTP prefilled
-      // This maintains the client-side OTP verification flow
-      if (!token || !userId) {
-        console.log("Missing verification token or userId in URL");
-        return res.redirect('/#/auth');
-      }
-      
-      // For direct traceability, log the OTP so users can enter it manually if needed
-      console.log(`OTP for user ${userId}: ${token}`);
-      
-      // Find the user to get their email for the verification UI
-      const user = await storage.getUser(Number(userId));
-      if (!user) {
-        console.log(`User ${userId} not found`);
-        return res.redirect('/#/auth');
-      }
-      
-      // Redirect back to auth page with the OTP in the query params
-      // The front-end will handle showing the verification UI
-      return res.redirect(`/#/auth?verificationOTP=${token}&userId=${userId}&email=${encodeURIComponent(user.email)}`);
-      
-    } catch (error) {
-      console.error('Email verification redirect error:', error);
-      return res.redirect('/#/auth');
-    }
-  });
-
   app.post("/api/verify-otp", async (req, res) => {
     try {
-      // Check if user is authenticated
       if (!req.isAuthenticated()) {
-        console.log("OTP verification failed: User not authenticated");
-        return res.status(401).json({ success: false, message: "User not authenticated" });
+        return res.status(401).json({ message: "User not authenticated" });
       }
 
-      // Get request parameters
       const userId = req.user.id;
       const { otp, type = "email" } = req.body;
 
-      // Log verification attempt for debugging
-      console.log(`OTP Verification attempt for user ${userId}:`, {
-        userId,
-        otp, 
-        type,
-        authenticatedAs: req.user.username
-      });
-
-      // Validate OTP input
       if (!otp) {
-        console.log("OTP verification failed: Missing OTP code");
-        return res.status(400).json({ success: false, message: "OTP is required" });
+        return res.status(400).json({ message: "OTP is required" });
       }
 
-      // Validate verification method
       if (!verificationMethods.includes(type)) {
-        console.log(`OTP verification failed: Invalid verification type: ${type}`);
         return res.status(400).json({ 
-          success: false,
           message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
         });
       }
 
-      // Verify the OTP with detailed logging
-      console.log(`Verifying OTP for user ${userId}, type: ${type}, code: ${otp}`);
+      // Verify the OTP
       const isValid = await storage.verifyOtp(userId, otp, type);
       
       if (!isValid) {
-        console.log(`OTP verification failed for user ${userId}: Invalid or expired OTP`);
-        return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+        return res.status(400).json({ message: "Invalid or expired OTP" });
       }
-
-      console.log(`OTP verification successful for user ${userId}`);
 
       // Update user verification status based on the type
       let updatedUser;
       
       if (type === "email") {
-        console.log(`Updating email verification status for user ${userId}`);
         updatedUser = await storage.verifyUserEmail(userId);
       } else if (type === "whatsapp" || type === "sms") {
-        console.log(`Updating phone verification status for user ${userId}`);
         updatedUser = await storage.verifyUserPhone(userId);
       }
 
       if (!updatedUser) {
-        console.log(`Failed to update verification status for user ${userId}`);
-        return res.status(500).json({ success: false, message: "Failed to update verification status" });
+        return res.status(500).json({ message: "Failed to update verification status" });
       }
 
       // Return success response with updated user data
       const { password, ...userWithoutPassword } = updatedUser;
-      
-      console.log(`Verification completed successfully for user ${userId}, type: ${type}`);
       
       res.json({ 
         success: true, 
@@ -517,7 +361,6 @@ export function setupAuth(app: Express) {
     } catch (error) {
       console.error('OTP verification error:', error);
       res.status(500).json({ 
-        success: false,
         message: "Verification failed",
         error: error instanceof Error ? error.message : "Unknown error"
       });

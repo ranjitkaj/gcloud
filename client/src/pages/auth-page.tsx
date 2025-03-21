@@ -8,13 +8,6 @@ import {
   verificationMethods,
   userRoles,
 } from "@shared/schema";
-
-// Add type declaration for the window object
-declare global {
-  interface Window {
-    autoFillOtp?: string;
-  }
-}
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/layout/navbar";
@@ -73,7 +66,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
-  const [location, setLocation] = useLocation();
+  const [_, setLocation] = useLocation();
   const { user, login, signup, isLoading } = useAuth();
   const { toast } = useToast();
 
@@ -88,44 +81,6 @@ export default function AuthPage() {
     "email" | "whatsapp" | "sms"
   >("email");
   const [registeredUser, setRegisteredUser] = useState<any>(null);
-  
-  // Check for verification parameters in URL
-  useEffect(() => {
-    // Parse URL parameters
-    const searchParams = new URLSearchParams(location.split('?')[1] || '');
-    
-    // Check for OTP verification parameters
-    if (searchParams.has('verificationOTP') && searchParams.has('userId') && searchParams.has('email')) {
-      const otp = searchParams.get('verificationOTP') || '';
-      const userId = Number(searchParams.get('userId') || '0');
-      const email = searchParams.get('email') || '';
-      
-      if (userId && email) {
-        console.log("Found verification parameters in URL:", { userId, email, otp });
-        
-        // Create a user object with the minimal information needed for verification
-        setRegisteredUser({ 
-          id: userId,
-          email: email
-        });
-        
-        // Set email as verification method
-        setSelectedVerificationMethod("email");
-        
-        // Show verification UI
-        setRegistrationState("verification");
-        
-        // Show a toast for the user
-        toast({
-          title: "Verification required",
-          description: `Please verify your email ${email}`,
-        });
-        
-        // This will let the OTP component know what OTP to auto-fill
-        window.autoFillOtp = otp;
-      }
-    }
-  }, [location, toast]);
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -246,7 +201,6 @@ export default function AuthPage() {
       });
 
       // Store the registered user for the verification step
-      console.log("Registration response:", response);
       setRegisteredUser(response);
       setSelectedVerificationMethod(verificationMethod);
 

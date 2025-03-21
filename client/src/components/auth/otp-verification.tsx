@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/input-otp';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest, queryClient } from '@/lib/queryClient';
+import { apiRequest } from '@/lib/queryClient';
 
 interface OTPVerificationProps {
   userId: number;
@@ -26,13 +26,6 @@ interface OTPVerificationProps {
   onCancel: () => void;
 }
 
-// Add this type declaration for the global window object
-declare global {
-  interface Window {
-    autoFillOtp?: string;
-  }
-}
-
 export default function OTPVerification({
   userId,
   email,
@@ -41,40 +34,11 @@ export default function OTPVerification({
   onVerified,
   onCancel
 }: OTPVerificationProps) {
-  // Check if we have an OTP to auto-fill from the URL parameter
-  const initialOtp = window.autoFillOtp || '';
-  const [otp, setOtp] = useState(initialOtp);
+  const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { toast } = useToast();
-  
-  // If we have an OTP to auto-fill, let's auto-verify after a short delay
-  useEffect(() => {
-    // If we have received an auto-fill OTP from the URL
-    if (initialOtp && initialOtp.length === 6) {
-      // Display a toast to indicate what's happening
-      toast({
-        title: 'Auto-verification',
-        description: 'Trying to verify your account automatically...',
-      });
-      
-      // Auto-submit after a short delay to allow UI to render
-      const timer = setTimeout(() => {
-        handleVerify();
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialOtp, toast]);
-  
-  // Clean up the global window object when component unmounts
-  useEffect(() => {
-    return () => {
-      delete window.autoFillOtp;
-    };
-  }, []);
 
   const getRecipientContact = () => {
     if (type === 'email') return email;
@@ -95,59 +59,13 @@ export default function OTPVerification({
       setIsVerifying(true);
       setVerificationStatus('idle');
 
-      // Enhanced debugging logs for OTP verification
-      console.log("=== OTP VERIFICATION REQUEST ===");
-      console.log("User ID:", userId);
-      console.log("OTP:", otp);
-      console.log("Type:", type);
-      console.log("=============================");
+      const response = await apiRequest(
+        'POST',
+        '/api/verify-otp',
+        { otp, type }
+      );
 
-      // Instead of using the auth-requiring endpoint, let's create a direct verification
-      // This works for both authenticated and unauthenticated users
-      let response;
-      
-      // If the userId was passed from URL parameters (unauthenticated), we need to handle it differently
-      try {
-        // First try the authenticated endpoint
-        response = await apiRequest(
-          'POST',
-          '/api/verify-otp',
-          { 
-            otp, 
-            type,
-            // Include userId in the request in case we're in unauthenticated context
-            userId
-          }
-        );
-      } catch (authError) {
-        // If it fails due to authentication, try the direct verification
-        console.log("Auth endpoint failed, using direct verification:", authError);
-        
-        // Perform a direct fetch to the verification endpoint
-        response = await fetch(`/api/verify-email?token=${otp}&userId=${userId}`);
-        
-        // If the response is a redirect (which it will be), handle success
-        if (response.redirected) {
-          console.log("Redirect detected - verification likely successful");
-          // Simulate a successful response for the rest of the code
-          response = new Response(JSON.stringify({
-            success: true,
-            message: "Verification successful",
-          }), { 
-            status: 200, 
-            headers: { 'Content-Type': 'application/json' } 
-          });
-        }
-      }
-      
-      // Parse the response data
       const data = await response.json();
-      
-      // Log the complete response for debugging
-      console.log("=== OTP VERIFICATION RESPONSE ===");
-      console.log("Status:", response.status);
-      console.log("Response data:", data);
-      console.log("================================");
 
       if (data.success) {
         setVerificationStatus('success');
@@ -157,20 +75,8 @@ export default function OTPVerification({
           variant: 'default'
         });
         
-        // Update user data in the cache if the verification returns updated user info
-        if (data.user) {
-          console.log("Updated user information:", data.user);
-          
-          // Update the cached user data with the verified information
-          queryClient.setQueryData(['/api/user'], data.user);
-          // Force a refetch to get the latest user data from the server
-          queryClient.invalidateQueries({ queryKey: ['/api/user'] });
-        }
-        
         // Notify parent component about successful verification
         setTimeout(() => {
-          // Refresh the page to reflect verification status changes
-          window.location.href = '/';
           onVerified();
         }, 1500);
       } else {
@@ -184,13 +90,9 @@ export default function OTPVerification({
     } catch (error) {
       console.error('OTP verification error:', error);
       setVerificationStatus('error');
-      
-      // Provide more specific error message if possible
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred during verification';
-      
       toast({
         title: 'Verification failed',
-        description: errorMessage,
+        description: 'An error occurred during verification. Please try again.',
         variant: 'destructive'
       });
     } finally {
@@ -202,54 +104,13 @@ export default function OTPVerification({
     try {
       setIsResending(true);
       
-      // Enhanced debugging for OTP resend
-      console.log("=== RESEND OTP REQUEST ===");
-      console.log("User ID:", userId);
-      console.log("Type:", type);
-      console.log("Recipient:", getRecipientContact());
-      console.log("==========================");
-      
-      let response;
-      
-      try {
-        // First try using the authenticated endpoint
-        response = await apiRequest(
-          'POST',
-          '/api/resend-otp',
-          { 
-            type,
-            // Include userId and email in the request for unauthenticated context
-            userId,
-            email
-          }
-        );
-      } catch (authError) {
-        // If authentication fails, create and use a direct API
-        console.log("Auth endpoint failed for resend, using alternative:", authError);
-        
-        // Create a simple toast to inform the user what's happening
-        toast({
-          title: 'Temporary verification issue',
-          description: 'Please register again to receive a new verification code.',
-          variant: 'default'
-        });
-        
-        // Simulate a successful response
-        response = new Response(JSON.stringify({
-          success: true,
-          message: "Please check your account creation email for the OTP code",
-        }), { 
-          status: 200, 
-          headers: { 'Content-Type': 'application/json' } 
-        });
-      }
+      const response = await apiRequest(
+        'POST',
+        '/api/resend-otp',
+        { type }
+      );
 
-      // Parse the response data with detailed logging
       const data = await response.json();
-      console.log("=== RESEND OTP RESPONSE ===");
-      console.log("Status:", response.status);
-      console.log("Response data:", data);
-      console.log("===========================");
 
       if (data.success) {
         toast({
@@ -257,11 +118,6 @@ export default function OTPVerification({
           description: `A new verification code has been sent to ${getRecipientContact()}`,
           variant: 'default'
         });
-        
-        // Show the OTP from the response for debugging purposes (only in development)
-        if (data.otp && process.env.NODE_ENV !== 'production') {
-          console.log("Development OTP:", data.otp);
-        }
       } else {
         toast({
           title: 'Failed to resend OTP',
@@ -271,15 +127,9 @@ export default function OTPVerification({
       }
     } catch (error) {
       console.error('Resend OTP error:', error);
-      
-      // Provide more specific error message if possible
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'An error occurred while resending the verification code';
-      
       toast({
         title: 'Failed to resend OTP',
-        description: errorMessage,
+        description: 'An error occurred. Please try again later.',
         variant: 'destructive'
       });
     } finally {
