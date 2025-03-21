@@ -255,56 +255,121 @@ export function setupAuth(app: Express) {
 
   app.post("/api/resend-otp", async (req, res) => {
     try {
+      // Check if user is authenticated
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "User not authenticated" });
+        console.log("OTP resend failed: User not authenticated");
+        return res.status(401).json({ success: false, message: "User not authenticated" });
       }
 
+      // Get request parameters
       const userId = req.user.id;
       const { type = "email" } = req.body;
+      
+      // Log the OTP resend request for debugging
+      console.log(`OTP Resend request for user ${userId}:`, {
+        userId,
+        type,
+        authenticatedAs: req.user.username,
+        email: req.user.email,
+        phone: req.user.phone
+      });
 
+      // Validate verification method
       if (!verificationMethods.includes(type)) {
+        console.log(`OTP resend failed: Invalid verification type: ${type}`);
         return res.status(400).json({ 
+          success: false,
           message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
         });
       }
 
       // Generate new OTP
       const otp = await generateOTP();
+      console.log(`Generated new OTP for user ${userId}: ${otp}`);
       
       // Get previous OTP to update it
       const existingOtp = await storage.getOtpByUserAndType(userId, type);
       
       if (existingOtp) {
         // Invalidate old OTP
+        console.log(`Invalidating existing OTP for user ${userId}, type: ${type}`);
         await storage.invalidateOtp(existingOtp.id);
       }
       
       // Create new OTP record
-      await storage.createOtp({
+      console.log(`Creating new OTP record for user ${userId}`);
+      const otpRecord = await storage.createOtp({
         userId,
         otp,
         type,
         expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
       });
       
+      console.log(`Created OTP record with ID: ${otpRecord.id}`);
+      
       // Send OTP via the selected method
+      let sendResult = false;
+      let recipient = '';
+      
       if (type === "email") {
-        await sendOTP(req.user.email, otp, "email");
-        res.json({ success: true, message: "OTP sent to your email" });
+        recipient = req.user.email;
+        console.log(`Sending OTP via email to: ${recipient}`);
+        sendResult = await sendOTP(recipient, otp, "email");
+        
+        // In development, include the OTP in the response for testing
+        const response = { 
+          success: true, 
+          message: "OTP sent to your email",
+        };
+        
+        if (process.env.NODE_ENV !== 'production') {
+          response['otp'] = otp; // Only include OTP in development
+        }
+        
+        res.json(response);
       } else if (type === "whatsapp" && req.user.phone) {
-        await sendOTP(req.user.phone, otp, "whatsapp");
-        res.json({ success: true, message: "OTP sent to your WhatsApp" });
+        recipient = req.user.phone;
+        console.log(`Sending OTP via WhatsApp to: ${recipient}`);
+        sendResult = await sendOTP(recipient, otp, "whatsapp");
+        
+        const response = { 
+          success: true, 
+          message: "OTP sent to your WhatsApp" 
+        };
+        
+        if (process.env.NODE_ENV !== 'production') {
+          response['otp'] = otp;
+        }
+        
+        res.json(response);
       } else if (type === "sms" && req.user.phone) {
-        await sendOTP(req.user.phone, otp, "sms");
-        res.json({ success: true, message: "OTP sent to your phone" });
+        recipient = req.user.phone;
+        console.log(`Sending OTP via SMS to: ${recipient}`);
+        sendResult = await sendOTP(recipient, otp, "sms");
+        
+        const response = { 
+          success: true, 
+          message: "OTP sent to your phone" 
+        };
+        
+        if (process.env.NODE_ENV !== 'production') {
+          response['otp'] = otp;
+        }
+        
+        res.json(response);
       } else {
+        console.log(`OTP resend failed: Missing contact information for type ${type}`);
         return res.status(400).json({ 
-          message: `${type} verification requires a valid phone number` 
+          success: false,
+          message: `${type} verification requires a valid ${type === 'email' ? 'email address' : 'phone number'}` 
         });
       }
+      
+      console.log(`OTP sending result: ${sendResult ? 'Success' : 'Failed'}, Recipient: ${recipient}`);
     } catch (error) {
       console.error('OTP resend error:', error);
       res.status(500).json({ 
+        success: false,
         message: "Failed to resend OTP",
         error: error instanceof Error ? error.message : "Unknown error"
       });
@@ -313,45 +378,70 @@ export function setupAuth(app: Express) {
 
   app.post("/api/verify-otp", async (req, res) => {
     try {
+      // Check if user is authenticated
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "User not authenticated" });
+        console.log("OTP verification failed: User not authenticated");
+        return res.status(401).json({ success: false, message: "User not authenticated" });
       }
 
+      // Get request parameters
       const userId = req.user.id;
       const { otp, type = "email" } = req.body;
 
+      // Log verification attempt for debugging
+      console.log(`OTP Verification attempt for user ${userId}:`, {
+        userId,
+        otp, 
+        type,
+        authenticatedAs: req.user.username
+      });
+
+      // Validate OTP input
       if (!otp) {
-        return res.status(400).json({ message: "OTP is required" });
+        console.log("OTP verification failed: Missing OTP code");
+        return res.status(400).json({ success: false, message: "OTP is required" });
       }
 
+      // Validate verification method
       if (!verificationMethods.includes(type)) {
+        console.log(`OTP verification failed: Invalid verification type: ${type}`);
         return res.status(400).json({ 
+          success: false,
           message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
         });
       }
 
-      // Verify the OTP
+      // Verify the OTP with detailed logging
+      console.log(`Verifying OTP for user ${userId}, type: ${type}, code: ${otp}`);
       const isValid = await storage.verifyOtp(userId, otp, type);
       
       if (!isValid) {
-        return res.status(400).json({ message: "Invalid or expired OTP" });
+        console.log(`OTP verification failed for user ${userId}: Invalid or expired OTP`);
+        return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
       }
+
+      console.log(`OTP verification successful for user ${userId}`);
 
       // Update user verification status based on the type
       let updatedUser;
       
       if (type === "email") {
+        console.log(`Updating email verification status for user ${userId}`);
         updatedUser = await storage.verifyUserEmail(userId);
       } else if (type === "whatsapp" || type === "sms") {
+        console.log(`Updating phone verification status for user ${userId}`);
         updatedUser = await storage.verifyUserPhone(userId);
       }
 
       if (!updatedUser) {
-        return res.status(500).json({ message: "Failed to update verification status" });
+        console.log(`Failed to update verification status for user ${userId}`);
+        return res.status(500).json({ success: false, message: "Failed to update verification status" });
       }
 
       // Return success response with updated user data
       const { password, ...userWithoutPassword } = updatedUser;
+      
+      console.log(`Verification completed successfully for user ${userId}, type: ${type}`);
       
       res.json({ 
         success: true, 
@@ -361,6 +451,7 @@ export function setupAuth(app: Express) {
     } catch (error) {
       console.error('OTP verification error:', error);
       res.status(500).json({ 
+        success: false,
         message: "Verification failed",
         error: error instanceof Error ? error.message : "Unknown error"
       });

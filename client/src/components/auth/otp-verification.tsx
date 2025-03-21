@@ -59,17 +59,28 @@ export default function OTPVerification({
       setIsVerifying(true);
       setVerificationStatus('idle');
 
-      // Print verification details for debugging
-      console.log("Sending verification for user:", userId, "OTP:", otp, "Type:", type);
+      // Enhanced debugging logs for OTP verification
+      console.log("=== OTP VERIFICATION REQUEST ===");
+      console.log("User ID:", userId);
+      console.log("OTP:", otp);
+      console.log("Type:", type);
+      console.log("=============================");
 
+      // Make the API request with detailed error handling
       const response = await apiRequest(
         'POST',
         '/api/verify-otp',
-        { otp, type }
+        { userId, otp, type }
       );
       
+      // Parse the response data
       const data = await response.json();
-      console.log("OTP verification response:", data);
+      
+      // Log the complete response for debugging
+      console.log("=== OTP VERIFICATION RESPONSE ===");
+      console.log("Status:", response.status);
+      console.log("Response data:", data);
+      console.log("================================");
 
       if (data.success) {
         setVerificationStatus('success');
@@ -78,6 +89,11 @@ export default function OTPVerification({
           description: `Your ${type} has been verified.`,
           variant: 'default'
         });
+        
+        // Update user data if the verification returns updated user info
+        if (data.user) {
+          console.log("Updated user information:", data.user);
+        }
         
         // Notify parent component about successful verification
         setTimeout(() => {
@@ -94,9 +110,13 @@ export default function OTPVerification({
     } catch (error) {
       console.error('OTP verification error:', error);
       setVerificationStatus('error');
+      
+      // Provide more specific error message if possible
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred during verification';
+      
       toast({
         title: 'Verification failed',
-        description: 'An error occurred during verification. Please try again.',
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
@@ -108,16 +128,28 @@ export default function OTPVerification({
     try {
       setIsResending(true);
       
-      console.log("Resending OTP for user:", userId, "Type:", type);
+      // Enhanced debugging for OTP resend
+      console.log("=== RESEND OTP REQUEST ===");
+      console.log("User ID:", userId);
+      console.log("Type:", type);
+      console.log("Recipient:", getRecipientContact());
+      console.log("==========================");
       
       const response = await apiRequest(
         'POST',
         '/api/resend-otp',
-        { type }
+        { 
+          userId: userId, // Explicitly include userId
+          type: type 
+        }
       );
 
+      // Parse the response data with detailed logging
       const data = await response.json();
-      console.log("Resend OTP response:", data);
+      console.log("=== RESEND OTP RESPONSE ===");
+      console.log("Status:", response.status);
+      console.log("Response data:", data);
+      console.log("===========================");
 
       if (data.success) {
         toast({
@@ -125,6 +157,11 @@ export default function OTPVerification({
           description: `A new verification code has been sent to ${getRecipientContact()}`,
           variant: 'default'
         });
+        
+        // Show the OTP from the response for debugging purposes (only in development)
+        if (data.otp && process.env.NODE_ENV !== 'production') {
+          console.log("Development OTP:", data.otp);
+        }
       } else {
         toast({
           title: 'Failed to resend OTP',
@@ -134,9 +171,15 @@ export default function OTPVerification({
       }
     } catch (error) {
       console.error('Resend OTP error:', error);
+      
+      // Provide more specific error message if possible
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'An error occurred while resending the verification code';
+      
       toast({
         title: 'Failed to resend OTP',
-        description: 'An error occurred. Please try again later.',
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
