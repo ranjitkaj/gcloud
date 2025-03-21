@@ -94,11 +94,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
+      console.log('Logging out user...');
       const response = await fetch('/api/logout', { method: 'POST' });
       if (!response.ok) throw new Error('Logout failed');
+      return true;
     },
     onSuccess: () => {
+      console.log('Logout successful, clearing user data');
+      // Clear user data immediately from cache before invalidating
+      queryClient.setQueryData(['/api/user'], null);
+      // Then invalidate queries to trigger refetch
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });
+      // Clear any other user-specific data
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/recommendations'] });
+      
+      // Force a location reload to ensure all components update
+      window.location.href = '/';
     },
   });
 
