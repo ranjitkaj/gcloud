@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -66,7 +66,8 @@ export default function OTPVerification({
       
       return () => clearTimeout(timer);
     }
-  }, [initialOtp]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialOtp, toast]);
   
   // Clean up the global window object when component unmounts
   useEffect(() => {
@@ -111,7 +112,12 @@ export default function OTPVerification({
         response = await apiRequest(
           'POST',
           '/api/verify-otp',
-          { otp, type }
+          { 
+            otp, 
+            type,
+            // Include userId in the request in case we're in unauthenticated context
+            userId
+          }
         );
       } catch (authError) {
         // If it fails due to authentication, try the direct verification
@@ -210,7 +216,12 @@ export default function OTPVerification({
         response = await apiRequest(
           'POST',
           '/api/resend-otp',
-          { type }
+          { 
+            type,
+            // Include userId and email in the request for unauthenticated context
+            userId,
+            email
+          }
         );
       } catch (authError) {
         // If authentication fails, create and use a direct API
