@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"; // Added useRef
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Search, Filter } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
 
 interface PropertySearchProps {
@@ -23,21 +28,16 @@ export default function PropertySearch({
   showAdvanced = false,
 }: PropertySearchProps) {
   const [locationValue, setLocationValue] = useState("");
-  const [propertyType, setPropertyType] = useState<
-    (typeof propertyTypes)[number] | ""
-  >("");
+  const [propertyType, setPropertyType] = useState<(typeof propertyTypes)[number] | "">("");
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(10000000); // 1 crore default max
+  const [maxPrice, setMaxPrice] = useState(10000000);
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false); // Added filter state
-  const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all"); // Added sale type state
-  const containerRef = useRef<HTMLDivElement>(null); // Added ref
+  const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all");
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Use Wouter's navigation hook
   const [_, setUrlLocation] = useLocation();
 
-  // Function to get user's current location
   const getUserLocation = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
@@ -49,17 +49,13 @@ export default function PropertySearch({
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          // Get latitude and longitude
           const { latitude, longitude } = position.coords;
-
-          // Use reverse geocoding to get the address
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
           );
 
           if (response.ok) {
             const data = await response.json();
-            // Extract city or locality information
             const city =
               data.address.city ||
               data.address.town ||
@@ -71,12 +67,9 @@ export default function PropertySearch({
             if (city) {
               setLocationValue(city);
             } else {
-              setLocationValue(
-                `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
-              );
+              setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
             }
           } else {
-            // If geocoding fails, just use coordinates
             setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           }
         } catch (error) {
@@ -89,14 +82,11 @@ export default function PropertySearch({
       (error) => {
         console.error("Geolocation error:", error);
         setIsLocationLoading(false);
-        alert(
-          "Unable to get your location. Please enable location services and try again.",
-        );
+        alert("Unable to get your location. Please enable location services and try again.");
       },
     );
   };
 
-  // Parse URL parameters if any
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cityParam = params.get("city");
@@ -143,7 +133,6 @@ export default function PropertySearch({
       }
     }
 
-    // Redirect to properties page for search functionality using Wouter's setLocation
     setUrlLocation(`/properties?${queryParams.toString()}`);
   };
 
@@ -158,10 +147,7 @@ export default function PropertySearch({
   };
 
   return (
-    <div
-      ref={containerRef} // Added ref here
-      className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className}`}
-    >
+    <div ref={containerRef} className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className}`}>
       <div className="flex flex-col space-y-4">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1">
@@ -210,39 +196,86 @@ export default function PropertySearch({
             </div>
           </div>
           <div className="flex flex-row space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="min-w-[50px] py-6"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-2"
-              >
-                <line x1="4" y1="21" x2="4" y2="14"></line>
-                <line x1="4" y1="10" x2="4" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12" y2="3"></line>
-                <line x1="20" y1="21" x2="20" y2="16"></line>
-                <line x1="20" y1="12" x2="20" y2="3"></line>
-                <line x1="1" y1="14" x2="7" y2="14"></line>
-                <line x1="9" y1="8" x2="15" y2="8"></line>
-                <line x1="17" y1="16" x2="23" y2="16"></line>
-              </svg>
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="min-w-[50px] py-6">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4" align="end">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Property Type</h4>
+                    <Select value={propertyType} onValueChange={(value: typeof propertyTypes[number]) => setPropertyType(value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {propertyTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">For Sale/Rent</h4>
+                    <Select value={saleType} onValueChange={(value: "all" | "Sale" | "Rent") => setSaleType(value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Properties</SelectItem>
+                        <SelectItem value="Sale">For Sale</SelectItem>
+                        <SelectItem value="Rent">For Rent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Price Range</h4>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Min"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(Number(e.target.value))}
+                      />
+                      <span>-</span>
+                      <Input
+                        type="number"
+                        placeholder="Max"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Bedrooms</h4>
+                    <Select value={bedrooms.toString()} onValueChange={(value) => setBedrooms(parseInt(value))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Any" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">Any</SelectItem>
+                        <SelectItem value="1">1+</SelectItem>
+                        <SelectItem value="2">2+</SelectItem>
+                        <SelectItem value="3">3+</SelectItem>
+                        <SelectItem value="4">4+</SelectItem>
+                        <SelectItem value="5">5+</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             <Select
               value={propertyType}
-              onValueChange={(value: (typeof propertyTypes)[number]) =>
-                setPropertyType(value)
-              }
+              onValueChange={(value: typeof propertyTypes[number]) => setPropertyType(value)}
             >
               <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
                 <SelectValue placeholder="Property Type" />
@@ -259,79 +292,11 @@ export default function PropertySearch({
               className="py-6 px-2 whitespace-nowrap flex items-center bg-primary hover:bg-primary/90"
               onClick={handleSearch}
             >
-              <Search className=" h-5 w-5" />
+              <Search className="h-5 w-5" />
               <span>Search</span>
             </Button>
           </div>
         </div>
-
-        {isFilterOpen && ( // Added filter section
-          <div className="pt-4 border-t border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-2">
-                  For Sale/Rent
-                </label>
-                <Select
-                  value={saleType}
-                  onValueChange={(value: "all" | "Sale" | "Rent") =>
-                    setSaleType(value)
-                  }
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Properties</SelectItem>
-                    <SelectItem value="Sale">For Sale</SelectItem>
-                    <SelectItem value="Rent">For Rent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Price Range
-                </label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(Number(e.target.value))}
-                  />
-                  <span>-</span>
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(Number(e.target.value))}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Bedrooms
-                </label>
-                <Select
-                  value={bedrooms.toString()}
-                  onValueChange={(value) => setBedrooms(parseInt(value))}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Any" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">Any</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                    <SelectItem value="4">4+</SelectItem>
-                    <SelectItem value="5">5+</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
