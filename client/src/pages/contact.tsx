@@ -122,10 +122,10 @@ export default function ContactPage() {
                   <h3 className="text-xl font-semibold">Our Office</h3>
                 </div>
                 <p className="text-gray-600 mb-2">
-                  123 Tech Park, Silicon Valley
+                  #301, Madhavaram Towers, Kukatpally Y Junction,
                 </p>
-                <p className="text-gray-600 mb-2">Koramangala, Bangalore</p>
-                <p className="text-gray-600">Karnataka, India - 560034</p>
+                <p className="text-gray-600 mb-2"> Moosapet, Hyderabad</p>
+                <p className="text-gray-600">Telangana, India - 500018</p>
               </div>
 
               <div className="bg-gray-50 p-6 rounded-xl">
@@ -137,11 +137,11 @@ export default function ContactPage() {
                 </div>
                 <p className="text-gray-600 mb-2">General Inquiries:</p>
                 <p className="text-primary font-medium mb-3">
-                  info@realestate.com
+                  urgentsale.in@gmail.com
                 </p>
                 <p className="text-gray-600 mb-2">Support:</p>
                 <p className="text-primary font-medium">
-                  support@realestate.com
+                  urgentsale.in@gmail.com
                 </p>
               </div>
 
@@ -153,11 +153,9 @@ export default function ContactPage() {
                   <h3 className="text-xl font-semibold">Call Us</h3>
                 </div>
                 <p className="text-gray-600 mb-2">Customer Support:</p>
-                <p className="text-primary font-medium mb-3">
-                  +91 80 1234 5678
-                </p>
+                <p className="text-primary font-medium mb-3">+91 99512 11555</p>
                 <p className="text-gray-600 mb-2">Property Assistance:</p>
-                <p className="text-primary font-medium">+91 80 8765 4321</p>
+                <p className="text-primary font-medium">+91 99512 11555</p>
               </div>
             </div>
           </div>
@@ -196,7 +194,7 @@ export default function ContactPage() {
                       <Phone className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">Urgency Sales Hotline</p>
-                        <p className="text-gray-600">+91 80 9876 5432</p>
+                        <p className="text-gray-600">+91 99512 11555</p>
                       </div>
                     </div>
 
@@ -266,7 +264,10 @@ export default function ContactPage() {
                     entire process of listing, marketing, and selling your
                     property within your desired timeframe.
                   </p>
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
+                  <Button
+                    className="w-full bg-red-600 hover:bg-red-700 text-white"
+                    onClick={() => (window.location.href = "tel:+919951211555")}
+                  >
                     Book Consultation
                   </Button>
                 </div>
@@ -299,9 +300,15 @@ export default function ContactPage() {
                         name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Full Name</FormLabel>
+                            <FormLabel>
+                              Full Name <span className="text-red-500">*</span>
+                            </FormLabel>
                             <FormControl>
-                              <Input placeholder="John Doe" {...field} />
+                              <Input
+                                placeholder="John Doe"
+                                required
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -313,10 +320,14 @@ export default function ContactPage() {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email Address</FormLabel>
+                            <FormLabel>
+                              Email Address{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="urgentsale.in@gmail.com"
+                                required
                                 {...field}
                               />
                             </FormControl>
@@ -330,9 +341,16 @@ export default function ContactPage() {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Phone Number</FormLabel>
+                            <FormLabel>
+                              Phone Number{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
                             <FormControl>
-                              <Input placeholder="+91 9876543210" {...field} />
+                              <Input
+                                placeholder="+91 1234567894"
+                                required
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -344,10 +362,13 @@ export default function ContactPage() {
                         name="subject"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Subject</FormLabel>
+                            <FormLabel>
+                              Subject <span className="text-red-500">*</span>
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="Property Inquiry"
+                                required
                                 {...field}
                               />
                             </FormControl>
@@ -362,11 +383,14 @@ export default function ContactPage() {
                       name="message"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Message</FormLabel>
+                          <FormLabel>
+                            Message <span className="text-red-500">*</span>
+                          </FormLabel>
                           <FormControl>
                             <Textarea
                               placeholder="Tell us how we can help you..."
                               className="min-h-32 resize-none"
+                              required
                               {...field}
                             />
                           </FormControl>
@@ -379,6 +403,9 @@ export default function ContactPage() {
                       type="submit"
                       className="w-full md:w-auto bg-primary text-white"
                       disabled={isSubmitting}
+                      onClick={() => {
+                        window.location.href = "mailto:contact@urgentsales.in";
+                      }}
                     >
                       {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>

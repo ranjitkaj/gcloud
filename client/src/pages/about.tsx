@@ -15,6 +15,14 @@ import {
   CheckCircle,
 } from "lucide-react";
 
+// Add this utility function at the top of the file
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
 // Assumed PropertyOwnerCTA component
 const PropertyOwnerCTA = () => (
   <section className="py-8 bg-gray-100">
@@ -22,12 +30,17 @@ const PropertyOwnerCTA = () => (
       <h2 className="text-2xl font-semibold mb-4">Become a Property Owner</h2>
       <p className="text-gray-600 mb-6">List your property with us today!</p>
       <Link to="/post-property-free">
-        <Button size="lg" className="bg-primary text-white">List Now</Button>
+        <Button
+          size="lg"
+          onClick={scrollToTop}
+          className="bg-primary text-white"
+        >
+          List Now
+        </Button>
       </Link>
     </div>
   </section>
 );
-
 
 export default function AboutPage() {
   return (
@@ -51,12 +64,13 @@ export default function AboutPage() {
                   <Button
                     size="lg"
                     className="bg-primary hover:bg-primary/90 text-white"
+                    onClick={scrollToTop}
                   >
                     Browse Properties
                   </Button>
                 </Link>
                 <Link to="/post-property-free">
-                  <Button size="lg" variant="outline">
+                  <Button size="lg" variant="outline" onClick={scrollToTop}>
                     List Your Property
                   </Button>
                 </Link>
@@ -65,7 +79,6 @@ export default function AboutPage() {
           </div>
         </section>
         <PropertyOwnerCTA /> {/* Added PropertyOwnerCTA */}
-
         {/* Our Mission */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
@@ -148,7 +161,6 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-
         {/* Urgency Sales Information */}
         <section className="py-16 bg-gradient-to-br from-red-50 to-orange-50">
           <div className="container mx-auto px-4">
@@ -187,8 +199,8 @@ export default function AboutPage() {
 
                 <div className="space-y-4 mb-8">
                   <div className="bg-white p-4 rounded-lg shadow-sm flex items-start">
-                    <Badge className="bg-red-600 text-white mr-3 mt-1">
-                      <Percent className="h-3 w-3 mr-1" /> 25%
+                    <Badge className="bg-blue-500 text-white mr-3 mt-1 rounded-full p-1 flex items-center justify-center">
+                      <ArrowRight className="h-3 w-3" /> 25%
                     </Badge>
                     <div>
                       <h4 className="font-medium">Discounted Price</h4>
@@ -200,8 +212,8 @@ export default function AboutPage() {
                   </div>
 
                   <div className="bg-white p-4 rounded-lg shadow-sm flex items-start">
-                    <Badge className="bg-orange-600 text-white mr-3 mt-1">
-                      <Clock className="h-3 w-3 mr-1" />
+                    <Badge className="bg-blue-500 text-white mr-3 mt-1 rounded-full p-1 flex items-center justify-center">
+                      <Clock className="h-3 w-3" strokeWidth={2.5} />
                     </Badge>
                     <div>
                       <h4 className="font-medium">Time-Limited</h4>
@@ -213,8 +225,8 @@ export default function AboutPage() {
                   </div>
 
                   <div className="bg-white p-4 rounded-lg shadow-sm flex items-start">
-                    <Badge className="bg-green-600 text-white mr-3 mt-1">
-                      <Building className="h-3 w-3 mr-1" />
+                    <Badge className="bg-blue-500 text-white mr-3 mt-1 rounded-full p-1 flex items-center justify-center">
+                      <CheckCircle className="h-3 w-3" />
                     </Badge>
                     <div>
                       <h4 className="font-medium">Verified Properties</h4>
@@ -226,8 +238,11 @@ export default function AboutPage() {
                   </div>
                 </div>
 
-                <Link to="/properties?tag=urgent">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white group">
+                <Link to="/">
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 text-white group"
+                    onClick={() => window.scrollTo(500, 500)}
+                  >
                     View Urgent Sales
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -236,7 +251,6 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-
         {/* CTA Section */}
         <section className="py-20 bg-primary">
           <div className="container mx-auto px-4">
@@ -255,6 +269,7 @@ export default function AboutPage() {
                     size="lg"
                     variant="secondary"
                     className="bg-white text-primary hover:bg-gray-100"
+                    onClick={scrollToTop}
                   >
                     Search Properties
                   </Button>
@@ -263,6 +278,7 @@ export default function AboutPage() {
                   <Button
                     size="lg"
                     className="bg-white text-primary hover:bg-gray-100"
+                    onClick={scrollToTop}
                   >
                     List Your Property
                   </Button>

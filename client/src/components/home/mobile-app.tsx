@@ -10,7 +10,7 @@ export default function MobileApp() {
               Download Our Mobile App
             </h2>
             <p className="text-gray-600 text-lg mb-6">
-              Take Urgent Sales.in with you wherever you go. Search properties,
+              Take Urgentsales.in with you wherever you go. Search properties,
               chat with owners, and get instant notifications.
             </p>
 

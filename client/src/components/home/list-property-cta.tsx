@@ -135,7 +135,10 @@ export default function ListPropertyCTA() {
                         handleSelectChange("propertyType", value)
                       }
                     >
-                      <SelectTrigger id="propertyType" className="w-full">
+                      <SelectTrigger
+                        id="propertyType"
+                        className="w-full text-gray-900"
+                      >
                         <SelectValue placeholder="Select property type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -158,6 +161,7 @@ export default function ListPropertyCTA() {
                         value={formData.city}
                         onChange={handleChange}
                         placeholder="Enter city"
+                        className="text-gray-900"
                       />
                     </div>
                     <div>
@@ -170,6 +174,7 @@ export default function ListPropertyCTA() {
                         value={formData.locality}
                         onChange={handleChange}
                         placeholder="Enter locality"
+                        className="text-gray-900"
                       />
                     </div>
                   </div>
@@ -183,6 +188,7 @@ export default function ListPropertyCTA() {
                       value={formData.price}
                       onChange={handleChange}
                       placeholder="Enter expected price"
+                      className="text-gray-900"
                     />
                   </div>
                   <div>
@@ -196,6 +202,7 @@ export default function ListPropertyCTA() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Enter your mobile number"
+                      className="text-gray-900"
                     />
                   </div>
 

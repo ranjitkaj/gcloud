@@ -42,7 +42,17 @@ const registerSchema = insertUserSchema
   .extend({
     password: z
       .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
+      .min(6, { message: "Password must be at least 6 characters" })
+      .regex(/[A-Z]/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/[a-z]/, {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .regex(/[0-9]/, { message: "Password must contain at least one number" })
+      .regex(/[^A-Za-z0-9]/, {
+        message: "Password must contain at least one special character",
+      }),
     confirmPassword: z.string(),
     role: z.string().optional(),
   })
@@ -302,7 +312,8 @@ export default function AuthPage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary opacity-80 z-0"></div>
                     <div className="relative z-10">
                       <h1 className="text-2xl font-bold">
-                        Welcome to Urgent Sales
+                        <span className="block md:inline">Welcome to </span>
+                        <span className="block md:inline">Urgent Sales</span>
                       </h1>
                       <p className="text-white/80 mt-1">
                         Your one-stop destination for all your real estate needs
@@ -463,9 +474,7 @@ export default function AuthPage() {
                             )}
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="reg-phone">
-                              Phone Number (Optional)
-                            </Label>
+                            <Label htmlFor="reg-phone">Phone Number</Label>
                             <Input
                               id="reg-phone"
                               {...registerForm.register("phone")}
@@ -500,7 +509,6 @@ export default function AuthPage() {
                                 <SelectItem value="agent">
                                   Real Estate Agent
                                 </SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
                               </SelectContent>
                             </Select>
                             <p className="text-xs text-gray-500">
@@ -557,6 +565,7 @@ export default function AuthPage() {
 
                           <Button
                             type="submit"
+                            onClick={() => window.scrollTo(0, 0)}
                             className="w-full bg-primary hover:bg-primary/90 mt-6"
                             disabled={isRegisterLoading}
                           >

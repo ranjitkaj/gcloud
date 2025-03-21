@@ -112,7 +112,7 @@ export default function ServicesSection() {
       description:
         "Comprehensive analysis and insights for property investments",
       imageSrc:
-        "https://images.unsplash.com/photo-1557682250-3f73a5e96ac7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
+        "https://cdn.corporatefinanceinstitute.com/assets/real-estate-investment-firms.jpeg",
     },
   ];
 
@@ -122,11 +122,9 @@ export default function ServicesSection() {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Explore a wide range of comprehensive services provided by our
-            top-rated real estate agency, one of the leading real estate
-            companies in India. Whether you’re searching for residential,
-            commercial, or industrial properties, our experienced real estate
-            brokers and real estate consultants have you covered.
+            Explore top real estate services with one of India’s leading
+            agencies. From residential to commercial, our expert brokers have
+            you covered.
           </p>
         </div>
 

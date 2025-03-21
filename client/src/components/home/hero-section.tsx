@@ -16,7 +16,7 @@ const slides = [
     id: 2,
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
     title: "Fast Sales for Sellers, Best Deals for Buyers!",
-    subtitleWords: [" luxury Villas at great value"],
+    subtitleWords: ["luxury Villas at great value"],
     // color: "from-green-900 to-green-700",
     color: "from-gray-950 to-black/90 backdrop-blur-lg",
   },
@@ -86,7 +86,7 @@ export default function HeroSection() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="relative h-[50vh] md:h-[40vh] lg:h-[45vh] overflow-hidden">
+      <section className="relative h-[40vh] md:h-[40vh] lg:h-[45vh] overflow-hidden">
         {/* Background Images & Overlay */}
         <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out">
           {slides.map((slide, index) => (
@@ -110,10 +110,18 @@ export default function HeroSection() {
 
         {/* Text Overlay */}
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white z-20 px-6">
-          <p className="text-1.8xl md:text-1xl lg:text-4xl font-bold">
-            {slides[currentSlide].title}
+          <p className="text-1.5xl md:text-2xl lg:text-4xl font-bold italic">
+            <span className="md:hidden">
+              {slides[currentSlide].title.split(", ")[0]}
+            </span>
+            <span className="hidden md:inline">
+              {slides[currentSlide].title}
+            </span>
+            <span className="block md:hidden">
+              {slides[currentSlide].title.split(", ")[1]}
+            </span>
           </p>
-          <h3 className="text-base md:text-lg mt-3">
+          <h3 className="text-base md:text-lg mt-3 whitespace-nowrap">
             Find{" "}
             <span className={`${colors[colorIndex]} font-bold`}>
               {slides[currentSlide].subtitleWords[wordIndex]}
@@ -128,19 +136,19 @@ export default function HeroSection() {
                 prev === 0 ? slides.length - 1 : prev - 1,
               )
             }
-            className="absolute left-1 top-1/2 transform -translate-y-1/2  hover:bg-black/50 rounded-full p-2 z-10 text-white"
+            className="absolute left-1 top-1/2 transform -translate-y-1/2  hover:bg-black/5 rounded-full p-2 z-10 text-white"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-2 w-2" />
           </button>
           <button
             onClick={() =>
               setCurrentSlide((prev) => (prev + 1) % slides.length)
             }
-            className="absolute right-1 top-1/2 transform -translate-y-1/2  hover:bg-black/50 rounded-full p-2 z-10 text-white"
+            className="absolute right-1 top-1/2 transform -translate-y-1/2  hover:bg-black/5 rounded-full p-2 z-10 text-white"
             aria-label="Next slide"
           >
-            <ChevronRight className="h-6 w-6" />
+            <ChevronRight className="h-2 w-2" />
           </button>
         </div>
       </section>

@@ -15,14 +15,11 @@ export default function FeaturedListings() {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
             <h5 className="text-3xl font-bold font-heading text-gray-900 mb-2">
-              Newly Listed Properties – The Best Property for You!
+              Homes you’ll love
             </h5>
             <p className="text-gray-600">
-              Explore our newly listed properties, handpicked to offer you the
-              best in comfort, luxury, and convenience. Whether you're looking
-              for a modern apartment, a spacious villa, or a prime investment
-              opportunity, we've got the best property for you. Don't miss out
-              on these fresh listings—your dream home awaits!"
+              New listings just in—modern, comfortable, and waiting for you.
+              Start your home search now!
             </p>
           </div>
           <div className="mt-4 md:mt-0">

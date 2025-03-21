@@ -24,159 +24,343 @@ export default function TermsConditions() {
 
           <div className="prose max-w-none">
             <p className="text-gray-700 mb-4">
-              Welcome to URGENT SALES. These Terms and Conditions govern your
-              use of our website and services. By accessing or using our
-              platform, you agree to be bound by these terms.
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Introduction
+              </h2>
+              Welcome to UrgentSales.in, operated by UrgentSales.in By accessing
+              or using our platform (website, mobile app, or APIs), you agree to
+              be bound by these Terms and Conditions, our Privacy Policy, and
+              Community Guidelines. Please read them carefully before using our
+              services.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               1. Acceptance of Terms
             </h2>
             <p className="text-gray-700 mb-4">
-              By accessing or using Urgent Sales, you agree to these Terms and
-              Conditions and our Privacy Policy. If you do not agree to these
-              terms, please do not use our services.
+              By accessing or using UrgentSales.in (website, mobile application,
+              or any affiliated platform), you agree to comply with and be bound
+              by these Terms and Conditions, our Privacy Policy, and any other
+              policies incorporated herein by reference. If you do not agree,
+              you must not access or use the platform.
             </p>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              2. User Accounts
+              2. Services Offered
             </h2>
             <p className="text-gray-700 mb-4">
-              To access certain features of our platform, you may need to create
-              an account. You are responsible for maintaining the
-              confidentiality of your account information and for all activities
-              that occur under your account.
+              UrgentSales.in is an online platform facilitating the listing,
+              advertisement, search, and promotion of real estate properties for
+              sale, rent, or purchase. We do not represent any party in real
+              estate transactions and are not a real estate agent or broker. We
+              provide information services only.
             </p>
-            <p className="text-gray-700 mb-4">
-              You agree to provide accurate, current, and complete information
-              during the registration process and to update such information to
-              keep it accurate, current, and complete.
-            </p>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              3. Property Listings
+              3. User Obligations
             </h2>
-            <p className="text-gray-700 mb-4">
-              Urgent Sales provides a platform for users to list properties for
-              sale or rent. Users who list properties ("Sellers") agree to
-              provide accurate and complete information about their properties.
-            </p>
-            <p className="text-gray-700 mb-4">
-              Urgent Sales does not verify the accuracy of property listings and
-              is not responsible for any inaccuracies or misrepresentations in
-              the listings.
-            </p>
-
-            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              4. Prohibited Activities
-            </h2>
-            <p className="text-gray-700 mb-4">Users are prohibited from:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-700">
               <li>
-                Posting false, misleading, or fraudulent property listings
+                Users shall provide accurate and truthful information in
+                listings and communications.
               </li>
-              <li>Harassing or intimidating other users</li>
-              <li>Posting illegal or unauthorized content</li>
-              <li>Attempting to circumvent the platform's fee structure</li>
-              <li>Using the platform for any illegal purpose</li>
               <li>
-                Attempting to gain unauthorized access to other user accounts or
-                our systems
+                Users represent that they have lawful authority to list any
+                property and shall comply with RERA (Real Estate Regulation and
+                Development Act, 2016) where applicable.
+              </li>
+              <li>
+                Users are solely responsible for verifying property titles,
+                legal documentation, and financial due diligence.
               </li>
             </ul>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              5. Fees and Payments
+              4. Content and Intellectual Property Rights
             </h2>
             <p className="text-gray-700 mb-4">
-              Some services offered by Urgent Sales may require payment of fees.
-              All fees are non-refundable unless otherwise stated. We reserve
-              the right to change our fee structure at any time.
+              All content on UrgentSales.in, including logos, software, design,
+              and data, are the intellectual property of the Company. Users are
+              granted a limited, non-exclusive, non-transferable right to use
+              the platform for personal, non-commercial purposes.
+            </p>
+            <p className="text-gray-700 mb-4">Users may not:</p>
+            <ul>
+              <li>
+                Copy, reproduce, or distribute content without written consent
+              </li>{" "}
+              <li>Use the platform for unauthorized or unlawful activities.</li>
+            </ul>
+
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+              5. Payment Terms
+            </h2>
+            <p className="text-gray-700 mb-4">
+              <b>a) Advance Payment</b>
+            </p>
+            <p className="text-gray-700 mb-4">
+              All services offered by UrgentSales.in are provided on a 100%
+              advance payment basis. Users must pay in full before availing any
+              paid feature, including but not limited to property listings,
+              promotional services, and advertising tools.
+            </p>
+            <p className="text-gray-700 mb-4">
+              <b>b) Accepted Payment Methods</b>
+            </p>
+            <p className="text-gray-700 mb-4">
+              We accept payments through the following secure channels:
+            </p>
+            <ul>
+              <li> Credit/Debit Cards (Visa, MasterCard, American Express)</li>
+              <li> Net Banking (All Major Indian Banks)</li>
+              <li> UPI (Unified Payments Interface)</li>
+              <li> Digital Wallets (e.g., Paytm, PhonePe, Google Pay)</li>
+              <li> Payment Gateways (e.g., Razorpay, PayU)</li>
+            </ul>
+            <p>
+              UrgentSales.in does not store any credit/debit card details.
+              Payments are processed via PCI-DSS-compliant third-party payment
+              gateways.
+            </p>
+            <p className="text-gray-700 mb-4">
+              <b>
+                {" "}
+                <b>Payment Confirmation</b>
+              </b>
+            </p>
+            <p>Upon successful payment, users will receive:</p>
+            <ul>
+              {" "}
+              <li>
+                {" "}
+                An electronic invoice sent to their registered email ID.{" "}
+              </li>
+              <li>
+                {" "}
+                Access to the chosen service within 24–48 hours, unless
+                otherwise specified.
+              </li>
+            </ul>
+            <p>
+              UrgentSales.in shall not be liable for delays caused by technical
+              errors or banking network issues beyond our control.
+            </p>
+            <p className="text-gray-700 mb-4">
+              <b>
+                {" "}
+                <b> Refund Policy</b>
+              </b>
+            </p>
+            <p className="text-gray-700 mb-4">
+              {" "}
+              <b> a) General Policy</b>
+            </p>
+            <p>
+              All payments made to UrgentSales.in are non-refundable, except in
+              the following cases:
+            </p>
+            <ul>
+              {" "}
+              <li>
+                {" "}
+                Double Payment: If a user is charged twice for the same service.{" "}
+              </li>
+              <li>
+                {" "}
+                Failed Transaction: If the user’s account is debited but the
+                service is not activated due to a technical error.
+              </li>
+              <li>
+                {" "}
+                Service Non-Delivery: In rare instances where the service cannot
+                be rendered, solely due to reasons attributable to
+                UrgentSales.in.
+              </li>
+            </ul>
+            <p className="text-gray-700 mb-4">
+              {" "}
+              <b> b) Eligibility for Refund</b>
+            </p>
+            <p>
+              Refund requests must be submitted in writing within 7 days of the
+              transaction, along with:
+            </p>
+            <ul>
+              {" "}
+              <li> Proof of payment (transaction reference ID or invoice)</li>
+              <li>Description of the issue or reason for refund</li>
+            </ul>
+            <p>
+              All eligible refunds will be processed within 10-15 business days.
+              Refunds will be credited to the original payment method used by
+              the user.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              6. Intellectual Property
+              6. Limitation of Liability
             </h2>
             <p className="text-gray-700 mb-4">
-              The content, organization, graphics, design, and other matters
-              related to our platform are protected under applicable copyrights,
-              trademarks, and other proprietary rights. Copying, redistribution,
-              or publication of any such content is strictly prohibited without
-              our express written consent.
+              UrgentSales.in shall not be liable for any direct, indirect,
+              incidental, special, or consequential damages, including but not
+              limited to, loss of data, profits, or property arising from:
+            </p>
+            <ul>
+              {" "}
+              <li> Use or inability to use the platform.</li>
+              <li>Errors, omissions, or inaccuracies in listings.</li>
+              <li>Unauthorized access or misuse by third parties.</li>
+            </ul>
+            <p className="text-gray-700 mb-4">
+              Maximum liability shall be limited to the fees paid by the user
+              for the service in question.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              7. Limitation of Liability
+              7. Termination of Access
             </h2>
             <p className="text-gray-700 mb-4">
-              Urgent Sales is provided on an "as is" and "as available" basis.
-              We make no warranties, expressed or implied, regarding the
-              operation of our platform or the information, content, or
-              materials included on our platform.
+              We reserve the right to suspend, limit, or terminate user access
+              without notice in cases of:
             </p>
+            <ul>
+              {" "}
+              <li> Violation of these Terms.</li>
+              <li>Misuse, fraud, or illegal activity.</li>
+              <li> Technical, maintenance, or security reasons.</li>
+            </ul>
             <p className="text-gray-700 mb-4">
-              In no event shall Urgent Sales or its affiliates be liable for any
-              indirect, incidental, special, or consequential damages arising
-              out of or in any way connected with the use of our platform.
-            </p>
-
-            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              8. Indemnification
-            </h2>
-            <p className="text-gray-700 mb-4">
-              You agree to indemnify, defend, and hold harmless Urgent Sales,
-              its officers, directors, employees, agents, and licensors from and
-              against all losses, expenses, damages, and costs, including
-              reasonable attorneys' fees, resulting from any violation of these
-              Terms and Conditions.
+              Users may request restoration of access by contacting our support
+              team.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              9. Termination
+              8. Privacy and Data Protection
             </h2>
             <p className="text-gray-700 mb-4">
-              We reserve the right to terminate or suspend your account and
-              access to our platform at our sole discretion, without notice, for
-              conduct that we believe violates these Terms and Conditions or is
-              harmful to other users, us, or third parties, or for any other
-              reason.
+              We are committed to safeguarding user data. Information collected
+              will be handled in accordance with our Privacy Policy and may be
+              shared with third parties for service provision, legal compliance,
+              or marketing with user consent.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              10. Changes to Terms
+              9. Dispute Resolution
             </h2>
             <p className="text-gray-700 mb-4">
-              We reserve the right to modify these Terms and Conditions at any
-              time. Updated versions will be posted on this page. Your continued
-              use of our platform after any such changes constitutes your
-              acceptance of the new Terms and Conditions.
+              All disputes arising out of or in connection with these Terms
+              shall first be attempted to be resolved amicably. If unresolved,
+              disputes shall be referred to arbitration under the Arbitration
+              and Conciliation Act, 1996, with a sole arbitrator appointed by
+              UrgentSales.in. Seat of Arbitration: Hyderabad, India.
+              GoverningLaw:IndianLaw. Jurisdiction: Courts in Hyderabad, India.
             </p>
-
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-              11. Governing Law
+              10. Force Majeure
             </h2>
             <p className="text-gray-700 mb-4">
-              These Terms and Conditions shall be governed by and construed in
-              accordance with the laws of India, without regard to its conflict
-              of law principles.
+              UrgentSales.in shall not be liable for delays or failures in
+              performance due to force majeure events, including but not limited
+              to, natural disasters, war, governmental actions, strikes, or
+              internet outages.
+            </p>
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+              11. Amendments
+            </h2>
+            <p className="text-gray-700 mb-4">
+              UrgentSales.in reserves the right to modify these Terms at any
+              time. Updated terms shall be effective upon posting. Continued use
+              constitutes acceptance of revised terms.
             </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
               12. Contact Information
             </h2>
             <p className="text-gray-700 mb-4">
-              If you have any questions or concerns about these Terms and
-              Conditions, please contact us at:
+              For any queries or grievances, please
             </p>
             <p className="text-gray-700 mb-4">
-              Email: support@urgentsales.com
+              contact:9951211555
+              <br /> Officer:Mr.Chandrashekhar
               <br />
-              Phone: +91 8800123456
-              <br />
-              Address: 123 Tech Park, Whitefield, Bangalore - 560066, India
+              Time: 10 AM – 6 PM IST, 7 days a week
             </p>
 
-            <p className="text-gray-700 mt-8">Last Updated: March 19, 2025</p>
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+              13. Miscellaneous
+            </h2>
+            <ul>
+              {" "}
+              <li>
+                {" "}
+                <b>Severability: </b>If any provision is deemed invalid,
+                remaining terms remain in full effect
+              </li>
+              <li>
+                <b>Waiver:</b> Failure to enforce any term shall not constitute
+                a waiver.
+              </li>
+              <li>
+                {" "}
+                <b>Entire Agreement: </b>These Terms, along with the Privacy
+                Policy, constitute the entire agreement between you and
+                UrgentSales.in.
+              </li>
+            </ul>
+            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+              14.Information Sharing
+            </h2>
+            <p className="text-gray-700 mt-8">
+              By accessing and using UrgentSales.in, users agree to share
+              certain personal and non-personal information. This information is
+              collected to facilitate real estate services, improve user
+              experience, provide customer support, and deliver relevant
+              property-related content and services.
+            </p>
+            <b>Types of Information Collected</b>
+            <p className="text-gray-700 mt-8">
+              We may collect and process the following types of user data:
+            </p>
+            <ul>
+              {" "}
+              <li>
+                {" "}
+                <b> Personal Information: </b>Name, contact number, email
+                address, residential address, property ownership details,
+                identity proof (where applicable).
+              </li>
+              <li>
+                <b> Financial Information: </b> Transaction details for services
+                purchased, payment history (via secure gateways).
+              </li>
+              <li>
+                {" "}
+                <b> Usage Data: </b>IP address, device type, browser
+                information, interaction with the platform (cookies,
+                preferences, etc.).
+              </li>
+              <li>
+                {" "}
+                <b> Third-Party Data: </b>Data shared with or obtained from
+                third-party service providers (e.g., payment gateways,
+                verification agencies).
+              </li>
+            </ul>
+            <p className="text-gray-700 mt-8">
+              <b> User Rights </b>
+            </p>
+            <p className="text-gray-700 mt-8">Users have the right to:</p>
+            <ul>
+              {" "}
+              <li>
+                {" "}
+                Access, review, and request correction of their personal data.
+              </li>
+              <li> Withdraw consent for promotional communications.</li>
+              <li>
+                Request deletion of personal data (subject to legal and
+                operational obligations).
+              </li>
+            </ul>
+
+            <p className="text-gray-700 mt-8">Last Updated: March 21, 2025</p>
           </div>
         </div>
       </div>

@@ -100,7 +100,7 @@ export default function Navbar() {
                   });
                 }
               }}
-              className="inline-flex bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              className="inline-flex bg-emerald-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               Post Property FREE
             </Link>
@@ -208,6 +208,7 @@ export default function Navbar() {
               <>
                 <Link
                   to="/auth"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="inline-flex bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors"
                 >
                   <svg

@@ -106,7 +106,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/?tag=urgent?type=residential"
-                  onClick={() => window.scrollTo(1000, 1000)}
+                  onClick={() => window.scrollTo(500, 500)}
                   className="hover:text-white transition-colors"
                 >
                   Urgency Sales
@@ -189,7 +189,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="mr-3 flex-shrink-0" />
-                <span>support@UrgentSales.com</span>
+                <span>support@UrgentSales.in</span>
               </li>
             </ul>
             <div className="mt-4">
