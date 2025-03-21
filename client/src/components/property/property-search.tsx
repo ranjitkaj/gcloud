@@ -28,7 +28,9 @@ export default function PropertySearch({
   showAdvanced = false,
 }: PropertySearchProps) {
   const [locationValue, setLocationValue] = useState("");
-  const [propertyType, setPropertyType] = useState<(typeof propertyTypes)[number] | "">("");
+  const [propertyType, setPropertyType] = useState<
+    (typeof propertyTypes)[number] | ""
+  >("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [bedrooms, setBedrooms] = useState(0);
@@ -67,7 +69,9 @@ export default function PropertySearch({
             if (city) {
               setLocationValue(city);
             } else {
-              setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+              setLocationValue(
+                `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+              );
             }
           } else {
             setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
@@ -82,7 +86,9 @@ export default function PropertySearch({
       (error) => {
         console.error("Geolocation error:", error);
         setIsLocationLoading(false);
-        alert("Unable to get your location. Please enable location services and try again.");
+        alert(
+          "Unable to get your location. Please enable location services and try again.",
+        );
       },
     );
   };
@@ -147,7 +153,10 @@ export default function PropertySearch({
   };
 
   return (
-    <div ref={containerRef} className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className}`}>
+    <div
+      ref={containerRef}
+      className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className}`}
+    >
       <div className="flex flex-col space-y-4">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
           <div className="flex-1">
@@ -198,16 +207,49 @@ export default function PropertySearch({
           <div className="flex flex-row space-x-2">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="min-w-[50px] py-6">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
+                <Button variant="outline" className="min-w-[50px] py-6 ">
+                  <Filter className="h-4 w-4 mr-2 mb-4" />
                 </Button>
+                {/* <Button
+                  variant="outline"
+                  className="rounded-l-none border-l-0 px-3 py-6 bg-gray-50 hover:bg-gray-100"
+                  onClick={getUserLocation}
+                  disabled={isLocationLoading}
+                >
+                  {isLocationLoading ? (
+                    <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full mr-0"></div>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-primary"
+                    >
+                      <circle cx="12" cy="12" r="8"></circle>
+                      <line x1="12" y1="2" x2="12" y2="4"></line>
+                      <line x1="12" y1="20" x2="12" y2="22"></line>
+                      <line x1="2" y1="12" x2="4" y2="12"></line>
+                      <line x1="20" y1="12" x2="22" y2="12"></line>
+                    </svg>
+                  )}
+                </Button> */}
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-4" align="end">
+              <PopoverContent className="w-80 p-7" align="end">
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <h4 className="font-medium text-sm">Property Type</h4>
-                    <Select value={propertyType} onValueChange={(value: typeof propertyTypes[number]) => setPropertyType(value)}>
+                    <Select
+                      value={propertyType}
+                      onValueChange={(value: (typeof propertyTypes)[number]) =>
+                        setPropertyType(value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -223,7 +265,12 @@ export default function PropertySearch({
 
                   <div className="space-y-2">
                     <h4 className="font-medium text-sm">For Sale/Rent</h4>
-                    <Select value={saleType} onValueChange={(value: "all" | "Sale" | "Rent") => setSaleType(value)}>
+                    <Select
+                      value={saleType}
+                      onValueChange={(value: "all" | "Sale" | "Rent") =>
+                        setSaleType(value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -256,7 +303,10 @@ export default function PropertySearch({
 
                   <div className="space-y-2">
                     <h4 className="font-medium text-sm">Bedrooms</h4>
-                    <Select value={bedrooms.toString()} onValueChange={(value) => setBedrooms(parseInt(value))}>
+                    <Select
+                      value={bedrooms.toString()}
+                      onValueChange={(value) => setBedrooms(parseInt(value))}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Any" />
                       </SelectTrigger>
@@ -275,7 +325,9 @@ export default function PropertySearch({
             </Popover>
             <Select
               value={propertyType}
-              onValueChange={(value: typeof propertyTypes[number]) => setPropertyType(value)}
+              onValueChange={(value: (typeof propertyTypes)[number]) =>
+                setPropertyType(value)
+              }
             >
               <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
                 <SelectValue placeholder="Property Type" />
