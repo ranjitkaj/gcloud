@@ -9,23 +9,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { MapPin, Search } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
 
+// Define the interface for the component props
 interface PropertySearchProps {
   className?: string;
   showAdvanced?: boolean;
 }
 
+// Main component definition
 export default function PropertySearch({
   className = "",
   showAdvanced = false,
 }: PropertySearchProps) {
+  // State variables for managing form inputs and UI state
   const [locationValue, setLocationValue] = useState("");
   const [propertyType, setPropertyType] = useState<
     (typeof propertyTypes)[number] | ""
@@ -36,9 +34,37 @@ export default function PropertySearch({
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all");
   const containerRef = useRef<HTMLDivElement>(null);
+  // New state to track filter menu open state
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterMenuRef = useRef<HTMLDivElement>(null);
 
+  // Hook to manage URL location
   const [_, setUrlLocation] = useLocation();
 
+  // Toggle filter menu function
+  const toggleFilter = () => {
+    setIsFilterOpen(!isFilterOpen);
+  };
+
+  // Close filter menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filterMenuRef.current &&
+        !filterMenuRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest('button[data-filter-toggle="true"]')
+      ) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Function to get user's current location using Geolocation API
   const getUserLocation = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
@@ -92,6 +118,7 @@ export default function PropertySearch({
     );
   };
 
+  // Effect to initialize form values from URL query parameters
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cityParam = params.get("city");
@@ -109,6 +136,7 @@ export default function PropertySearch({
     if (bedroomsParam) setBedrooms(parseInt(bedroomsParam));
   }, []);
 
+  // Function to handle search button click and update URL with query parameters
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
 
@@ -141,6 +169,7 @@ export default function PropertySearch({
     setUrlLocation(`/properties?${queryParams.toString()}`);
   };
 
+  // Function to format price for display
   const formatPrice = (value: number) => {
     if (value >= 10000000) {
       return `₹${(value / 10000000).toFixed(1)} Cr`;
@@ -151,13 +180,15 @@ export default function PropertySearch({
     }
   };
 
+  // Render the component
   return (
     <div
       ref={containerRef}
-      className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className}`}
+      className={`bg-white rounded-xl shadow-lg p-2 max-w-4xl mx-auto ${className} relative`}
     >
       <div className="flex flex-col space-y-4">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+          {/* Location Input Section */}
           <div className="flex-1">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -203,139 +234,43 @@ export default function PropertySearch({
               </div>
             </div>
           </div>
+
+          {/* Advanced Search Options Section */}
           <div className="flex flex-row space-x-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="min-w-[50px] py-6 relative">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mr-2"
-                  >
-                    <line x1="4" y1="21" x2="4" y2="14"></line>
-                    <line x1="4" y1="10" x2="4" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12" y2="3"></line>
-                    <line x1="20" y1="21" x2="20" y2="16"></line>
-                    <line x1="20" y1="12" x2="20" y2="3"></line>
-                    <line x1="1" y1="14" x2="7" y2="14"></line>
-                    <line x1="9" y1="8" x2="15" y2="8"></line>
-                    <line x1="17" y1="16" x2="23" y2="16"></line>
-                  </svg>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-[90vw] max-w-[400px] p-6 bg-white rounded-lg shadow-xl md:w-[400px]"
-                align="end"
-                side="bottom"
-                sideOffset={4}
-                alignOffset={0}
-                collisionPadding={8}
-                avoidCollisions={true}
-                sticky="partial"
+            {/* Custom Filter Button */}
+            <Button
+              variant={isFilterOpen ? "default" : "outline"}
+              className={`min-w-[50px] py-6 relative ${
+                isFilterOpen ? "bg-primary text-white" : ""
+              }`}
+              onClick={toggleFilter}
+              data-filter-toggle="true"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="mr-2"
               >
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-gray-700">
-                      Property Type
-                    </h4>
-                    <Select
-                      value={propertyType}
-                      onValueChange={(value: (typeof propertyTypes)[number]) =>
-                        setPropertyType(value)
-                      }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {propertyTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line>
+              </svg>
+            </Button>
 
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-gray-700">
-                      For Sale/Rent
-                    </h4>
-                    <Select
-                      value={saleType}
-                      onValueChange={(value: "all" | "Sale" | "Rent") =>
-                        setSaleType(value)
-                      }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Properties</SelectItem>
-                        <SelectItem value="Sale">For Sale</SelectItem>
-                        <SelectItem value="Rent">For Rent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-gray-700">
-                      Price Range
-                    </h4>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Min"
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(Number(e.target.value))}
-                        className="w-full"
-                      />
-                      <span className="text-gray-500">-</span>
-                      <Input
-                        type="number"
-                        placeholder="Max"
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(Number(e.target.value))}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {formatPrice(minPrice)} - {formatPrice(maxPrice)}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-gray-700">
-                      Bedrooms
-                    </h4>
-                    <Select
-                      value={bedrooms.toString()}
-                      onValueChange={(value) => setBedrooms(parseInt(value))}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Any" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">Any</SelectItem>
-                        <SelectItem value="1">1+</SelectItem>
-                        <SelectItem value="2">2+</SelectItem>
-                        <SelectItem value="3">3+</SelectItem>
-                        <SelectItem value="4">4+</SelectItem>
-                        <SelectItem value="5">5+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            {/* Property Type Selector */}
             <Select
               value={propertyType}
               onValueChange={(value: (typeof propertyTypes)[number]) =>
@@ -353,6 +288,8 @@ export default function PropertySearch({
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Search Button */}
             <Button
               className="py-6 px-2 whitespace-nowrap flex items-center bg-primary hover:bg-primary/90"
               onClick={handleSearch}
@@ -363,6 +300,114 @@ export default function PropertySearch({
           </div>
         </div>
       </div>
+
+      {/* Custom Filter Mega Menu */}
+      {isFilterOpen && (
+        <div
+          ref={filterMenuRef}
+          className="absolute left-0 right-0 top-full mt-2 bg-white rounded-lg shadow-lg p-5 z-50 transition-all duration-200 ease-in-out"
+          style={{
+            opacity: 1,
+            transform: "translateY(0)",
+            boxShadow:
+              "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Property Type Selector */}
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm text-gray-700">
+                Property Type
+              </h4>
+              <Select
+                value={propertyType}
+                onValueChange={(value: (typeof propertyTypes)[number]) =>
+                  setPropertyType(value)
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-[200px]">
+                  {propertyTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Sale/Rent Selector */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-sm text-gray-700">
+                For Sale/Rent
+              </h4>
+              <Select
+                value={saleType}
+                onValueChange={(value: "all" | "Sale" | "Rent") =>
+                  setSaleType(value)
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Properties</SelectItem>
+                  <SelectItem value="Sale">For Sale</SelectItem>
+                  <SelectItem value="Rent">For Rent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Price Range Inputs */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-sm text-gray-700">Price Range</h4>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  className="w-full"
+                />
+                <span className="text-gray-500">-</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+              <div className="text-sm text-gray-500">
+                {formatPrice(minPrice)} - {formatPrice(maxPrice)}
+              </div>
+            </div>
+
+            {/* Bedrooms Selector */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-sm text-gray-700">Bedrooms</h4>
+              <Select
+                value={bedrooms.toString()}
+                onValueChange={(value) => setBedrooms(parseInt(value))}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Any</SelectItem>
+                  <SelectItem value="1">1+</SelectItem>
+                  <SelectItem value="2">2+</SelectItem>
+                  <SelectItem value="3">3+</SelectItem>
+                  <SelectItem value="4">4+</SelectItem>
+                  <SelectItem value="5">5+</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
