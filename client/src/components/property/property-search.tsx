@@ -233,13 +233,13 @@ export default function PropertySearch({
               </PopoverTrigger>
               <PopoverContent
                 className="w-[90vw] max-w-[400px] p-6 bg-white rounded-lg shadow-xl md:w-[400px]"
-                align="start"
+                align="center"
                 side="bottom"
-                sideOffset={4}
-                alignOffset={-8}
-                collisionPadding={8}
-                sticky="always"
-                avoidCollisions={true}
+                sideOffset={8}
+                alignOffset={0}
+                collisionPadding={20}
+                avoidCollisions={false}
+                forceMount
               >
                 <div className="space-y-6">
                   <div className="space-y-3">
