@@ -41,18 +41,10 @@ export default function PropertySearch({
   // New state to track filter menu open state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
-  const [categoryTab, setCategoryTab] = useState('all');
-  const [areaRange, setAreaRange] = useState([0, 10000]);
-  const [amenities, setAmenities] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState({
-    category: '',
-    propertyType: '',
-    saleType: '',
-    priceRange: [0, 10000000],
-    areaRange: [0, 10000],
-    amenities: [] as string[],
-    bedrooms: 0
-  });
+  const [categoryTab, setCategoryTab] = useState('all'); // Added state for category tabs
+  const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
+  const [amenities, setAmenities] = useState([]); // Added state for amenities
+
 
   // Hook to manage URL location
   const [_, setUrlLocation] = useLocation();
@@ -155,55 +147,42 @@ export default function PropertySearch({
   // Function to handle search button click and update URL with query parameters
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
-    const filters = {
-      ...selectedFilters,
-      location: locationValue,
-      propertyType: propertyType || selectedFilters.propertyType,
-      saleType: saleType !== "all" ? saleType : selectedFilters.saleType
-    };
 
-    if (filters.location) {
-      queryParams.append("city", filters.location);
+    if (locationValue) {
+      queryParams.append("city", locationValue);
     }
 
-    if (filters.propertyType) {
-      queryParams.append("propertyType", filters.propertyType);
+    if (propertyType) {
+      queryParams.append("propertyType", propertyType);
     }
 
-    if (filters.saleType) {
-      queryParams.append("saleType", filters.saleType);
+    if (saleType !== "all") {
+      queryParams.append("saleType", saleType);
     }
 
-    if (filters.category !== 'all') {
-      queryParams.append("category", filters.category);
-    }
+    if (showAdvanced) {
+      if (minPrice > 0) {
+        queryParams.append("minPrice", minPrice.toString());
+      }
 
-    if (filters.priceRange[0] > 0) {
-      queryParams.append("minPrice", filters.priceRange[0].toString());
-    }
+      if (maxPrice < 10000000) {
+        queryParams.append("maxPrice", maxPrice.toString());
+      }
 
-    if (filters.priceRange[1] < 10000000) {
-      queryParams.append("maxPrice", filters.priceRange[1].toString());
-    }
+      if (bedrooms > 0) {
+        queryParams.append("minBedrooms", bedrooms.toString());
+      }
+      if (areaRange[0] > 0) {
+        queryParams.append("minArea", areaRange[0].toString());
+      }
+      if (areaRange[1] < 10000) {
+        queryParams.append("maxArea", areaRange[1].toString());
+      }
+      queryParams.append("amenities", amenities.join(','));
 
-    if (filters.bedrooms > 0) {
-      queryParams.append("minBedrooms", filters.bedrooms.toString());
-    }
-
-    if (filters.areaRange[0] > 0) {
-      queryParams.append("minArea", filters.areaRange[0].toString());
-    }
-
-    if (filters.areaRange[1] < 10000) {
-      queryParams.append("maxArea", filters.areaRange[1].toString());
-    }
-
-    if (filters.amenities.length > 0) {
-      queryParams.append("amenities", filters.amenities.join(','));
     }
 
     setUrlLocation(`/properties?${queryParams.toString()}`);
-    setIsFilterOpen(false);
   };
 
   // Function to format price for display
@@ -354,13 +333,7 @@ export default function PropertySearch({
             {/* Category Tabs */}
             <div className="space-y-3 mb-6">
               <h4 className="font-medium text-sm text-gray-700">Category</h4>
-              <Tabs 
-                value={selectedFilters.category || categoryTab} 
-                onValueChange={(value) => {
-                  setCategoryTab(value);
-                  setSelectedFilters(prev => ({...prev, category: value}));
-                }}
-              >
+              <Tabs value={categoryTab} onValueChange={setCategoryTab}>
                 <TabsList className="w-full grid grid-cols-4 gap-2">
                   <TabsTrigger value="all">All</TabsTrigger>
                   <TabsTrigger value="for_sale">For Sale</TabsTrigger>
@@ -474,13 +447,11 @@ export default function PropertySearch({
                       id={`amenity-${amenity}`}
                       checked={amenities.includes(amenity)}
                       onCheckedChange={(checked) => {
-                        const newAmenities = checked 
-                          ? [...selectedFilters.amenities, amenity]
-                          : selectedFilters.amenities.filter(a => a !== amenity);
-                        setSelectedFilters(prev => ({
-                          ...prev,
-                          amenities: newAmenities
-                        }));
+                        if (checked) {
+                          setAmenities([...amenities, amenity]);
+                        } else {
+                          setAmenities(amenities.filter(a => a !== amenity));
+                        }
                       }}
                     />
                     <Label htmlFor={`amenity-${amenity}`}>{amenity}</Label>
