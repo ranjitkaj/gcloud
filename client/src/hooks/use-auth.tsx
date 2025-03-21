@@ -30,13 +30,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
+      console.log('Attempting login with:', credentials.username);
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
-      if (!response.ok) throw new Error('Login failed');
-      return response.json();
+      
+      if (!response.ok) {
+        console.error('Login failed with status:', response.status);
+        // Try to get the error message from the response
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Login failed');
+        } catch (e) {
+          throw new Error('Login failed: Invalid credentials');
+        }
+      }
+      
+      const data = await response.json();
+      console.log('Login successful:', data);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });
@@ -45,16 +59,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signupMutation = useMutation({
     mutationFn: async (data: any) => {
+      console.log('Attempting registration with:', { 
+        username: data.username, 
+        email: data.email,
+        verificationMethod: data.verificationMethod 
+      });
+      
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+      
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Signup failed');
+        console.error('Registration failed with status:', response.status);
+        // Try to get the error message from the response
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Registration failed');
+        } catch (e) {
+          throw new Error('Registration failed: ' + (e instanceof Error ? e.message : 'Unknown error'));
+        }
       }
+      
       const userData = await response.json();
+      console.log('Registration successful:', userData);
       return userData;
     },
     onSuccess: (data) => {

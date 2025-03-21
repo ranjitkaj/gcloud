@@ -201,6 +201,7 @@ export default function AuthPage() {
       });
 
       // Store the registered user for the verification step
+      console.log("Registration response:", response);
       setRegisteredUser(response);
       setSelectedVerificationMethod(verificationMethod);
 

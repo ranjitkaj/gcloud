@@ -59,13 +59,17 @@ export default function OTPVerification({
       setIsVerifying(true);
       setVerificationStatus('idle');
 
+      // Print verification details for debugging
+      console.log("Sending verification for user:", userId, "OTP:", otp, "Type:", type);
+
       const response = await apiRequest(
         'POST',
         '/api/verify-otp',
         { otp, type }
       );
-
+      
       const data = await response.json();
+      console.log("OTP verification response:", data);
 
       if (data.success) {
         setVerificationStatus('success');
@@ -104,6 +108,8 @@ export default function OTPVerification({
     try {
       setIsResending(true);
       
+      console.log("Resending OTP for user:", userId, "Type:", type);
+      
       const response = await apiRequest(
         'POST',
         '/api/resend-otp',
@@ -111,6 +117,7 @@ export default function OTPVerification({
       );
 
       const data = await response.json();
+      console.log("Resend OTP response:", data);
 
       if (data.success) {
         toast({
