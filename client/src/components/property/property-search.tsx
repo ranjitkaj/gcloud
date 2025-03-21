@@ -12,7 +12,8 @@ import {
 import { MapPin, Search } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added import
-import { Checkbox, Label } from "@/components/ui/checkbox"; // Added import
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label"; // Added import
 
 
 // Define the interface for the component props
