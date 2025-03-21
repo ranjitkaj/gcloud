@@ -334,7 +334,7 @@ export function setupAuth(app: Express) {
       if (type === "email") {
         recipient = req.user.email;
         console.log(`Sending OTP via email to: ${recipient}`);
-        sendResult = await sendOTP(recipient, otp, "email");
+        sendResult = await sendOTP(recipient, otp, "email", userId);
         
         // In development, include the OTP in the response for testing
         const response: { 

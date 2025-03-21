@@ -66,7 +66,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
-  const [_, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user, login, signup, isLoading } = useAuth();
   const { toast } = useToast();
 
@@ -81,6 +81,46 @@ export default function AuthPage() {
     "email" | "whatsapp" | "sms"
   >("email");
   const [registeredUser, setRegisteredUser] = useState<any>(null);
+  
+  // Check for verification status in URL parameters
+  useEffect(() => {
+    // Parse URL parameters
+    const searchParams = new URLSearchParams(location.split('?')[1] || '');
+    
+    // Check for verification success
+    if (searchParams.has('verificationSuccess')) {
+      toast({
+        title: "Verification successful",
+        description: "Your email has been verified successfully. You can now log in.",
+        variant: "default",
+      });
+      setActiveTab("login");
+    }
+    
+    // Check for verification errors
+    if (searchParams.has('verificationError')) {
+      const errorType = searchParams.get('verificationError');
+      let errorMessage = "Verification failed. Please try again.";
+      
+      switch(errorType) {
+        case 'invalid_token':
+          errorMessage = "Invalid or expired verification code. Please request a new code.";
+          break;
+        case 'missing_params': 
+          errorMessage = "Invalid verification link. Please try again.";
+          break;
+        case 'update_failed':
+          errorMessage = "Could not update verification status. Please contact support.";
+          break;
+      }
+      
+      toast({
+        title: "Verification failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  }, [location, toast]);
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
