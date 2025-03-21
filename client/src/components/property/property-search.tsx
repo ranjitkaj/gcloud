@@ -44,7 +44,27 @@ export default function PropertySearch({
   const [categoryTab, setCategoryTab] = useState('all'); // Added state for category tabs
   const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
   const [amenities, setAmenities] = useState([]); // Added state for amenities
+  const [selectedFilters, setSelectedFilters] = useState({
+    category: '',
+    propertyType: '',
+    saleType: '',
+    priceRange: [0, 10000000],
+    areaRange: [0, 10000],
+    amenities: [] as string[],
+    bedrooms: 0,
+    location: ''
+  });
 
+  // Format selected filters for display
+  const getFilterDisplay = () => {
+    const filters = [];
+    if (locationValue) filters.push(locationValue);
+    if (selectedFilters.propertyType) filters.push(selectedFilters.propertyType);
+    if (selectedFilters.saleType && selectedFilters.saleType !== 'all') filters.push(selectedFilters.saleType);
+    if (selectedFilters.bedrooms > 0) filters.push(`${selectedFilters.bedrooms}+ beds`);
+    if (selectedFilters.amenities.length > 0) filters.push(`${selectedFilters.amenities.length} amenities`);
+    return filters.join(' • ');
+  };
 
   // Hook to manage URL location
   const [_, setUrlLocation] = useLocation();
@@ -215,7 +235,7 @@ export default function PropertySearch({
                   type="text"
                   placeholder="Enter location, neighborhood, or address"
                   className="pl-10 pr-4 py-6 text-gray-700 bg-gray-50 rounded-r-none"
-                  value={locationValue}
+                  value={getFilterDisplay()}
                   onChange={(e) => setLocationValue(e.target.value)}
                 />
                 <Button
