@@ -232,16 +232,28 @@ export default function PropertySearch({
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-[90vw] max-w-[400px] p-6 bg-white rounded-lg shadow-xl md:w-[400px]"
+                className="w-[90vw] max-w-[400px] p-6 bg-white rounded-lg shadow-xl md:w-[400px] fixed right-0 top-16 md:relative md:top-0 z-50 overflow-y-auto max-h-[80vh]"
                 align="end"
                 side="bottom"
                 sideOffset={4}
                 alignOffset={0}
                 collisionPadding={8}
                 avoidCollisions={true}
-                sticky="partial"
+                modal={true}
               >
                 <div className="space-y-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-semibold">Filters</h3>
+                    <button
+                      onClick={() => {
+                        const button = document.querySelector('[aria-expanded="true"]') as HTMLButtonElement;
+                        if (button) button.click();
+                      }}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ✕
+                    </button>
+                  </div>
                   <div className="space-y-3">
                     <h4 className="font-medium text-sm text-gray-700">
                       Property Type
