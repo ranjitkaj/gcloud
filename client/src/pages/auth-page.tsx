@@ -8,6 +8,13 @@ import {
   verificationMethods,
   userRoles,
 } from "@shared/schema";
+
+// Add type declaration for the window object
+declare global {
+  interface Window {
+    autoFillOtp?: string;
+  }
+}
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/layout/navbar";
@@ -82,43 +89,41 @@ export default function AuthPage() {
   >("email");
   const [registeredUser, setRegisteredUser] = useState<any>(null);
   
-  // Check for verification status in URL parameters
+  // Check for verification parameters in URL
   useEffect(() => {
     // Parse URL parameters
     const searchParams = new URLSearchParams(location.split('?')[1] || '');
     
-    // Check for verification success
-    if (searchParams.has('verificationSuccess')) {
-      toast({
-        title: "Verification successful",
-        description: "Your email has been verified successfully. You can now log in.",
-        variant: "default",
-      });
-      setActiveTab("login");
-    }
-    
-    // Check for verification errors
-    if (searchParams.has('verificationError')) {
-      const errorType = searchParams.get('verificationError');
-      let errorMessage = "Verification failed. Please try again.";
+    // Check for OTP verification parameters
+    if (searchParams.has('verificationOTP') && searchParams.has('userId') && searchParams.has('email')) {
+      const otp = searchParams.get('verificationOTP') || '';
+      const userId = Number(searchParams.get('userId') || '0');
+      const email = searchParams.get('email') || '';
       
-      switch(errorType) {
-        case 'invalid_token':
-          errorMessage = "Invalid or expired verification code. Please request a new code.";
-          break;
-        case 'missing_params': 
-          errorMessage = "Invalid verification link. Please try again.";
-          break;
-        case 'update_failed':
-          errorMessage = "Could not update verification status. Please contact support.";
-          break;
+      if (userId && email) {
+        console.log("Found verification parameters in URL:", { userId, email, otp });
+        
+        // Create a user object with the minimal information needed for verification
+        setRegisteredUser({ 
+          id: userId,
+          email: email
+        });
+        
+        // Set email as verification method
+        setSelectedVerificationMethod("email");
+        
+        // Show verification UI
+        setRegistrationState("verification");
+        
+        // Show a toast for the user
+        toast({
+          title: "Verification required",
+          description: `Please verify your email ${email}`,
+        });
+        
+        // This will let the OTP component know what OTP to auto-fill
+        window.autoFillOtp = otp;
       }
-      
-      toast({
-        title: "Verification failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   }, [location, toast]);
 

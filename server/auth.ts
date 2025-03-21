@@ -408,42 +408,37 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Direct email verification endpoint (for email link clicks)
+  // Email verification endpoint (retains the OTP flow but handles redirects)
   app.get("/api/verify-email", async (req, res) => {
     try {
       const { token, userId } = req.query;
       
       console.log("Email verification link clicked:", { token, userId });
       
+      // Instead of verifying here, we'll redirect to the auth page with OTP prefilled
+      // This maintains the client-side OTP verification flow
       if (!token || !userId) {
         console.log("Missing verification token or userId in URL");
-        return res.redirect('/#/auth?verificationError=missing_params');
+        return res.redirect('/#/auth');
       }
       
-      // Verify the OTP token directly from URL parameters
-      const isValid = await storage.verifyOtp(Number(userId), token as string, 'email');
+      // For direct traceability, log the OTP so users can enter it manually if needed
+      console.log(`OTP for user ${userId}: ${token}`);
       
-      if (!isValid) {
-        console.log(`Email verification failed for user ${userId}: Invalid or expired token`);
-        return res.redirect('/#/auth?verificationError=invalid_token');
+      // Find the user to get their email for the verification UI
+      const user = await storage.getUser(Number(userId));
+      if (!user) {
+        console.log(`User ${userId} not found`);
+        return res.redirect('/#/auth');
       }
       
-      console.log(`Email verification successful for user ${userId}`);
-      
-      // Update user verification status
-      const updatedUser = await storage.verifyUserEmail(Number(userId));
-      
-      if (!updatedUser) {
-        console.log(`Failed to update verification status for user ${userId}`);
-        return res.redirect('/#/auth?verificationError=update_failed');
-      }
-      
-      // Redirect to authentication page with success message
-      return res.redirect('/#/auth?verificationSuccess=true');
+      // Redirect back to auth page with the OTP in the query params
+      // The front-end will handle showing the verification UI
+      return res.redirect(`/#/auth?verificationOTP=${token}&userId=${userId}&email=${encodeURIComponent(user.email)}`);
       
     } catch (error) {
-      console.error('Direct email verification error:', error);
-      return res.redirect('/#/auth?verificationError=server_error');
+      console.error('Email verification redirect error:', error);
+      return res.redirect('/#/auth');
     }
   });
 
