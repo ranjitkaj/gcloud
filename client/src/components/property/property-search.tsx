@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/select";
 import { MapPin, Search } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added import
+import { Checkbox, Label } from "@/components/ui/checkbox"; // Added import
+
 
 // Define the interface for the component props
 interface PropertySearchProps {
@@ -37,6 +40,10 @@ export default function PropertySearch({
   // New state to track filter menu open state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
+  const [categoryTab, setCategoryTab] = useState('all'); // Added state for category tabs
+  const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
+  const [amenities, setAmenities] = useState([]); // Added state for amenities
+
 
   // Hook to manage URL location
   const [_, setUrlLocation] = useLocation();
@@ -164,6 +171,14 @@ export default function PropertySearch({
       if (bedrooms > 0) {
         queryParams.append("minBedrooms", bedrooms.toString());
       }
+      if (areaRange[0] > 0) {
+        queryParams.append("minArea", areaRange[0].toString());
+      }
+      if (areaRange[1] < 10000) {
+        queryParams.append("maxArea", areaRange[1].toString());
+      }
+      queryParams.append("amenities", amenities.join(','));
+
     }
 
     setUrlLocation(`/properties?${queryParams.toString()}`);
@@ -314,6 +329,20 @@ export default function PropertySearch({
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Category Tabs */}
+            <div className="space-y-3 mb-6">
+              <h4 className="font-medium text-sm text-gray-700">Category</h4>
+              <Tabs value={categoryTab} onValueChange={setCategoryTab}>
+                <TabsList className="w-full grid grid-cols-4 gap-2">
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="for_sale">For Sale</TabsTrigger>
+                  <TabsTrigger value="for_rent">For Rent</TabsTrigger>
+                  <TabsTrigger value="premium">Premium</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+
             {/* Property Type Selector */}
             <div className="space-y-2">
               <h4 className="font-medium text-sm text-gray-700">
@@ -382,6 +411,51 @@ export default function PropertySearch({
               </div>
               <div className="text-sm text-gray-500">
                 {formatPrice(minPrice)} - {formatPrice(maxPrice)}
+              </div>
+            </div>
+
+            {/* Area Range */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-sm text-gray-700">Area Range (sq ft)</h4>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={areaRange[0]}
+                  onChange={(e) => setAreaRange([Number(e.target.value), areaRange[1]])}
+                  className="w-full"
+                />
+                <span className="text-gray-500">-</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={areaRange[1]}
+                  onChange={(e) => setAreaRange([areaRange[0], Number(e.target.value)])}
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            {/* Amenities */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-sm text-gray-700">Amenities</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {['Parking', 'Swimming Pool', 'Garden', 'Security', 'Gym', 'Power Backup'].map((amenity) => (
+                  <div key={amenity} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`amenity-${amenity}`}
+                      checked={amenities.includes(amenity)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setAmenities([...amenities, amenity]);
+                        } else {
+                          setAmenities(amenities.filter(a => a !== amenity));
+                        }
+                      }}
+                    />
+                    <Label htmlFor={`amenity-${amenity}`}>{amenity}</Label>
+                  </div>
+                ))}
               </div>
             </div>
 
