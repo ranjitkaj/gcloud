@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/input-otp';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 
 interface OTPVerificationProps {
   userId: number;
@@ -66,11 +66,12 @@ export default function OTPVerification({
       console.log("Type:", type);
       console.log("=============================");
 
-      // Make the API request with detailed error handling
+      // Make the API request with detailed error handling - only include otp and type
+      // (server gets userId from authenticated session)
       const response = await apiRequest(
         'POST',
         '/api/verify-otp',
-        { userId, otp, type }
+        { otp, type }
       );
       
       // Parse the response data
@@ -90,13 +91,20 @@ export default function OTPVerification({
           variant: 'default'
         });
         
-        // Update user data if the verification returns updated user info
+        // Update user data in the cache if the verification returns updated user info
         if (data.user) {
           console.log("Updated user information:", data.user);
+          
+          // Update the cached user data with the verified information
+          queryClient.setQueryData(['/api/user'], data.user);
+          // Force a refetch to get the latest user data from the server
+          queryClient.invalidateQueries({ queryKey: ['/api/user'] });
         }
         
         // Notify parent component about successful verification
         setTimeout(() => {
+          // Refresh the page to reflect verification status changes
+          window.location.href = '/';
           onVerified();
         }, 1500);
       } else {
@@ -135,13 +143,11 @@ export default function OTPVerification({
       console.log("Recipient:", getRecipientContact());
       console.log("==========================");
       
+      // Only pass type, userId comes from the authenticated session
       const response = await apiRequest(
         'POST',
         '/api/resend-otp',
-        { 
-          userId: userId, // Explicitly include userId
-          type: type 
-        }
+        { type }
       );
 
       // Parse the response data with detailed logging

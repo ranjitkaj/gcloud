@@ -12,9 +12,9 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (credentials: { username: string; password: string }) => Promise<void>;
-  logout: () => Promise<void>;
-  signup: (data: any) => Promise<void>;
+  login: (credentials: { username: string; password: string }) => Promise<any>;
+  logout: () => Promise<any>;
+  signup: (data: any) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
