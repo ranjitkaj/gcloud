@@ -27,7 +27,7 @@ async function hashPassword(password: string) {
 }
 
 // Function to send OTP via email
-async function sendEmailOTP(email: string, otp: string) {
+async function sendEmailOTP(email: string, otp: string, userId?: number) {
   try {
     // Log the OTP for testing purposes in the console
     console.log(`EMAIL OTP for ${email}: ${otp}`);
@@ -41,22 +41,42 @@ async function sendEmailOTP(email: string, otp: string) {
       }
     });
     
+    // Create a direct verification link if userId is provided
+    const verificationLink = userId 
+      ? `${process.env.HOST_URL || 'http://localhost:5000'}/api/verify-email?token=${otp}&userId=${userId}`
+      : null;
+    
+    console.log(`Generated verification link: ${verificationLink || 'No link (userId not provided)'}`);
+    
     // Email content
     const mailOptions = {
       from: '"Real Estate Platform" <srinathballa20@gmail.com>',
       to: email,
-      subject: 'Your Real Estate Platform Verification Code',
-      text: `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
+      subject: 'Your Real Estate Platform Verification',
+      text: verificationLink 
+        ? `Click this link to verify your email: ${verificationLink}\n\nAlternatively, you can use this code: ${otp}. This code will expire in 10 minutes.`
+        : `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
           <h2 style="color: #4a6ee0;">Real Estate Platform - Verification</h2>
           <p>Hello,</p>
-          <p>Thank you for registering with our platform. Please use the verification code below to complete your account setup:</p>
+          <p>Thank you for registering with our platform.</p>
+          ${verificationLink ? `
+          <p><strong>Click the button below to verify your email:</strong></p>
+          <div style="text-align: center; margin: 25px 0;">
+            <a href="${verificationLink}" style="background-color: #4a6ee0; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+              Verify My Email
+            </a>
+          </div>
+          <p>Or copy and paste this URL into your browser:</p>
+          <p style="background-color: #f7f7f7; padding: 10px; word-break: break-all; font-size: 12px;">${verificationLink}</p>
+          <p>Alternatively, you can use the verification code below:</p>
+          ` : `<p>Please use the verification code below to complete your account setup:</p>`}
           <div style="background-color: #f7f7f7; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0; border-radius: 4px;">
             ${otp}
           </div>
-          <p>This code will expire in <strong>10 minutes</strong>.</p>
-          <p>If you didn't request this code, please ignore this email.</p>
+          <p>This verification will expire in <strong>10 minutes</strong>.</p>
+          <p>If you didn't request this verification, please ignore this email.</p>
           <p>Best regards,<br>The Real Estate Team</p>
         </div>
       `,
@@ -94,10 +114,10 @@ async function sendWhatsAppOTP(phone: string, otp: string) {
 }
 
 // Generic function to send OTP based on method
-async function sendOTP(recipient: string, otp: string, method: 'email' | 'whatsapp' | 'sms') {
+async function sendOTP(recipient: string, otp: string, method: 'email' | 'whatsapp' | 'sms', userId?: number) {
   switch (method) {
     case 'email':
-      return sendEmailOTP(recipient, otp);
+      return sendEmailOTP(recipient, otp, userId);
     case 'whatsapp':
       return sendWhatsAppOTP(recipient, otp);
     case 'sms':
@@ -192,11 +212,11 @@ export function setupAuth(app: Express) {
       
       // Send OTP via the selected method
       if (verificationMethod === "email") {
-        await sendOTP(email, otp, "email");
+        await sendOTP(email, otp, "email", user.id);
       } else if (verificationMethod === "whatsapp" && phone) {
-        await sendOTP(phone, otp, "whatsapp");
+        await sendOTP(phone, otp, "whatsapp", user.id);
       } else if (verificationMethod === "sms" && phone) {
-        await sendOTP(phone, otp, "sms");
+        await sendOTP(phone, otp, "sms", user.id);
       } else {
         return res.status(400).json({ 
           message: `${verificationMethod} verification requires a valid phone number` 
@@ -385,6 +405,45 @@ export function setupAuth(app: Express) {
         message: "Failed to resend OTP",
         error: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // Direct email verification endpoint (for email link clicks)
+  app.get("/api/verify-email", async (req, res) => {
+    try {
+      const { token, userId } = req.query;
+      
+      console.log("Email verification link clicked:", { token, userId });
+      
+      if (!token || !userId) {
+        console.log("Missing verification token or userId in URL");
+        return res.redirect('/#/auth?verificationError=missing_params');
+      }
+      
+      // Verify the OTP token directly from URL parameters
+      const isValid = await storage.verifyOtp(Number(userId), token as string, 'email');
+      
+      if (!isValid) {
+        console.log(`Email verification failed for user ${userId}: Invalid or expired token`);
+        return res.redirect('/#/auth?verificationError=invalid_token');
+      }
+      
+      console.log(`Email verification successful for user ${userId}`);
+      
+      // Update user verification status
+      const updatedUser = await storage.verifyUserEmail(Number(userId));
+      
+      if (!updatedUser) {
+        console.log(`Failed to update verification status for user ${userId}`);
+        return res.redirect('/#/auth?verificationError=update_failed');
+      }
+      
+      // Redirect to authentication page with success message
+      return res.redirect('/#/auth?verificationSuccess=true');
+      
+    } catch (error) {
+      console.error('Direct email verification error:', error);
+      return res.redirect('/#/auth?verificationError=server_error');
     }
   });
 
