@@ -44,7 +44,7 @@ export default function PropertySearch({
   const [categoryTab, setCategoryTab] = useState('all'); // Added state for category tabs
   const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
   const [amenities, setAmenities] = useState([]); // Added state for amenities
-  const [showLocationClear, setShowLocationClear] = useState(false); // Added state for clear button
+
 
   // Hook to manage URL location
   const [_, setUrlLocation] = useLocation();
@@ -101,17 +101,13 @@ export default function PropertySearch({
 
             if (city) {
               setLocationValue(city);
-              setShowLocationClear(true); // Update showLocationClear state
             } else {
               setLocationValue(
                 `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
               );
-              setShowLocationClear(true); // Update showLocationClear state
-
             }
           } else {
             setLocationValue(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-            setShowLocationClear(true); // Update showLocationClear state
           }
         } catch (error) {
           console.error("Error getting location:", error);
@@ -139,10 +135,7 @@ export default function PropertySearch({
     const maxPriceParam = params.get("maxPrice");
     const bedroomsParam = params.get("minBedrooms");
 
-    if (cityParam) {
-      setLocationValue(cityParam);
-      setShowLocationClear(true); // Update showLocationClear state
-    }
+    if (cityParam) setLocationValue(cityParam);
     if (typeParam && propertyTypes.includes(typeParam as any)) {
       setPropertyType(typeParam as (typeof propertyTypes)[number]);
     }
@@ -218,32 +211,13 @@ export default function PropertySearch({
                 <MapPin className="h-5 w-5 text-gray-400" />
               </div>
               <div className="flex">
-                <div className="relative flex-1">
                 <Input
                   type="text"
                   placeholder="Enter location, neighborhood, or address"
-                  className="pl-10 pr-8 py-6 text-gray-700 bg-gray-50 rounded-r-none w-full"
+                  className="pl-10 pr-4 py-6 text-gray-700 bg-gray-50 rounded-r-none"
                   value={locationValue}
-                  onChange={(e) => {
-                    setLocationValue(e.target.value);
-                    setShowLocationClear(e.target.value !== "");
-                  }}
+                  onChange={(e) => setLocationValue(e.target.value)}
                 />
-                {showLocationClear && (
-                  <button
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    onClick={() => {
-                      setLocationValue("");
-                      setShowLocationClear(false);
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                )}
-              </div>
                 <Button
                   variant="outline"
                   className="rounded-l-none border-l-0 px-3 py-6 bg-gray-50 hover:bg-gray-100"
