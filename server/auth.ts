@@ -80,7 +80,7 @@ async function sendEmailOTP(email: string, otp: string) {
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`EMAIL: ${email}`);
-    console.log(`SENDING STATUS: Failed - ${error.message}`);
+    console.log(`SENDING STATUS: Failed - ${error instanceof Error ? error.message : 'Unknown error'}`);
     console.log(`=========================================`);
     return true; // Still return true to not block the flow
   }
@@ -317,13 +317,17 @@ export function setupAuth(app: Express) {
         sendResult = await sendOTP(recipient, otp, "email");
         
         // In development, include the OTP in the response for testing
-        const response = { 
+        const response: { 
+          success: boolean; 
+          message: string;
+          otp?: string;
+        } = { 
           success: true, 
           message: "OTP sent to your email",
         };
         
         if (process.env.NODE_ENV !== 'production') {
-          response['otp'] = otp; // Only include OTP in development
+          response.otp = otp; // Only include OTP in development
         }
         
         res.json(response);
@@ -332,13 +336,17 @@ export function setupAuth(app: Express) {
         console.log(`Sending OTP via WhatsApp to: ${recipient}`);
         sendResult = await sendOTP(recipient, otp, "whatsapp");
         
-        const response = { 
+        const response: { 
+          success: boolean; 
+          message: string;
+          otp?: string;
+        } = { 
           success: true, 
           message: "OTP sent to your WhatsApp" 
         };
         
         if (process.env.NODE_ENV !== 'production') {
-          response['otp'] = otp;
+          response.otp = otp;
         }
         
         res.json(response);
@@ -347,13 +355,17 @@ export function setupAuth(app: Express) {
         console.log(`Sending OTP via SMS to: ${recipient}`);
         sendResult = await sendOTP(recipient, otp, "sms");
         
-        const response = { 
+        const response: { 
+          success: boolean; 
+          message: string;
+          otp?: string;
+        } = { 
           success: true, 
           message: "OTP sent to your phone" 
         };
         
         if (process.env.NODE_ENV !== 'production') {
-          response['otp'] = otp;
+          response.otp = otp;
         }
         
         res.json(response);
