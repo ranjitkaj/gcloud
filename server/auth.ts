@@ -352,11 +352,23 @@ export function setupAuth(app: Express) {
 
   app.post("/api/resend-otp", async (req, res) => {
     try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "User not authenticated" });
+      // Allow both authenticated and non-authenticated requests with userId
+      let userId: number;
+      
+      if (req.isAuthenticated()) {
+        // For authenticated users, get ID from session
+        userId = req.user.id;
+      } else if (req.body.userId) {
+        // For non-authenticated users, get ID from request body
+        userId = parseInt(req.body.userId, 10);
+        
+        if (isNaN(userId)) {
+          return res.status(400).json({ message: "Invalid user ID" });
+        }
+      } else {
+        return res.status(401).json({ message: "User not authenticated and no userId provided" });
       }
 
-      const userId = req.user.id;
       const { type = "email" } = req.body;
 
       if (!verificationMethods.includes(type)) {
@@ -384,15 +396,22 @@ export function setupAuth(app: Express) {
         expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
       });
       
+      // Get user details - needed since we might not have req.user
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
       // Send OTP via the selected method
       if (type === "email") {
-        await sendOTP(req.user.email, otp, "email");
+        await sendOTP(user.email, otp, "email");
         res.json({ success: true, message: "OTP sent to your email" });
-      } else if (type === "whatsapp" && req.user.phone) {
-        await sendOTP(req.user.phone, otp, "whatsapp");
+      } else if (type === "whatsapp" && user.phone) {
+        await sendOTP(user.phone, otp, "whatsapp");
         res.json({ success: true, message: "OTP sent to your WhatsApp" });
-      } else if (type === "sms" && req.user.phone) {
-        await sendOTP(req.user.phone, otp, "sms");
+      } else if (type === "sms" && user.phone) {
+        await sendOTP(user.phone, otp, "sms");
         res.json({ success: true, message: "OTP sent to your phone" });
       } else {
         return res.status(400).json({ 
@@ -410,11 +429,23 @@ export function setupAuth(app: Express) {
 
   app.post("/api/verify-otp", async (req, res) => {
     try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "User not authenticated" });
+      // Allow both authenticated and non-authenticated requests with userId
+      let userId: number;
+      
+      if (req.isAuthenticated()) {
+        // For authenticated users, get ID from session
+        userId = req.user.id;
+      } else if (req.body.userId) {
+        // For non-authenticated users, get ID from request body
+        userId = parseInt(req.body.userId, 10);
+        
+        if (isNaN(userId)) {
+          return res.status(400).json({ message: "Invalid user ID" });
+        }
+      } else {
+        return res.status(401).json({ message: "User not authenticated and no userId provided" });
       }
 
-      const userId = req.user.id;
       const { otp, type = "email" } = req.body;
 
       if (!otp) {
