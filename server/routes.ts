@@ -558,15 +558,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Handle the case when expiresAt is a string or Date object
+      // Prepare property data with proper formatting for database
       const propertyDataToInsert = {
         ...req.body,
         userId: req.user.id,
       };
       
-      // If expiresAt is present as a Date object, convert it to proper format
-      if (propertyDataToInsert.expiresAt && typeof propertyDataToInsert.expiresAt === 'object') {
-        propertyDataToInsert.expiresAt = new Date(propertyDataToInsert.expiresAt);
+      // Ensure arrays are properly formatted
+      if (!Array.isArray(propertyDataToInsert.amenities)) {
+        propertyDataToInsert.amenities = [];
+      }
+      
+      if (!Array.isArray(propertyDataToInsert.imageUrls)) {
+        propertyDataToInsert.imageUrls = [];
+      }
+      
+      if (!Array.isArray(propertyDataToInsert.videoUrls)) {
+        propertyDataToInsert.videoUrls = [];
+      }
+      
+      // If expiresAt is present as a string or Date object, convert it properly
+      if (propertyDataToInsert.expiresAt) {
+        if (typeof propertyDataToInsert.expiresAt === 'string') {
+          propertyDataToInsert.expiresAt = new Date(propertyDataToInsert.expiresAt);
+        } else if (typeof propertyDataToInsert.expiresAt === 'object') {
+          // Already a Date object, keep it
+        } else {
+          // Invalid format, set to null
+          propertyDataToInsert.expiresAt = null;
+        }
+      } else {
+        propertyDataToInsert.expiresAt = null;
+      }
+      
+      // Ensure numeric fields are properly converted
+      if (typeof propertyDataToInsert.price === 'string') {
+        propertyDataToInsert.price = parseInt(propertyDataToInsert.price) || 0;
+      }
+      
+      if (typeof propertyDataToInsert.area === 'string') {
+        propertyDataToInsert.area = parseInt(propertyDataToInsert.area) || 0;
+      }
+      
+      if (propertyDataToInsert.discountedPrice !== null && typeof propertyDataToInsert.discountedPrice === 'string') {
+        propertyDataToInsert.discountedPrice = parseInt(propertyDataToInsert.discountedPrice) || null;
       }
       
       console.log("Property data to parse:", JSON.stringify(propertyDataToInsert, null, 2));

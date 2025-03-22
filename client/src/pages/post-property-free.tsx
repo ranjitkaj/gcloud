@@ -334,41 +334,94 @@ export default function PostPropertyFree() {
       return;
     }
     
-    // Create a complete property object with form data and images
-    const price = parseInt(data.price);
-    const propertyData = {
-      title: data.title,
-      description: data.description,
-      propertyType: data.propertyType,
-      rentOrSale: data.forSaleOrRent.toLowerCase(), // Using schema field name
-      price: price,
-      // If urgency sale, calculate 25% discount (only for premium users)
-      discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
-      location: data.location,
-      city: data.location.split(',').pop()?.trim() || '',
-      address: data.location, // Using location as address too
-      pincode: data.pincode,
-      bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
-      bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
-      area: parseInt(data.area),
-      imageUrls: propertyImages.map(img => img.preview || ''),
-      videoUrls: [], // Empty array for now
-      amenities: [], // Empty array for now
-      contactName: data.contactName,
-      contactPhone: data.contactPhone,
-      subscriptionLevel: user.subscriptionLevel || 'free',
-      status: 'available', // Setting initial status
-      approvalStatus: 'pending',
-      // Set expiry date for urgency listings (7 days from now)
-      expiresAt: data.isUrgentSale ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
-      userId: user.id // Required field
-    };
-    
-    console.log("Property data submitted:", propertyData);
-    setFormSubmitted(true);
-    
-    // Submit to the backend
-    createPropertyMutation.mutate(propertyData);
+    try {
+      // Create a complete property object with form data and images
+      const price = parseInt(data.price);
+      
+      // Additional validations
+      if (isNaN(price)) {
+        toast({
+          title: "Invalid Price",
+          description: "Please enter a valid price",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.area && isNaN(parseInt(data.area))) {
+        toast({
+          title: "Invalid Area",
+          description: "Please enter a valid area",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Basic city extraction from location
+      let city = '';
+      if (data.location && data.location.includes(',')) {
+        const parts = data.location.split(',');
+        // Use the last non-empty part as the city
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const trimmedPart = parts[i].trim();
+          if (trimmedPart) {
+            city = trimmedPart;
+            break;
+          }
+        }
+      }
+      
+      // Convert bedrooms and bathrooms to numbers or null
+      const bedrooms = data.bedrooms ? parseInt(data.bedrooms) : null;
+      const bathrooms = data.bathrooms ? parseInt(data.bathrooms) : null;
+      
+      // Prepare expiry date for urgency sales
+      const expiresAt = data.isUrgentSale 
+        ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) 
+        : null;
+      
+      const propertyData = {
+        title: data.title,
+        description: data.description,
+        propertyType: data.propertyType,
+        rentOrSale: data.forSaleOrRent.toLowerCase(), // Using schema field name
+        price: price,
+        // If urgency sale, calculate 25% discount (only for premium users)
+        discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
+        location: data.location,
+        city: city || 'Unknown',
+        address: data.location, // Using location as address too
+        pincode: data.pincode,
+        bedrooms: bedrooms,
+        bathrooms: bathrooms,
+        area: parseInt(data.area),
+        imageUrls: propertyImages.map(img => img.preview || ''),
+        videoUrls: [], // Empty array for now
+        amenities: [], // Empty array for now
+        contactName: data.contactName,
+        contactPhone: data.contactPhone,
+        subscriptionLevel: user.subscriptionLevel || 'free',
+        status: 'available', // Setting initial status
+        approvalStatus: 'pending',
+        // Set expiry date for urgency listings (7 days from now)
+        expiresAt: expiresAt,
+        userId: user.id // Required field
+      };
+      
+      console.log("Property data submitted:", JSON.stringify(propertyData, null, 2));
+      setFormSubmitted(true);
+      
+      // Submit to the backend
+      createPropertyMutation.mutate(propertyData);
+    } catch (error) {
+      console.error("Error preparing property data:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while preparing your property data. Please try again.",
+        variant: "destructive",
+      });
+      setFormSubmitted(false);
+    }
   };
 
   // How it works steps

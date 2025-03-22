@@ -260,6 +260,10 @@ export const insertPropertySchema = createInsertSchema(properties).omit({
 }).extend({
   // Add expiresAt field with custom validation that accepts date or null
   expiresAt: z.date().nullable().optional(),
+  // Ensure array fields are properly validated
+  amenities: z.array(z.string()).default([]),
+  imageUrls: z.array(z.string()).default([]),
+  videoUrls: z.array(z.string()).default([]),
 });
 
 export const insertInquirySchema = createInsertSchema(inquiries).omit({
