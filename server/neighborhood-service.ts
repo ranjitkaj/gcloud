@@ -54,6 +54,56 @@ interface NeighborhoodInsight {
 
 // Sample neighborhood data
 const neighborhoodData: Record<string, NeighborhoodInsight> = {
+  "manikonda": {
+    neighborhood: "Manikonda",
+    city: "Hyderabad",
+    data: {
+      safetyScore: 7.8,
+      walkabilityScore: 7.2,
+      publicTransportScore: 6.9,
+      amenitiesScore: 8.3,
+      schoolsScore: 8.0,
+      parks: {
+        count: 3,
+        list: ["Manikonda Central Park", "Shaikpet Lake Garden", "Silicon Valley Park"]
+      },
+      hospitals: {
+        count: 4,
+        list: ["Continental Hospitals", "Care Hospitals", "Citizens Hospital", "KIMS Hospitals"]
+      },
+      schools: {
+        count: 6,
+        list: ["Delhi Public School", "Oakridge International School", "Chirec International School", "Meridian School", "Suchitra Academy", "Phoenix Greens International School"]
+      },
+      restaurants: {
+        count: 55,
+        topRated: ["Paradise Biryani", "Cream Stone", "Tabla", "Nautanki Gali", "Chinese Pavilion"]
+      },
+      shopping: {
+        count: 25,
+        major: ["Q City Mall", "Manikonda Market", "Shaikpet Main Road", "Lumbini Avenue"]
+      },
+      transitOptions: {
+        busRoutes: ["5K", "5M", "10H", "222"],
+        metroStations: ["Raidurg Metro Station"],
+        trainStations: []
+      },
+      demographics: {
+        population: 120000,
+        medianAge: 30,
+        medianIncome: 1200000
+      },
+      realEstateMetrics: {
+        medianHomePrice: 11000000,
+        pricePerSqFt: 7500,
+        avgRent: 28000,
+        inventoryCount: 280,
+        daysOnMarket: 48,
+        yearOverYearAppreciation: 8.2
+      }
+    },
+    description: "Manikonda is a fast-growing residential area located near HITEC City in Hyderabad. It's positioned strategically close to major IT hubs like Gachibowli and Financial District, making it a preferred location for IT professionals. The area has seen rapid development with numerous gated communities, apartments, and villas. It offers good connectivity to other parts of the city and features a mix of modern amenities while maintaining relatively affordable housing compared to neighboring areas."
+  },
   "indiranagar": {
     neighborhood: "Indiranagar",
     city: "Bangalore",
