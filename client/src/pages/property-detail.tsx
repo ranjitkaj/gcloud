@@ -322,9 +322,18 @@ export default function PropertyDetail() {
   }
 
   // Use the first image from imageUrls array or a default image
+  const [imageLoadError, setImageLoadError] = useState<Record<number, boolean>>({});
+  
   const images = property.imageUrls?.length 
     ? property.imageUrls 
     : ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'];
+    
+  const handleImageError = (index: number) => {
+    setImageLoadError(prev => ({
+      ...prev,
+      [index]: true
+    }));
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -383,8 +392,16 @@ export default function PropertyDetail() {
                           <img 
                             src={image} 
                             alt={`${property.title} - ${index + 1}`} 
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            onError={(e) => {
+                              handleImageError(index);
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                            }}
                           />
+                          {index === activeImageIndex && (
+                            <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          )}
                         </div>
                       </CarouselItem>
                     ))}
@@ -441,6 +458,11 @@ export default function PropertyDetail() {
                       src={image} 
                       alt={`${property.title} - ${index + 1}`} 
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        handleImageError(index);
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                      }}
                     />
                   </div>
                 ))}
@@ -469,6 +491,11 @@ export default function PropertyDetail() {
                           src={image} 
                           alt={`${property.title} - ${index + 1}`} 
                           className="max-w-full max-h-full object-contain"
+                          onError={(e) => {
+                            handleImageError(index);
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                          }}
                         />
                       </CarouselItem>
                     ))}
