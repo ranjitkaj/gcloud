@@ -27,31 +27,40 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-export async function apiRequest(
-  url: string,
-  method: string = 'GET',
-  data?: any | undefined,
-): Promise<Response> {
+export async function apiRequest<T = any>(
+  options: {
+    url: string, 
+    method?: string, 
+    body?: any,
+    headers?: Record<string, string>
+  }
+): Promise<T> {
+  const { url, method = 'GET', body, headers = {} } = options;
   console.log(`API Request: ${url} ${method}`);
   
   try {
     // Fix: Ensure method is properly formatted
     const validMethod = method.toUpperCase();
     
-    const options: RequestInit = {
+    const requestOptions: RequestInit = {
       method: validMethod,
       headers: {
-        ...(data ? { "Content-Type": "application/json" } : {})
+        ...(body && !(body instanceof FormData) ? { "Content-Type": "application/json" } : {}),
+        ...headers
       },
       credentials: "include",
     };
     
     // Only include body for POST, PUT, PATCH methods
-    if (data && ['POST', 'PUT', 'PATCH'].includes(validMethod)) {
-      options.body = JSON.stringify(data);
+    if (body && ['POST', 'PUT', 'PATCH'].includes(validMethod)) {
+      if (body instanceof FormData) {
+        requestOptions.body = body;
+      } else {
+        requestOptions.body = JSON.stringify(body);
+      }
     }
     
-    const res = await fetch(url, options);
+    const res = await fetch(url, requestOptions);
     
     if (res.status === 401) {
       console.warn('Authentication required for operation:', url);
@@ -62,7 +71,14 @@ export async function apiRequest(
     }
     
     await throwIfResNotOk(res);
-    return res;
+
+    // Parse JSON response if content type is JSON
+    const contentType = res.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await res.json() as T;
+    }
+
+    return await res.text() as unknown as T;
   } catch (error) {
     console.error(`API Request Error (${url} ${method}):`, error);
     throw error;

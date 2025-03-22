@@ -139,16 +139,14 @@ export default function FileUpload({
       formData.append('files', file);
       
       // Upload file to server
-      const response = await apiRequest({
+      const responseData = await apiRequest<{ files: string[] }>({
         url: '/api/upload/property-images',
         method: 'POST',
         body: formData,
         headers: {} // Let the browser set the correct content-type for form data
       });
       
-      const responseData = response as { files: string[] };
-      
-      if (response && response.files && response.files.length > 0) {
+      if (responseData && responseData.files && responseData.files.length > 0) {
         // Update file with server URL
         setFiles(prevFiles => 
           prevFiles.map(f => 
@@ -158,7 +156,7 @@ export default function FileUpload({
                   uploadProgress: 100, 
                   status: 'success',
                   // Add server URL to the file object
-                  serverUrl: response.files[0]
+                  serverUrl: responseData.files[0]
                 } 
               : f
           )

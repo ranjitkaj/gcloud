@@ -29,7 +29,10 @@ export default function NotificationCenter() {
     queryKey: ['/api/notifications'],
     queryFn: () => {
       if (!user) return Promise.resolve([]);
-      return apiRequest('/api/notifications', 'GET')
+      return apiRequest({
+        url: '/api/notifications',
+        method: 'GET'
+      })
         .then(res => res.json())
         .then(data => Array.isArray(data) ? data : []);
     },
