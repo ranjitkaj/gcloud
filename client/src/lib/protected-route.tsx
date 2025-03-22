@@ -17,6 +17,11 @@ export function ProtectedRoute() {
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
+  
+  // Check if user verification is required but not completed
+  if (user.needsVerification === true || (user.emailVerified === false && user.role !== 'admin')) {
+    return <Navigate to="/auth?verification=required" replace />;
+  }
 
   return <Outlet />;
 }

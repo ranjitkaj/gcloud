@@ -141,8 +141,20 @@ export default function AuthPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
-      navigate("/");
+    const urlParams = new URLSearchParams(window.location.search);
+    const verificationRequired = urlParams.get('verification') === 'required';
+    
+    // Handle verification required parameter - show verification UI if needed
+    if (verificationRequired && user) {
+      setRegisteredUser(user);
+      setSelectedVerificationMethod("email");
+      setRegistrationState("verification");
+      return;
+    }
+    
+    // If user is already logged in and doesn't need verification, redirect to dashboard
+    if (user && !verificationRequired && !user.needsVerification) {
+      navigate('/');
     }
   }, [user, navigate]);
 

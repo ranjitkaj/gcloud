@@ -8,6 +8,10 @@ interface User {
   email: string;
   role: string;
   subscriptionLevel?: "free" | "paid" | "premium";
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
+  needsVerification?: boolean;
+  phone?: string;
 }
 
 interface AuthContextType {
