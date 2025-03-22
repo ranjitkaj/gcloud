@@ -186,15 +186,17 @@ export default function CombinedVerification({
         }, 1500);
       } else {
         setVerificationStatus("error");
+        setOtp(""); // Clear the OTP field on error
         toast({
           title: "Verification failed",
-          description: data.message || "Invalid or expired code",
+          description: data.message || "Invalid or expired code. Please try again.",
           variant: "destructive",
         });
       }
     } catch (error) {
       console.error("OTP verification error:", error);
       setVerificationStatus("error");
+      setOtp(""); // Clear the OTP field on error
       toast({
         title: "Verification failed",
         description: error instanceof Error ? error.message : "An error occurred during verification. Please try again.",
