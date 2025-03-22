@@ -15,11 +15,23 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
       <Card className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
         <div className="relative h-48">
           {property.imageUrls && property.imageUrls.length > 0 ? (
-            <img 
-              src={property.imageUrls[0]} 
-              alt={property.title} 
-              className="w-full h-full object-cover"
-            />
+            <div className="h-full w-full overflow-hidden">
+              <img 
+                src={property.imageUrls[0]} 
+                alt={property.title} 
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                onError={(e) => {
+                  // Fallback to placeholder on error
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                }}
+              />
+              {property.imageUrls.length > 1 && (
+                <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-md">
+                  +{property.imageUrls.length} photos
+                </div>
+              )}
+            </div>
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
               <Building2 className="h-12 w-12 text-gray-400" />
@@ -29,6 +41,18 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
           {property.premium && (
             <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-500 text-white">
               Premium
+            </Badge>
+          )}
+          
+          {property.featured && (
+            <Badge variant="secondary" className="absolute top-2 left-2 bg-blue-500 text-white">
+              Featured
+            </Badge>
+          )}
+          
+          {property.discountedPrice && (
+            <Badge variant="secondary" className="absolute bottom-2 left-2 bg-red-500 text-white">
+              {Math.round((1 - property.discountedPrice / property.price) * 100)}% Off
             </Badge>
           )}
         </div>
