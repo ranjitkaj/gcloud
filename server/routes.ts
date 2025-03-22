@@ -24,6 +24,12 @@ import {
   sendRoleNotifications
 } from './notification-service';
 import { getNeighborhoodInsightsHandler } from './neighborhood-service';
+import { 
+  handleContactForm,
+  handleFeedbackForm,
+  handleReportProblem,
+  handlePropertyInterest 
+} from './email-service';
 
 
 // Helper to catch errors in async routes
@@ -1149,6 +1155,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }));
   
   // Get neighborhood insights
+  // =========== Email Service Routes ===========
+  
+  // Contact form endpoint
+  app.post("/api/contact", asyncHandler(handleContactForm));
+  
+  // Feedback form endpoint
+  app.post("/api/feedback", asyncHandler(handleFeedbackForm));
+  
+  // Report problem endpoint
+  app.post("/api/report-problem", asyncHandler(handleReportProblem));
+  
+  // Property interest endpoint
+  app.post("/api/property-interest", asyncHandler(handlePropertyInterest));
+
+  // =========== Neighborhood Insights Route ===========
   app.get("/api/neighborhood/insights", asyncHandler(getNeighborhoodInsightsHandler));
 
   // Mark an inquiry as read
