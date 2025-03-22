@@ -87,23 +87,7 @@ export default function OTPVerification({
       setIsVerifying(true);
       setVerificationStatus("idle");
 
-      // First ensure the user is authenticated
-      const userCheckResponse = await fetch('/api/user', {
-        credentials: 'include'
-      });
-      
-      if (!userCheckResponse.ok) {
-        // If user is not authenticated, try logging in first
-        toast({
-          title: "Authentication required",
-          description: "Please login before verifying OTP",
-          variant: "destructive",
-        });
-        setVerificationStatus("error");
-        return;
-      }
-
-      // Now that we know the user is authenticated, verify the OTP
+      // Now verify the OTP - credentials should be automatically included
       const response = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: {
@@ -113,10 +97,26 @@ export default function OTPVerification({
         body: JSON.stringify({ otp, type }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Verification failed");
+      }
+      
       const data = await response.json();
 
       if (data.success) {
         setVerificationStatus("success");
+        
+        // First refresh the user data to ensure we have updated verification status
+        try {
+          await fetch('/api/user', { 
+            method: 'GET',
+            credentials: 'include'
+          });
+        } catch (refreshError) {
+          console.warn("Failed to refresh user data:", refreshError);
+        }
+        
         toast({
           title: "Verification successful",
           description: `Your ${type} has been verified.`,
@@ -140,7 +140,7 @@ export default function OTPVerification({
       setVerificationStatus("error");
       toast({
         title: "Verification failed",
-        description: "An error occurred during verification. Please try again.",
+        description: error instanceof Error ? error.message : "An error occurred during verification. Please try again.",
         variant: "destructive",
       });
     } finally {
