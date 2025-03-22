@@ -546,51 +546,56 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
   };
 
   // State to track which mobile menu category is expanded
-  const [expandedMobileCategory, setExpandedMobileCategory] = useState<string | null>(null);
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState<
+    string | null
+  >(null);
 
   // Toggle mobile category expansion
   const toggleMobileCategory = (category: string) => {
-    setExpandedMobileCategory(expandedMobileCategory === category ? null : category);
+    setExpandedMobileCategory(
+      expandedMobileCategory === category ? null : category,
+    );
   };
 
   if (isMobile) {
     // Enhanced mobile view with expandable sections
     return (
-      <div className="flex flex-col space-y-1 pt-2 pb-3  overflow-y-auto overscroll-contain rounded-md" 
-      style={{
-        WebkitOverflowScrolling: 'touch',
-        scrollbarWidth: 'thin',
-        scrollbarColor: '#CBD5E0 #F7FAFC',
-         position: 'relative',
-          height: '75vh',
+      <div
+        className="flex flex-col space-y-1 pt-2 pb-3  overflow-y-auto overscroll-contain rounded-md"
+        style={{
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "thin",
+          scrollbarColor: "#CBD5E0 #F7FAFC",
+          position: "relative",
+          height: "75vh",
           // maxWidth: '90vw',
           // margin: '0 auto'
-      }}
+        }}
       >
         {/* Buyer Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
-          <div 
+          <div
             className="flex justify-between items-center py-2 px-1 cursor-pointer"
-            onClick={() => toggleMobileCategory('buyer')}
+            onClick={() => toggleMobileCategory("buyer")}
           >
             <span className="text-gray-800 font-medium">Buyer</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${expandedMobileCategory === 'buyer' ? 'rotate-180' : ''}`}
+              className={`transition-transform ${expandedMobileCategory === "buyer" ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
 
-          {expandedMobileCategory === 'buyer' && (
+          {expandedMobileCategory === "buyer" && (
             <div className="pl-3 mt-1 space-y-2 animate-slideDown">
               {buyMenuItems.map((item) => (
                 <Link
@@ -616,28 +621,28 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         {/* Agents Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
-          <div 
+          <div
             className="flex justify-between items-center py-2 px-1 cursor-pointer"
-            onClick={() => toggleMobileCategory('agents')}
+            onClick={() => toggleMobileCategory("agents")}
           >
             <span className="text-gray-800 font-medium">Agents</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${expandedMobileCategory === 'agents' ? 'rotate-180' : ''}`}
+              className={`transition-transform ${expandedMobileCategory === "agents" ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
 
-          {expandedMobileCategory === 'agents' && (
+          {expandedMobileCategory === "agents" && (
             <div className="pl-3 mt-1 space-y-2 animate-slideDown">
               {agentMenuItems.map((item) => (
                 <Link
@@ -655,28 +660,28 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         {/* Companies Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
-          <div 
+          <div
             className="flex justify-between items-center py-2 px-1 cursor-pointer"
-            onClick={() => toggleMobileCategory('companies')}
+            onClick={() => toggleMobileCategory("companies")}
           >
             <span className="text-gray-800 font-medium">Companies</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${expandedMobileCategory === 'companies' ? 'rotate-180' : ''}`}
+              className={`transition-transform ${expandedMobileCategory === "companies" ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
 
-          {expandedMobileCategory === 'companies' && (
+          {expandedMobileCategory === "companies" && (
             <div className="pl-3 mt-1 space-y-2 animate-slideDown">
               {companyMenuItems.map((item) => (
                 <Link
@@ -694,28 +699,28 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         {/* Projects Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
-          <div 
+          <div
             className="flex justify-between items-center py-2 px-1 cursor-pointer"
-            onClick={() => toggleMobileCategory('projects')}
+            onClick={() => toggleMobileCategory("projects")}
           >
             <span className="text-gray-800 font-medium">Projects</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${expandedMobileCategory === 'projects' ? 'rotate-180' : ''}`}
+              className={`transition-transform ${expandedMobileCategory === "projects" ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
 
-          {expandedMobileCategory === 'projects' && (
+          {expandedMobileCategory === "projects" && (
             <div className="pl-3 mt-1 space-y-2 animate-slideDown">
               {projectMenuItems.map((item) => (
                 <Link
@@ -733,30 +738,28 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         {/* Resources Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
-          <div 
+          <div
             className="flex justify-between items-center py-2 px-1 cursor-pointer"
-            onClick={() => toggleMobileCategory('resources')}
+            onClick={() => toggleMobileCategory("resources")}
           >
             <span className="text-gray-800 font-medium">Resources</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${expandedMobileCategory === 'resources' ? 'rotate-180' : ''}`}
+              className={`transition-transform ${expandedMobileCategory === "resources" ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
 
-
-
-          {expandedMobileCategory === 'resources' && (
+          {expandedMobileCategory === "resources" && (
             <div className="pl-3 mt-1 space-y-2 animate-slideDown">
               {resourceMenuItems.map((item) => (
                 <Link
@@ -768,8 +771,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {item.title}
                 </Link>
               ))}
-            </div>        
-
+            </div>
           )}
         </div>
         {/* Post Property FREE Section */}
@@ -777,15 +779,15 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           to="/add-property"
           className="flex items-center py-2 px-1 border-b border-gray-100 mb-1 text-gray-800 font-medium"
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="20" 
-            height="20" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
             className="mr-2 text-primary"
           >
@@ -797,42 +799,42 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         {/* Support Options Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
-          <div 
+          <div
             className="flex justify-between items-center py-2 px-1 cursor-pointer"
-            onClick={() => toggleMobileCategory('support')}
+            onClick={() => toggleMobileCategory("support")}
           >
             <span className="text-gray-800 font-medium">Support Options</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${expandedMobileCategory === 'support' ? 'rotate-180' : ''}`}
+              className={`transition-transform ${expandedMobileCategory === "support" ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
 
-          {expandedMobileCategory === 'support' && (
+          {expandedMobileCategory === "support" && (
             <div className="pl-3 mt-1 space-y-2 animate-slideDown">
               <Link
                 to="/contact"
                 className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
               >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="18" 
-                  height="18" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                   className="mr-2"
                 >
@@ -844,15 +846,15 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 to="/support"
                 className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
               >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="18" 
-                  height="18" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                   className="mr-2"
                 >
@@ -864,15 +866,15 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                 to="/faq"
                 className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
               >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="18" 
-                  height="18" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                   className="mr-2"
                 >
@@ -884,7 +886,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               </Link>
             </div>
           )}
-      </div>
+        </div>
       </div>
     );
   }
