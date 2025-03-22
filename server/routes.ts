@@ -225,7 +225,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all properties
   app.get("/api/properties", asyncHandler(async (req, res) => {
     const properties = await storage.getAllProperties();
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+    
+    res.json(filteredProperties);
   }));
 
   // Get top properties by category
@@ -338,7 +347,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/properties/featured", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 6;
     const properties = await storage.getFeaturedProperties(limit);
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+      
+    res.json(filteredProperties);
   }));
 
   // Get premium properties
