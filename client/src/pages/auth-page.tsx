@@ -298,13 +298,14 @@ export default function AuthPage() {
       description: "Your account has been verified successfully.",
     });
 
-    // Try to create recommendation notification
+    // Try to create recommendation notification with credentials included
     try {
       await fetch("/api/notifications/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Include credentials for authentication
         body: JSON.stringify({
           title: "Welcome to Urgent Sales",
           message:
@@ -314,16 +315,43 @@ export default function AuthPage() {
         }),
       });
 
-      // Refresh user data to ensure we have the latest verification status
+      // Improved user verification flow:
+      // 1. Get fresh user data with credentials
       try {
-        const userResponse = await fetch("/api/user");
+        const userResponse = await fetch("/api/user", {
+          credentials: "include"
+        });
+        
         if (userResponse.ok) {
           const userData = await userResponse.json();
+          console.log("User verification completed, received user data:", userData);
+          
+          // Save the user data in localStorage for persistence
+          if (userData && userData.id) {
+            localStorage.setItem("auth_user", JSON.stringify(userData));
+          }
+          
+          // If we had registration data, ensure a clean login state
+          if (registeredUser && registeredUser.username) {
+            try {
+              // Re-login to refresh the session with the verified account
+              await login({
+                username: registeredUser.username,
+                password: registerForm.getValues().password
+              });
+            } catch (loginError) {
+              console.error("Failed to refresh login after verification:", loginError);
+            }
+          }
+          
           // Force reload the page to update all components with the new user state
           setTimeout(() => {
             window.location.href = "/";
           }, 1000);
           return;
+        } else {
+          console.warn("User verification completed but couldn't fetch user data:", 
+            await userResponse.text());
         }
       } catch (refreshError) {
         console.error("Error refreshing user data:", refreshError);
