@@ -26,6 +26,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   phone: text("phone"),
   role: text("role").notNull().default("buyer"),
+  subscriptionLevel: text("subscription_level").default("free"),
   avatar: text("avatar"),
   bio: text("bio"),
   verified: boolean("verified").default(false),

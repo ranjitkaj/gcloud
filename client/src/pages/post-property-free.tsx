@@ -260,6 +260,17 @@ export default function PostPropertyFree() {
       return;
     }
     
+    // Premium-only check for urgency sales (double security check)
+    if (data.isUrgentSale && user.subscriptionLevel !== 'premium') {
+      toast({
+        title: "Premium Feature",
+        description: "Urgency Sale is only available for premium members. Please upgrade your subscription.",
+        variant: "destructive",
+      });
+      setCurrentStep(1); // Go back to first step
+      return;
+    }
+    
     // Create a complete property object with form data and images
     const price = parseInt(data.price);
     const propertyData = {
@@ -268,7 +279,7 @@ export default function PostPropertyFree() {
       propertyType: data.propertyType,
       rentOrSale: data.forSaleOrRent.toLowerCase(), // Using schema field name
       price: price,
-      // If urgency sale, calculate 25% discount
+      // If urgency sale, calculate 25% discount (only for premium users)
       discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
       location: data.location,
       city: data.location.split(',').pop()?.trim() || '',
@@ -282,12 +293,12 @@ export default function PostPropertyFree() {
       amenities: [], // Empty array for now
       contactName: data.contactName,
       contactPhone: data.contactPhone,
-      subscriptionLevel: 'free',
+      subscriptionLevel: user.subscriptionLevel || 'free',
       status: 'available', // Setting initial status
       approvalStatus: 'pending',
       // Set expiry date for urgency listings (7 days from now)
       expiresAt: data.isUrgentSale ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null,
-      userId: user?.id // Required field
+      userId: user.id // Required field
     };
     
     console.log("Property data submitted:", propertyData);
@@ -489,8 +500,20 @@ export default function PostPropertyFree() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(checked) => {
+                            // Check if the user has a premium subscription
+                            if (checked && (!user || user.subscriptionLevel !== 'premium')) {
+                              toast({
+                                title: "Premium Feature",
+                                description: "Urgency Sale is only available for premium members. Please upgrade your subscription.",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            field.onChange(checked);
+                          }}
                           id="urgent-sale"
+                          disabled={!user || user.subscriptionLevel !== 'premium'}
                         />
                         <label
                           htmlFor="urgent-sale"
@@ -498,6 +521,11 @@ export default function PostPropertyFree() {
                         >
                           <Clock className="h-4 w-4 text-red-600 mr-1" />
                           <span className="text-red-600 font-semibold">List as Urgency Sale (25% discount)</span>
+                          {!user || user.subscriptionLevel !== 'premium' ? (
+                            <span className="ml-2 bg-amber-100 text-amber-800 text-xs py-0.5 px-2 rounded-full">
+                              Premium Only
+                            </span>
+                          ) : null}
                         </label>
                       </div>
                     </FormControl>
@@ -505,6 +533,11 @@ export default function PostPropertyFree() {
                       Listing as an urgency sale will apply a 25% discount to your property price. 
                       Your property will be featured in the Urgency Sales section for 7 days, 
                       attracting serious buyers looking for time-limited deals.
+                      {!user || user.subscriptionLevel !== 'premium' ? (
+                        <div className="mt-2 text-amber-700 bg-amber-50 p-2 rounded border border-amber-200">
+                          This feature is exclusive to premium members. <a href="/subscription" className="text-primary underline">Upgrade your account</a> to access urgency sales.
+                        </div>
+                      ) : null}
                     </div>
                   </FormItem>
                 )}
