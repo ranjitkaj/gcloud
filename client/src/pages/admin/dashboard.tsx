@@ -17,14 +17,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 import { Property, User } from '@shared/schema';
 import { AlertCircle, CheckCircle2, XCircle, Search, Database, Eye } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [_, navigate] = useLocation();
   const [rejectionReason, setRejectionReason] = React.useState<{ [key: number]: string }>({});
   const [searchTerm, setSearchTerm] = React.useState('');
 

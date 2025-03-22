@@ -256,7 +256,6 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
 export const insertPropertySchema = createInsertSchema(properties).omit({
   id: true,
   createdAt: true,
-  expiresAt: true,
 });
 
 export const insertInquirySchema = createInsertSchema(inquiries).omit({
