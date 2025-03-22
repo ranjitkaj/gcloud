@@ -497,12 +497,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }));
 
   // Get properties by rent or sale
+  // Get properties by category (rent/sale)
   app.get("/api/properties/category/:rentOrSale", asyncHandler(async (req, res) => {
     const properties = await storage.getPropertiesByRentOrSale(req.params.rentOrSale);
     res.json(properties);
   }));
+  
+  // Get properties pending approval (admin only)
+  app.get("/api/properties/pending", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
+    const properties = await storage.getAllProperties();
+    // Filter for pending approval properties only
+    const pendingProperties = properties.filter(property => property.approvalStatus === 'pending');
+    res.json(pendingProperties);
+  }));
 
-  // Get property by ID
+  // Get all properties with approval status (admin only)
+  app.get("/api/properties/all", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
+    const properties = await storage.getAllProperties();
+    res.json(properties);
+  }));
+
+  // Get property by ID - must be after the more specific routes
   app.get("/api/properties/:id", asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
