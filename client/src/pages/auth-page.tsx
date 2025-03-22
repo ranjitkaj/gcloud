@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
-import { Loader2, Check, MapPin } from "lucide-react";
+import { Loader2, Check, MapPin, ArrowLeft, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +23,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // Import our custom verification components
 import OTPVerification from "@/components/auth/otp-verification";
@@ -61,8 +69,36 @@ const registerSchema = insertUserSchema
     path: ["confirmPassword"],
   });
 
+// Create schema for forgot password
+const forgotPasswordSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address" }),
+});
+
+const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/[0-9]/, { message: "Password must contain at least one number" })
+    .regex(/[^A-Za-z0-9]/, {
+      message: "Password must contain at least one special character",
+    }),
+  confirmPassword: z.string(),
+  resetToken: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
 type LoginFormValues = z.infer<typeof loginSchema>;
 type RegisterFormValues = z.infer<typeof registerSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
@@ -112,7 +148,31 @@ export default function AuthPage() {
 
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
+  const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
+  const [isResetPasswordLoading, setIsResetPasswordLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  
+  // Forgot password states
+  const [showForgotPasswordDialog, setShowForgotPasswordDialog] = useState(false);
+  const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState(false);
+  const [resetToken, setResetToken] = useState<string | null>(null);
+  
+  // Create forms for forgot password functionality
+  const forgotPasswordForm = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+  
+  const resetPasswordForm = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+      resetToken: "",
+    },
+  });
 
   const onLoginSubmit = async (data: LoginFormValues) => {
     try {
@@ -282,6 +342,95 @@ export default function AuthPage() {
     setRegistrationState("form");
     setRegisteredUser(null);
   };
+  
+  // Handle forgot password request
+  const onForgotPasswordSubmit = async (data: ForgotPasswordFormValues) => {
+    try {
+      setIsForgotPasswordLoading(true);
+      setAuthError(null);
+      
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: data.email }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to process request");
+      }
+      
+      // Show success message
+      setForgotPasswordSuccess(true);
+      
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Please check your email for instructions to reset your password.",
+      });
+      
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      setAuthError("Failed to process your request. Please try again.");
+      
+      toast({
+        title: "Request Failed",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsForgotPasswordLoading(false);
+    }
+  };
+  
+  // Handle password reset with token
+  const onResetPasswordSubmit = async (data: ResetPasswordFormValues) => {
+    try {
+      setIsResetPasswordLoading(true);
+      setAuthError(null);
+      
+      // The token should come from URL param, but we're using the form for simplicity
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resetToken: data.resetToken,
+          newPassword: data.password,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to reset password");
+      }
+      
+      toast({
+        title: "Password Reset Successful",
+        description: "Your password has been reset. You can now log in with your new password.",
+      });
+      
+      // Close the dialog and clear form
+      setShowForgotPasswordDialog(false);
+      forgotPasswordForm.reset();
+      resetPasswordForm.reset();
+      setForgotPasswordSuccess(false);
+      
+    } catch (error) {
+      console.error("Reset password error:", error);
+      setAuthError("Failed to reset password. Please try again.");
+      
+      toast({
+        title: "Reset Failed",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResetPasswordLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -404,12 +553,13 @@ export default function AuthPage() {
                                 Remember me
                               </Label>
                             </div>
-                            <a
-                              href="#"
+                            <button
+                              type="button"
+                              onClick={() => setShowForgotPasswordDialog(true)}
                               className="text-sm text-primary hover:underline"
                             >
                               Forgot password?
-                            </a>
+                            </button>
                           </div>
 
                           <Button
@@ -672,6 +822,139 @@ export default function AuthPage() {
         </div>
       </main>
       <Footer />
+      
+      {/* Forgot Password Dialog */}
+      <Dialog open={showForgotPasswordDialog} onOpenChange={setShowForgotPasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {forgotPasswordSuccess && resetToken
+                ? "Reset Your Password"
+                : forgotPasswordSuccess
+                ? "Check Your Email"
+                : "Forgot Password"}
+            </DialogTitle>
+            <DialogDescription>
+              {forgotPasswordSuccess && resetToken
+                ? "Enter your new password below."
+                : forgotPasswordSuccess
+                ? "We've sent a password reset link to your email. Please check your inbox and spam folder."
+                : "Enter your email address and we'll send you a link to reset your password."}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {forgotPasswordSuccess && resetToken ? (
+            // Reset password form (when token is available)
+            <form onSubmit={resetPasswordForm.handleSubmit(onResetPasswordSubmit)} className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="reset-password">New Password</Label>
+                <Input
+                  id="reset-password"
+                  type="password"
+                  {...resetPasswordForm.register("password")}
+                  placeholder="Enter your new password"
+                />
+                {resetPasswordForm.formState.errors.password && (
+                  <p className="text-sm text-red-500">
+                    {resetPasswordForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="reset-confirmPassword">Confirm Password</Label>
+                <Input
+                  id="reset-confirmPassword"
+                  type="password"
+                  {...resetPasswordForm.register("confirmPassword")}
+                  placeholder="Confirm your new password"
+                />
+                {resetPasswordForm.formState.errors.confirmPassword && (
+                  <p className="text-sm text-red-500">
+                    {resetPasswordForm.formState.errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+              
+              <Input
+                type="hidden"
+                {...resetPasswordForm.register("resetToken")}
+                value={resetToken || ""}
+              />
+              
+              <DialogFooter className="sm:justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setForgotPasswordSuccess(false);
+                    setResetToken(null);
+                  }}
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+                <Button type="submit" disabled={isResetPasswordLoading}>
+                  {isResetPasswordLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Resetting...
+                    </>
+                  ) : (
+                    "Reset Password"
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : forgotPasswordSuccess ? (
+            // Success message (when email is sent)
+            <div className="py-6 flex flex-col items-center justify-center">
+              <Mail className="h-16 w-16 text-primary mb-4" />
+              <p className="text-center mb-6">
+                If an account exists with this email, you'll receive a password reset link shortly.
+              </p>
+              <Button 
+                onClick={() => setShowForgotPasswordDialog(false)}
+                className="w-full"
+              >
+                Close
+              </Button>
+            </div>
+          ) : (
+            // Initial forgot password form
+            <form onSubmit={forgotPasswordForm.handleSubmit(onForgotPasswordSubmit)} className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="forgot-email">Email</Label>
+                <Input
+                  id="forgot-email"
+                  type="email"
+                  {...forgotPasswordForm.register("email")}
+                  placeholder="Enter your email address"
+                />
+                {forgotPasswordForm.formState.errors.email && (
+                  <p className="text-sm text-red-500">
+                    {forgotPasswordForm.formState.errors.email.message}
+                  </p>
+                )}
+              </div>
+              
+              <DialogFooter>
+                <Button type="submit" disabled={isForgotPasswordLoading}>
+                  {isForgotPasswordLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Reset Link"
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+      
     </div>
   );
 }

@@ -83,6 +83,14 @@ export class DbStorage implements IStorage {
       .returning();
     return result[0];
   }
+  
+  async updateUserPassword(id: number, newPassword: string): Promise<User | undefined> {
+    const result = await db.update(users)
+      .set({ password: newPassword })
+      .where(eq(users.id, id))
+      .returning();
+    return result[0];
+  }
 
   // OTP operations
   async createOtp(otp: InsertOtp): Promise<Otp> {
