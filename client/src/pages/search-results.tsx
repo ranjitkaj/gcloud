@@ -115,24 +115,20 @@ export default function SearchResults() {
       queryParams.set('limit', '12'); // 12 properties per page
       
       try {
-        const response = await apiRequest({
-          url: `/api/properties/search?${queryParams.toString()}`,
-          method: 'GET',
-          headers: {},
-          body: null,
-        });
+        const response = await apiRequest(
+          `/api/properties/search?${queryParams.toString()}`, 
+          'GET'
+        );
         
         // Parse the response properly
         const data = response as unknown as { properties: Property[], total: number };
         
         // If no properties found, try to fetch featured properties
         if (!data || !data.properties || data.properties.length === 0) {
-          const featured = await apiRequest({
-            url: '/api/properties/featured',
-            method: 'GET',
-            headers: {},
-            body: null,
-          });
+          const featured = await apiRequest(
+            '/api/properties/featured',
+            'GET'
+          );
           
           // Convert array response to the expected format
           return { 
