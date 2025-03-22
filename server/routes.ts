@@ -619,20 +619,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // =========== Property Approval Routes ===========
 
-  // Get properties pending approval (admin only)
-  app.get("/api/properties/pending", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
-    const properties = await storage.getAllProperties();
-    // Filter for pending approval properties only
-    const pendingProperties = properties.filter(property => property.approvalStatus === 'pending');
-    res.json(pendingProperties);
-  }));
-
-  // Get all properties with approval status (admin only)
-  app.get("/api/properties/all", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
-    const properties = await storage.getAllProperties();
-    res.json(properties);
-  }));
-
   // Approve a property (admin only)
   app.post("/api/properties/:id/approve", isAuthenticated, hasRole(['admin']), asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
