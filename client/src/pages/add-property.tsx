@@ -161,6 +161,9 @@ export default function AddProperty() {
   });
 
   const onSubmit = (data: FormValues) => {
+    // Prevent duplicate submissions
+    if (isSubmitting) return;
+    
     setIsSubmitting(true);
 
     // Process uploaded files
@@ -192,6 +195,9 @@ export default function AddProperty() {
     } else if (subscriptionLevel === "paid") {
       processedData.featured = true;
     }
+
+    // Set property to pending approval by default
+    processedData.approvalStatus = 'pending';
 
     propertyMutation.mutate(processedData);
   };
