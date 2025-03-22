@@ -31,8 +31,8 @@ export default function PropertySearch({
   const [propertyType, setPropertyType] = useState<
     (typeof propertyTypes)[number] | ""
   >("");
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(10000000);
+  const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
+  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [saleType, setSaleType] = useState<"all" | "Sale" | "Agent">("all");
@@ -41,14 +41,14 @@ export default function PropertySearch({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
   const [categoryTab, setCategoryTab] = useState("all"); // Added state for category tabs
-  const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
+  const [minArea, setMinArea] = useState<number | undefined>(undefined); // Min area 
+  const [maxArea, setMaxArea] = useState<number | undefined>(undefined); // Max area
   const [amenities, setAmenities] = useState<string[]>([]); // Added state for amenities
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
     propertyType: "",
     saleType: "",
     priceRange: [0, 10000000],
-    areaRange: [0, 10000],
     amenities: [] as string[],
     bedrooms: 0,
     location: "",
@@ -73,7 +73,8 @@ export default function PropertySearch({
   const [_, setUrlLocation] = useLocation();
 
   // Toggle filter menu function
-  const toggleFilter = () => {
+  const toggleFilter = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Stop click from bubbling
     setIsFilterOpen(!isFilterOpen);
   };
 
@@ -184,11 +185,11 @@ export default function PropertySearch({
     }
 
     if (showAdvanced) {
-      if (minPrice > 0) {
+      if (minPrice !== undefined && minPrice > 0) {
         queryParams.append("minPrice", minPrice.toString());
       }
 
-      if (maxPrice < 10000000) {
+      if (maxPrice !== undefined) {
         queryParams.append("maxPrice", maxPrice.toString());
       }
 
@@ -208,7 +209,9 @@ export default function PropertySearch({
   };
 
   // Function to format price for display
-  const formatPrice = (value: number) => {
+  const formatPrice = (value: number | undefined) => {
+    if (!value) return "Any";
+    
     if (value >= 10000000) {
       return `₹${(value / 10000000).toFixed(1)} Cr`;
     } else if (value >= 100000) {
@@ -343,6 +346,7 @@ export default function PropertySearch({
       {isFilterOpen && (
         <div
           ref={filterMenuRef}
+          onClick={(e) => e.stopPropagation()} // Prevent clicks from bubbling
           className="absolute left-0 right-0 top-full mt-2 bg-white rounded-lg shadow-lg p-5 z-50 transition-all duration-200 ease-in-out"
           style={{
             opacity: 1,
@@ -404,18 +408,26 @@ export default function PropertySearch({
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
-                  placeholder="Min"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  placeholder="Min Price"
+                  value={minPrice === undefined ? "" : minPrice}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setMinPrice(val);
+                  }}
                   className="w-full"
+                  onClick={(e) => e.stopPropagation()}
                 />
                 <span className="text-gray-500">-</span>
                 <Input
                   type="number"
-                  placeholder="Max"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  placeholder="Max Price"
+                  value={maxPrice === undefined ? "" : maxPrice}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setMaxPrice(val);
+                  }}
                   className="w-full"
+                  onClick={(e) => e.stopPropagation()}
                 />
               </div>
               <div className="text-sm text-gray-500">
@@ -431,22 +443,26 @@ export default function PropertySearch({
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
-                  placeholder="Min"
-                  value={areaRange[0]}
-                  onChange={(e) =>
-                    setAreaRange([Number(e.target.value), areaRange[1]])
-                  }
+                  placeholder="Min Area"
+                  value={minArea === undefined ? "" : minArea}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setMinArea(val);
+                  }}
                   className="w-full"
+                  onClick={(e) => e.stopPropagation()}
                 />
                 <span className="text-gray-500">-</span>
                 <Input
                   type="number"
-                  placeholder="Max"
-                  value={areaRange[1]}
-                  onChange={(e) =>
-                    setAreaRange([areaRange[0], Number(e.target.value)])
-                  }
+                  placeholder="Max Area"
+                  value={maxArea === undefined ? "" : maxArea}
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? undefined : Number(e.target.value);
+                    setMaxArea(val);
+                  }}
                   className="w-full"
+                  onClick={(e) => e.stopPropagation()}
                 />
               </div>
             </div>
