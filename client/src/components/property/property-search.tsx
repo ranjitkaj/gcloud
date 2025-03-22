@@ -42,7 +42,7 @@ export default function PropertySearch({
   const filterMenuRef = useRef<HTMLDivElement>(null);
   const [categoryTab, setCategoryTab] = useState("all"); // Added state for category tabs
   const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
-  const [amenities, setAmenities] = useState([]); // Added state for amenities
+  const [amenities, setAmenities] = useState<string[]>([]); // Added state for amenities
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
     propertyType: "",
@@ -318,7 +318,7 @@ export default function PropertySearch({
               <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
                 <SelectValue placeholder="Property Type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper">
                 {propertyTypes.map((type) => (
                   <SelectItem key={type} value={type}>
                     {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -390,7 +390,7 @@ export default function PropertySearch({
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectItem value="all">All Properties</SelectItem>
                   <SelectItem value="Sale">For Sale</SelectItem>
                   <SelectItem value="Agent">For Agent</SelectItem>
@@ -491,7 +491,7 @@ export default function PropertySearch({
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Any" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectItem value="0">Any</SelectItem>
                   <SelectItem value="1">1+</SelectItem>
                   <SelectItem value="2">2+</SelectItem>
