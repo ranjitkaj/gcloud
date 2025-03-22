@@ -574,11 +574,11 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
 
         {/* Sell Properties - Direct Link */}
         <NavigationMenuItem>
-          <Link href="/post-property-free">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink asChild>
+            <Link href="/post-property-free" className={navigationMenuTriggerStyle()}>
               Sell
-            </NavigationMenuLink>
-          </Link>
+            </Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
 
         {/* Agents */}
