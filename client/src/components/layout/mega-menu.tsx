@@ -382,6 +382,25 @@ function PropertyMiniCard({ property }: { property: Property }) {
           alt={property.title}
           className="w-full h-full object-cover"
         />
+        {property.approvalStatus && (
+          <Badge 
+            variant="secondary" 
+            className={`absolute top-2 transform -translate-x-1/2 left-1/2 z-10 text-xs ${
+              property.approvalStatus === 'approved' 
+                ? 'bg-green-500 text-white' 
+                : property.approvalStatus === 'pending' 
+                ? 'bg-yellow-500 text-white'
+                : 'bg-red-500 text-white'
+            }`}
+          >
+            {property.approvalStatus === 'approved' 
+              ? '✓ Approved' 
+              : property.approvalStatus === 'pending' 
+              ? 'Pending' 
+              : 'Rejected'}
+          </Badge>
+        )}
+        
         {property.premium && (
           <Badge
             variant="secondary"

@@ -38,6 +38,26 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
             </div>
           )}
 
+          {/* Approval status badge - displays at the top center */}
+          {property.approvalStatus && (
+            <Badge 
+              variant="secondary" 
+              className={`absolute top-2 transform -translate-x-1/2 left-1/2 z-10 ${
+                property.approvalStatus === 'approved' 
+                  ? 'bg-green-500 text-white' 
+                  : property.approvalStatus === 'pending' 
+                  ? 'bg-yellow-500 text-white'
+                  : 'bg-red-500 text-white'
+              }`}
+            >
+              {property.approvalStatus === 'approved' 
+                ? '✓ Approved' 
+                : property.approvalStatus === 'pending' 
+                ? 'Pending' 
+                : 'Rejected'}
+            </Badge>
+          )}
+
           {property.premium && (
             <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-500 text-white">
               Premium
