@@ -3,6 +3,8 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./db";
 import { setupAuth } from "./auth";
+import path from "path";
+import fs from "fs";
 
 const app = express();
 app.use(express.json());
@@ -52,6 +54,15 @@ app.use((req, res, next) => {
 
   // Set up authentication
   setupAuth(app);
+  
+  // Create uploads directory if it doesn't exist
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  
+  // Serve static files from uploads directory
+  app.use('/uploads', express.static(uploadsDir));
   
   // Register API routes
   const server = await registerRoutes(app);

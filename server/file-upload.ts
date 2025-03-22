@@ -3,9 +3,15 @@ import * as fs from 'fs-extra';
 import * as crypto from 'crypto';
 import multer from 'multer';
 import { Request } from 'express';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// ES modules fix for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Create uploads directory if it doesn't exist
-const UPLOAD_DIR = path.join(__dirname, '..', 'public', 'uploads');
+const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
 fs.ensureDirSync(UPLOAD_DIR);
 
 // Configure multer storage
@@ -69,7 +75,9 @@ export function getFileUrl(filename: string, userId: number): string {
 // Function to delete a file
 export async function deleteFile(fileUrl: string): Promise<boolean> {
   try {
-    const filePath = path.join(__dirname, '..', 'public', fileUrl);
+    // Strip the leading slash if it exists
+    const cleanUrl = fileUrl.startsWith('/') ? fileUrl.substring(1) : fileUrl;
+    const filePath = path.join(process.cwd(), cleanUrl);
     
     // Check if file exists
     if (await fs.pathExists(filePath)) {

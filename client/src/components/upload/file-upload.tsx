@@ -15,6 +15,7 @@ import {
   Loader2 
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export interface FileWithPreview extends File {
   preview?: string;
@@ -22,6 +23,7 @@ export interface FileWithPreview extends File {
   uploadProgress?: number;
   status: 'uploading' | 'success' | 'error';
   errorMessage?: string;
+  serverUrl?: string; // Path to file on server after upload
 }
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
@@ -120,33 +122,65 @@ export default function FileUpload({
     onFilesSelected(updatedFiles);
   };
 
-  // Simulate file upload progress
-  const simulateUploadProgress = (file: FileWithPreview) => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 15) + 5;
+  // Upload file to server
+  const simulateUploadProgress = async (file: FileWithPreview) => {
+    try {
+      // Start with initial progress
+      setFiles(prevFiles => 
+        prevFiles.map(f => 
+          f.id === file.id 
+            ? { ...f, uploadProgress: 10 } 
+            : f
+        )
+      );
       
-      if (progress >= 100) {
-        clearInterval(interval);
-        progress = 100;
-        
+      // Create form data
+      const formData = new FormData();
+      formData.append('files', file);
+      
+      // Upload file to server
+      const response = await apiRequest({
+        url: '/api/upload/property-images',
+        method: 'POST',
+        body: formData,
+        headers: {} // Let the browser set the correct content-type for form data
+      });
+      
+      const responseData = response as { files: string[] };
+      
+      if (response && response.files && response.files.length > 0) {
+        // Update file with server URL
         setFiles(prevFiles => 
           prevFiles.map(f => 
             f.id === file.id 
-              ? { ...f, uploadProgress: 100, status: 'success' } 
+              ? { 
+                  ...f, 
+                  uploadProgress: 100, 
+                  status: 'success',
+                  // Add server URL to the file object
+                  serverUrl: response.files[0]
+                } 
               : f
           )
         );
       } else {
-        setFiles(prevFiles => 
-          prevFiles.map(f => 
-            f.id === file.id 
-              ? { ...f, uploadProgress: progress } 
-              : f
-          )
-        );
+        throw new Error('No file URLs returned from server');
       }
-    }, 300);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setFiles(prevFiles => 
+        prevFiles.map(f => 
+          f.id === file.id 
+            ? { 
+                ...f, 
+                uploadProgress: 0, 
+                status: 'error',
+                errorMessage: error instanceof Error ? error.message : 'Upload failed'
+              } 
+            : f
+        )
+      );
+    }
   };
 
   // Handle file input change

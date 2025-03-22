@@ -30,6 +30,7 @@ import {
   handleReportProblem,
   handlePropertyInterest 
 } from './email-service';
+import { upload, getFileUrl } from './file-upload';
 
 
 // Helper to catch errors in async routes
@@ -541,6 +542,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     res.json(property);
+  }));
+
+  // Upload property images
+  app.post('/api/upload/property-images', isAuthenticated, upload.array('files', 25), asyncHandler(async (req, res) => {
+    try {
+      if (!req.files || (Array.isArray(req.files) && req.files.length === 0)) {
+        return res.status(400).json({ message: 'No files uploaded' });
+      }
+
+      // Generate URLs for the uploaded files
+      const fileUrls = Array.isArray(req.files) 
+        ? req.files.map(file => getFileUrl(file.filename, req.user.id))
+        : [getFileUrl(req.files.filename, req.user.id)];
+
+      res.status(201).json({
+        message: 'Files uploaded successfully',
+        files: fileUrls
+      });
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      res.status(500).json({ message: 'File upload failed', error: error.message });
+    }
   }));
 
   // Create a property
