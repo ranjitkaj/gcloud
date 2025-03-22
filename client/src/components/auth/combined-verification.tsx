@@ -85,14 +85,17 @@ export default function CombinedVerification({
     try {
       setIsSendingOtp(true);
 
-      // Send OTP via the selected method
+      // Send OTP via the selected method - include userId for handling non-authenticated requests
       const response = await fetch('/api/resend-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ type: verificationMethod }),
+        body: JSON.stringify({ 
+          type: verificationMethod,
+          userId: userId // Include userId to identify the user even without authentication
+        }),
       });
 
       if (!response.ok) {
@@ -144,14 +147,18 @@ export default function CombinedVerification({
       setIsVerifying(true);
       setVerificationStatus("idle");
 
-      // Verify the OTP
+      // Verify the OTP - include userId for handling non-authenticated requests
       const response = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ otp, type: verificationMethod }),
+        body: JSON.stringify({ 
+          otp, 
+          type: verificationMethod,
+          userId: userId // Include userId to identify the user even without authentication
+        }),
       });
 
       if (!response.ok) {
@@ -212,14 +219,17 @@ export default function CombinedVerification({
     try {
       setIsResending(true);
 
-      // Resend the OTP
+      // Resend the OTP - include userId for handling non-authenticated requests
       const response = await fetch('/api/resend-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ type: verificationMethod }),
+        body: JSON.stringify({ 
+          type: verificationMethod,
+          userId: userId // Include userId to identify the user even without authentication
+        }),
       });
 
       if (!response.ok) {
