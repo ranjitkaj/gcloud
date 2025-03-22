@@ -291,7 +291,10 @@ export function setupAuth(app: Express) {
         res.status(201).json({
           ...userWithoutPassword,
           otpSent: true,
-          verificationMethod
+          verificationMethod,
+          needsVerification: true,
+          emailVerified: false,
+          phoneVerified: false
         });
       });
     } catch (error) {
@@ -331,7 +334,9 @@ export function setupAuth(app: Express) {
         // Include verification status in the response
         return res.status(200).json({
           ...userWithoutPassword,
-          needsVerification: !user.emailVerified
+          needsVerification: !user.emailVerified,
+          emailVerified: !!user.emailVerified,
+          phoneVerified: !!user.phoneVerified
         });
       });
     })(req, res, next);
@@ -347,7 +352,14 @@ export function setupAuth(app: Express) {
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const { password, ...userWithoutPassword } = req.user;
-    res.json(userWithoutPassword);
+    
+    // Include verification status in the response for consistency
+    res.json({
+      ...userWithoutPassword,
+      needsVerification: !req.user.emailVerified,
+      emailVerified: !!req.user.emailVerified,
+      phoneVerified: !!req.user.phoneVerified
+    });
   });
 
   app.post("/api/resend-otp", async (req, res) => {
@@ -453,7 +465,12 @@ export function setupAuth(app: Express) {
       res.json({ 
         success: true, 
         message: `${type} verification successful`,
-        user: userWithoutPassword
+        user: {
+          ...userWithoutPassword,
+          needsVerification: !updatedUser.emailVerified,
+          emailVerified: !!updatedUser.emailVerified,
+          phoneVerified: !!updatedUser.phoneVerified
+        }
       });
     } catch (error) {
       console.error('OTP verification error:', error);
