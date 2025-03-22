@@ -363,7 +363,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/properties/premium", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 6;
     const properties = await storage.getPremiumProperties(limit);
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+    
+    res.json(filteredProperties);
   }));
 
   // Get urgent properties (properties with discounted prices)
@@ -395,7 +404,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/properties/recent", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
     const properties = await storage.getRecentProperties(limit);
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+      
+    res.json(filteredProperties);
   }));
 
   // Search properties
@@ -444,10 +462,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // Get properties based on search criteria
     const properties = await storage.searchProperties(query);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
 
     // Apply sorting if needed
     if (sortBy) {
-      let sortedProperties = [...properties];
+      let sortedProperties = [...filteredProperties];
 
       switch (sortBy) {
         case 'price_low':
@@ -497,35 +523,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const startIndex = (pageNum - 1) * limitNum;
     const endIndex = startIndex + limitNum;
 
-    const paginatedProperties = properties.slice(startIndex, endIndex);
+    const paginatedProperties = filteredProperties.slice(startIndex, endIndex);
 
     // Return paginated results
     res.json({
       properties: paginatedProperties,
-      total: properties.length,
+      total: filteredProperties.length,
       page: pageNum,
       limit: limitNum,
-      totalPages: Math.ceil(properties.length / limitNum)
+      totalPages: Math.ceil(filteredProperties.length / limitNum)
     });
   }));
 
   // Get properties by type
   app.get("/api/properties/type/:type", asyncHandler(async (req, res) => {
     const properties = await storage.getPropertiesByType(req.params.type);
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+    
+    res.json(filteredProperties);
   }));
 
   // Get properties by status
   app.get("/api/properties/status/:status", asyncHandler(async (req, res) => {
     const properties = await storage.getPropertiesByStatus(req.params.status);
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+    
+    res.json(filteredProperties);
   }));
 
   // Get properties by rent or sale
   // Get properties by category (rent/sale)
   app.get("/api/properties/category/:rentOrSale", asyncHandler(async (req, res) => {
     const properties = await storage.getPropertiesByRentOrSale(req.params.rentOrSale);
-    res.json(properties);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+    
+    res.json(filteredProperties);
   }));
   
   // Get properties pending approval (admin only)
