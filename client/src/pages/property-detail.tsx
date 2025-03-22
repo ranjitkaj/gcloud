@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'wouter';
 import { Property } from '@shared/schema';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
