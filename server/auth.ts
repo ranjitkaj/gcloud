@@ -80,7 +80,7 @@ async function sendEmailOTP(email: string, otp: string) {
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`EMAIL: ${email}`);
-    console.log(`SENDING STATUS: Failed - ${error.message}`);
+    console.log(`SENDING STATUS: Failed - ${(error as Error).message}`);
     console.log(`=========================================`);
     return true; // Still return true to not block the flow
   }
@@ -88,9 +88,21 @@ async function sendEmailOTP(email: string, otp: string) {
 
 // Function to send OTP via WhatsApp
 async function sendWhatsAppOTP(phone: string, otp: string) {
-  // TODO: Implement actual WhatsApp messaging with a service like Twilio
-  console.log(`WHATSAPP OTP for ${phone}: ${otp}`);
-  return true;
+  try {
+    // TODO: Implement actual WhatsApp messaging with a service like Twilio
+    console.log(`=========================================`);
+    console.log(`WHATSAPP OTP for ${phone}: ${otp}`);
+    console.log(`=========================================`);
+    return true;
+  } catch (error) {
+    console.error('Error sending WhatsApp message:', error);
+    console.log(`=========================================`);
+    console.log(`OTP VERIFICATION CODE: ${otp}`);
+    console.log(`PHONE: ${phone}`);
+    console.log(`SENDING STATUS: Failed - ${(error as Error).message}`);
+    console.log(`=========================================`);
+    return true; // Still return true to not block the flow
+  }
 }
 
 // Generic function to send OTP based on method
@@ -114,6 +126,35 @@ async function comparePasswords(supplied: string, stored: string) {
   const hashedBuf = Buffer.from(hashed, "hex");
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
   return timingSafeEqual(hashedBuf, suppliedBuf);
+}
+
+// Function to generate a secure reset token
+async function generateResetToken() {
+  return randomBytes(32).toString('hex');
+}
+
+// Function to send password reset email
+async function sendPasswordResetEmail(email: string, resetToken: string) {
+  try {
+    // TODO: Implement actual email sending with a service like Nodemailer
+    const resetUrl = `${process.env.SITE_URL || 'http://localhost:5000'}/reset-password?token=${resetToken}`;
+    
+    console.log(`=========================================`);
+    console.log(`PASSWORD RESET EMAIL`);
+    console.log(`TO: ${email}`);
+    console.log(`RESET LINK: ${resetUrl}`);
+    console.log(`TOKEN: ${resetToken}`);
+    console.log(`=========================================`);
+    return true;
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    console.log(`=========================================`);
+    console.log(`PASSWORD RESET EMAIL FAILED`);
+    console.log(`TO: ${email}`);
+    console.log(`ERROR: ${(error as Error).message}`);
+    console.log(`=========================================`);
+    return false;
+  }
 }
 
 export function setupAuth(app: Express) {
@@ -362,6 +403,103 @@ export function setupAuth(app: Express) {
       console.error('OTP verification error:', error);
       res.status(500).json({ 
         message: "Verification failed",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+  
+  // Forgot password request
+  app.post("/api/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Send a 200 response even if user not found for security reasons
+        // But don't actually send an email
+        return res.status(200).json({ 
+          success: true, 
+          message: "If your email exists in our system, you will receive password reset instructions." 
+        });
+      }
+      
+      // Generate reset token
+      const resetToken = await generateResetToken();
+      
+      // Store it in OTP table (using 'reset' as type)
+      await storage.createOtp({
+        userId: user.id,
+        otp: resetToken,
+        type: 'reset',
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+      });
+      
+      // Send reset email with token
+      await sendPasswordResetEmail(email, resetToken);
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "If your email exists in our system, you will receive password reset instructions." 
+      });
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      res.status(500).json({ 
+        message: "Failed to process password reset request",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+  
+  // Reset password with token
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ 
+          message: "Reset token and new password are required" 
+        });
+      }
+      
+      // Find the OTP record by token
+      const allOtps = await storage.getAllOtps();
+      const resetOtp = allOtps.find(otp => otp.otp === token && otp.type === 'reset');
+      
+      if (!resetOtp || resetOtp.expiresAt < new Date()) {
+        return res.status(400).json({ 
+          message: "Invalid or expired reset token"
+        });
+      }
+      
+      // Hash the new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update user's password
+      const user = await storage.updateUserPassword(resetOtp.userId, hashedPassword);
+      
+      if (!user) {
+        return res.status(500).json({ 
+          message: "Failed to update password" 
+        });
+      }
+      
+      // Invalidate the used token
+      await storage.invalidateOtp(resetOtp.id);
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Password has been reset successfully" 
+      });
+    } catch (error) {
+      console.error('Password reset error:', error);
+      res.status(500).json({ 
+        message: "Failed to reset password",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
