@@ -73,7 +73,11 @@ export default function PropertyDetail() {
   // Track property view with recommendation engine
   const trackInteractionMutation = useMutation({
     mutationFn: async ({ propertyId, interactionType }: { propertyId: number, interactionType: 'view' | 'save' | 'inquiry' }) => {
-      return apiRequest('/api/recommendations/track', 'POST', { propertyId, interactionType });
+      return apiRequest({
+        url: '/api/recommendations/track',
+        method: 'POST',
+        body: { propertyId, interactionType }
+      });
     }
   });
 
@@ -85,7 +89,10 @@ export default function PropertyDetail() {
           throw new Error('User not authenticated');
         }
         console.log(`Attempting to save property ${propertyId}`);
-        return await apiRequest(`/api/properties/${propertyId}/save`, 'POST');
+        return await apiRequest({
+          url: `/api/properties/${propertyId}/save`,
+          method: 'POST'
+        });
       } catch (error) {
         console.error(`Error in savePropertyMutation for property ${propertyId}:`, error);
         throw error;
@@ -140,7 +147,10 @@ export default function PropertyDetail() {
           throw new Error('User not authenticated');
         }
         console.log(`Attempting to unsave property ${propertyId}`);
-        return await apiRequest(`/api/properties/${propertyId}/save`, 'DELETE');
+        return await apiRequest({
+          url: `/api/properties/${propertyId}/save`,
+          method: 'DELETE'
+        });
       } catch (error) {
         console.error(`Error in unsavePropertyMutation for property ${propertyId}:`, error);
         throw error;

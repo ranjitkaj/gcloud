@@ -120,7 +120,10 @@ export default function Dashboard() {
   // Unsave property mutation 
   const unsaveMutation = useMutation({
     mutationFn: async (propertyId: number) => {
-      await apiRequest(`/api/properties/${propertyId}/save`, "DELETE");
+      await apiRequest({
+        url: `/api/properties/${propertyId}/save`,
+        method: "DELETE"
+      });
       return true;
     },
     onSuccess: () => {
