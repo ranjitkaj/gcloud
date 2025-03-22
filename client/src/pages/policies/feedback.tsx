@@ -54,15 +54,29 @@ export default function Feedback() {
   const onSubmit = async (data: FeedbackFormValues) => {
     setIsSubmitting(true);
     try {
-      // In a real application, you would send this data to your backend
-      // This is a placeholder for the actual implementation
-      await fetch("/api/feedback", {
+      // Convert the form data to the format expected by the API
+      const formattedData = {
+        name: data.name,
+        email: data.email,
+        category: data.feedbackType,
+        rating: 5, // Default rating (not in the form)
+        feedback: data.message,
+      };
+
+      // Send the data to the server
+      const response = await fetch("/api/feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
+
+      const result = await response.json();
 
       toast({
         title: "Feedback submitted successfully",

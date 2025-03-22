@@ -67,22 +67,25 @@ export default function ReportProblem() {
   const onSubmit = async (data: ReportFormValues) => {
     setIsSubmitting(true);
     try {
-      // In a real application, you would send this data to your backend
-      // This is a placeholder for the actual implementation
-      await fetch("/api/report-problem", {
+      // Convert the form data to the format expected by the API
+      const formattedData = {
+        name: data.name,
+        email: data.email,
+        category: data.problemType,
+        severity: data.urgency,
+        url: window.location.href,
+        description: data.description + 
+          (data.stepsToReproduce ? "\n\nSteps to reproduce:\n" + data.stepsToReproduce : "") +
+          (data.deviceInfo ? "\n\nDevice info:\n" + data.deviceInfo : "")
+      };
+      
+      // Send the data to the server
+      const response = await fetch("/api/report-problem", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...data,
-          files: files.map((file) => ({
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            id: file.id,
-          })),
-        }),
+        body: JSON.stringify(formattedData),
       });
 
       setIsSuccess(true);
