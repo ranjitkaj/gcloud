@@ -15,7 +15,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added imp
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label"; // Added import
 
-
 // Define the interface for the component props
 interface PropertySearchProps {
   className?: string;
@@ -36,34 +35,38 @@ export default function PropertySearch({
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [saleType, setSaleType] = useState<"all" | "Sale" | "Rent">("all");
+  const [saleType, setSaleType] = useState<"all" | "Sale" | "Agent">("all");
   const containerRef = useRef<HTMLDivElement>(null);
   // New state to track filter menu open state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
-  const [categoryTab, setCategoryTab] = useState('all'); // Added state for category tabs
+  const [categoryTab, setCategoryTab] = useState("all"); // Added state for category tabs
   const [areaRange, setAreaRange] = useState([0, 10000]); // Added state for area range
   const [amenities, setAmenities] = useState([]); // Added state for amenities
   const [selectedFilters, setSelectedFilters] = useState({
-    category: '',
-    propertyType: '',
-    saleType: '',
+    category: "",
+    propertyType: "",
+    saleType: "",
     priceRange: [0, 10000000],
     areaRange: [0, 10000],
     amenities: [] as string[],
     bedrooms: 0,
-    location: ''
+    location: "",
   });
 
   // Format selected filters for display
   const getFilterDisplay = () => {
     const filters = [];
     if (locationValue) filters.push(locationValue);
-    if (selectedFilters.propertyType) filters.push(selectedFilters.propertyType);
-    if (selectedFilters.saleType && selectedFilters.saleType !== 'all') filters.push(selectedFilters.saleType);
-    if (selectedFilters.bedrooms > 0) filters.push(`${selectedFilters.bedrooms}+ beds`);
-    if (selectedFilters.amenities.length > 0) filters.push(`${selectedFilters.amenities.length} amenities`);
-    return filters.join(' • ');
+    if (selectedFilters.propertyType)
+      filters.push(selectedFilters.propertyType);
+    if (selectedFilters.saleType && selectedFilters.saleType !== "all")
+      filters.push(selectedFilters.saleType);
+    if (selectedFilters.bedrooms > 0)
+      filters.push(`${selectedFilters.bedrooms}+ beds`);
+    if (selectedFilters.amenities.length > 0)
+      filters.push(`${selectedFilters.amenities.length} amenities`);
+    return filters.join(" • ");
   };
 
   // Hook to manage URL location
@@ -198,8 +201,7 @@ export default function PropertySearch({
       if (areaRange[1] < 10000) {
         queryParams.append("maxArea", areaRange[1].toString());
       }
-      queryParams.append("amenities", amenities.join(','));
-
+      queryParams.append("amenities", amenities.join(","));
     }
 
     setUrlLocation(`/properties?${queryParams.toString()}`);
@@ -350,20 +352,6 @@ export default function PropertySearch({
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Category Tabs */}
-            <div className="space-y-3 mb-6">
-              <h4 className="font-medium text-sm text-gray-700">Category</h4>
-              <Tabs value={categoryTab} onValueChange={setCategoryTab}>
-                <TabsList className="w-full grid grid-cols-4 gap-2">
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="for_sale">For Sale</TabsTrigger>
-                  <TabsTrigger value="for_rent">For Rent</TabsTrigger>
-                  <TabsTrigger value="premium">Premium</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-
-
             {/* Property Type Selector */}
             <div className="space-y-2">
               <h4 className="font-medium text-sm text-gray-700">
@@ -391,11 +379,11 @@ export default function PropertySearch({
             {/* Sale/Rent Selector */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-gray-700">
-                For Sale/Rent
+                For Sale/Agent
               </h4>
               <Select
                 value={saleType}
-                onValueChange={(value: "all" | "Sale" | "Rent") =>
+                onValueChange={(value: "all" | "Sale" | "Agent") =>
                   setSaleType(value)
                 }
               >
@@ -405,7 +393,7 @@ export default function PropertySearch({
                 <SelectContent>
                   <SelectItem value="all">All Properties</SelectItem>
                   <SelectItem value="Sale">For Sale</SelectItem>
-                  <SelectItem value="Rent">For Rent</SelectItem>
+                  <SelectItem value="Agent">For Agent</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -437,13 +425,17 @@ export default function PropertySearch({
 
             {/* Area Range */}
             <div className="space-y-3">
-              <h4 className="font-medium text-sm text-gray-700">Area Range (sq ft)</h4>
+              <h4 className="font-medium text-sm text-gray-700">
+                Area Range (sq ft)
+              </h4>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
                   placeholder="Min"
                   value={areaRange[0]}
-                  onChange={(e) => setAreaRange([Number(e.target.value), areaRange[1]])}
+                  onChange={(e) =>
+                    setAreaRange([Number(e.target.value), areaRange[1]])
+                  }
                   className="w-full"
                 />
                 <span className="text-gray-500">-</span>
@@ -451,7 +443,9 @@ export default function PropertySearch({
                   type="number"
                   placeholder="Max"
                   value={areaRange[1]}
-                  onChange={(e) => setAreaRange([areaRange[0], Number(e.target.value)])}
+                  onChange={(e) =>
+                    setAreaRange([areaRange[0], Number(e.target.value)])
+                  }
                   className="w-full"
                 />
               </div>
@@ -461,7 +455,14 @@ export default function PropertySearch({
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-gray-700">Amenities</h4>
               <div className="grid grid-cols-2 gap-2">
-                {['Parking', 'Swimming Pool', 'Garden', 'Security', 'Gym', 'Power Backup'].map((amenity) => (
+                {[
+                  "Parking",
+                  "Swimming Pool",
+                  "Garden",
+                  "Security",
+                  "Gym",
+                  "Power Backup",
+                ].map((amenity) => (
                   <div key={amenity} className="flex items-center space-x-2">
                     <Checkbox
                       id={`amenity-${amenity}`}
@@ -470,7 +471,7 @@ export default function PropertySearch({
                         if (checked) {
                           setAmenities([...amenities, amenity]);
                         } else {
-                          setAmenities(amenities.filter(a => a !== amenity));
+                          setAmenities(amenities.filter((a) => a !== amenity));
                         }
                       }}
                     />

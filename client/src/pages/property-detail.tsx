@@ -66,7 +66,16 @@ export default function PropertyDetail() {
   // Save/unsave property mutation
   const savePropertyMutation = useMutation({
     mutationFn: async (propertyId: number) => {
-      return apiRequest(`/api/properties/${propertyId}/save`, 'POST');
+      try {
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+        console.log(`Attempting to save property ${propertyId}`);
+        return await apiRequest(`/api/properties/${propertyId}/save`, 'POST');
+      } catch (error) {
+        console.error(`Error in savePropertyMutation for property ${propertyId}:`, error);
+        throw error;
+      }
     },
     onSuccess: () => {
       setIsFavorite(true);
@@ -84,8 +93,24 @@ export default function PropertyDetail() {
       // Invalidate saved properties query to update the UI
       queryClient.invalidateQueries({ queryKey: ['/api/user/saved'] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Save property error:', error);
+      
+      // Handle authentication errors
+      if (error?.response?.status === 401) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to save properties.",
+          variant: "destructive",
+        });
+        
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+          window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+        }, 1500);
+        return;
+      }
+      
       toast({
         title: "Error",
         description: "Failed to save property. Please try again.",
@@ -96,7 +121,16 @@ export default function PropertyDetail() {
 
   const unsavePropertyMutation = useMutation({
     mutationFn: async (propertyId: number) => {
-      return apiRequest(`/api/properties/${propertyId}/save`, 'DELETE');
+      try {
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+        console.log(`Attempting to unsave property ${propertyId}`);
+        return await apiRequest(`/api/properties/${propertyId}/save`, 'DELETE');
+      } catch (error) {
+        console.error(`Error in unsavePropertyMutation for property ${propertyId}:`, error);
+        throw error;
+      }
     },
     onSuccess: () => {
       setIsFavorite(false);
@@ -107,8 +141,24 @@ export default function PropertyDetail() {
       // Invalidate saved properties query to update the UI
       queryClient.invalidateQueries({ queryKey: ['/api/user/saved'] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Unsave property error:', error);
+      
+      // Handle authentication errors
+      if (error?.response?.status === 401) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to manage saved properties.",
+          variant: "destructive",
+        });
+        
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+          window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+        }, 1500);
+        return;
+      }
+      
       toast({
         title: "Error",
         description: "Failed to remove property. Please try again.",
@@ -158,15 +208,29 @@ export default function PropertyDetail() {
       toast({
         title: "Login required",
         description: "Please login to save properties",
+        variant: "destructive"
       });
+      // Redirect to login page
+      window.location.href = "/auth?redirect=" + encodeURIComponent(window.location.pathname);
       return;
     }
     
     if (property) {
-      if (isFavorite) {
-        unsavePropertyMutation.mutate(property.id);
-      } else {
-        savePropertyMutation.mutate(property.id);
+      try {
+        if (isFavorite) {
+          console.log("Unsaving property:", property.id);
+          unsavePropertyMutation.mutate(property.id);
+        } else {
+          console.log("Saving property:", property.id);
+          savePropertyMutation.mutate(property.id);
+        }
+      } catch (error) {
+        console.error("Error in toggleFavorite:", error);
+        toast({
+          title: "Error",
+          description: "Failed to save property. Please try again or refresh the page.",
+          variant: "destructive",
+        });
       }
     }
   };

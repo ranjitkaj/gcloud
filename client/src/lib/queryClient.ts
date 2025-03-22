@@ -2,25 +2,60 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    let errorData;
+    let errorText;
+    
+    try {
+      // Try to parse as JSON first
+      errorData = await res.json();
+      errorText = errorData.message || errorData.error || res.statusText;
+    } catch (e) {
+      // If it's not JSON, get as text
+      try {
+        errorText = await res.text() || res.statusText;
+      } catch (e) {
+        errorText = res.statusText;
+      }
+    }
+    
+    const error = new Error(`${res.status}: ${errorText}`);
+    // Add response to the error object for handling specific HTTP status codes
+    (error as any).response = res;
+    (error as any).status = res.status;
+    (error as any).data = errorData;
+    throw error;
   }
 }
 
 export async function apiRequest(
-  method: string,
   url: string,
+  method: string = 'GET',
   data?: any | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
-
-  await throwIfResNotOk(res);
-  return res;
+  console.log(`API Request: ${method} ${url}`);
+  
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: data ? { "Content-Type": "application/json" } : {},
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
+    
+    if (res.status === 401) {
+      console.warn('Authentication required for operation:', url);
+      const error = new Error('Authentication required');
+      (error as any).response = res;
+      (error as any).status = 401;
+      throw error;
+    }
+    
+    await throwIfResNotOk(res);
+    return res;
+  } catch (error) {
+    console.error(`API Request Error (${method} ${url}):`, error);
+    throw error;
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
