@@ -7,7 +7,34 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { ClipboardList, Camera, CheckCircle2, Users2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  ClipboardList, 
+  Camera, 
+  CheckCircle2, 
+  Users2, 
+  ChevronLeft, 
+  ChevronRight, 
+  Badge, 
+  CreditCard, 
+  Star, 
+  Zap, 
+  Award, 
+  DollarSign, 
+  Lock, 
+  ArrowRight, 
+  ArrowDown, 
+  Phone, 
+  Mail, 
+  MessageSquare, 
+  Building, 
+  Upload, 
+  Users, 
+  BadgeCheck, 
+  Check, 
+  Home, 
+  MapPin, 
+  Clock 
+} from 'lucide-react';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -39,8 +66,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from '@/components/ui/separator';
-import { Check, ArrowDown, Phone, Mail, MessageSquare, 
-  Home, MapPin, Building, Upload, Clock, Users, BadgeCheck } from 'lucide-react';
 import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
 
 // Property type schema
@@ -1476,6 +1501,96 @@ export default function PostPropertyFree() {
 
       </main>
       <Footer />
+      
+      {/* Premium Feature Modal */}
+      <Dialog open={showPremiumModal} onOpenChange={setShowPremiumModal}>
+        <DialogContent className="max-w-md sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Star className="mr-2 h-5 w-5 text-yellow-500" />
+              <span>Premium Feature Access</span>
+            </DialogTitle>
+            <DialogDescription>
+              Urgency Sale is an exclusive premium feature that can help sell your property faster.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4">
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+              <h4 className="font-semibold flex items-center text-amber-800">
+                <Clock className="h-5 w-5 mr-2 text-amber-600" />
+                Why Urgency Sales Work
+              </h4>
+              <p className="mt-2 text-sm text-amber-700">
+                Properties listed as Urgency Sales sell up to 60% faster. The 25% discount 
+                attracts serious buyers looking for time-limited deals. Your property gets 
+                featured in the Urgency Sales section for maximum visibility.
+              </p>
+            </div>
+            
+            <div className="border rounded-lg overflow-hidden">
+              <div className="bg-primary text-white p-4">
+                <h3 className="font-bold flex items-center text-lg">
+                  <Award className="h-5 w-5 mr-2" /> 
+                  Premium Plan Benefits
+                </h3>
+              </div>
+              <div className="p-4 space-y-3">
+                <div className="flex items-start">
+                  <Check className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                  <p className="text-sm">Urgency Sales with featured positioning</p>
+                </div>
+                <div className="flex items-start">
+                  <Check className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                  <p className="text-sm">Top placement in search results</p>
+                </div>
+                <div className="flex items-start">
+                  <Check className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                  <p className="text-sm">Advanced analytics and visitor tracking</p>
+                </div>
+                <div className="flex items-start">
+                  <Check className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                  <p className="text-sm">Professional photography services</p>
+                </div>
+                <div className="flex items-start">
+                  <Check className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                  <p className="text-sm">Dedicated property consultant</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-2 text-center">
+              <p className="text-sm text-gray-500 mb-2">
+                Upgrade now to access all premium features
+              </p>
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
+                <div className="text-2xl font-bold flex items-center text-primary">
+                  <DollarSign className="h-5 w-5" /> 999/month
+                </div>
+                <div className="bg-green-100 text-green-800 text-xs py-1 px-2 rounded-full">
+                  7-day free trial available
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPremiumModal(false)}>
+              Maybe Later
+            </Button>
+            <Button 
+              className="bg-primary hover:bg-primary/90" 
+              onClick={() => {
+                setShowPremiumModal(false);
+                navigate('/subscription');
+              }}
+            >
+              Upgrade Now
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
