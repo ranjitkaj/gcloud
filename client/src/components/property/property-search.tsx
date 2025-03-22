@@ -175,43 +175,55 @@ export default function PropertySearch({
     if (bedroomsParam) setBedrooms(parseInt(bedroomsParam));
   }, []);
 
-  // Function to handle search button click and update URL with query parameters
+  // Function to handle search button click and collect all selected filters
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
 
+    // Location filter
     if (locationValue) {
       queryParams.append("city", locationValue);
     }
 
+    // Property type filter
     if (propertyType) {
       queryParams.append("propertyType", propertyType);
     }
 
+    // Sale type filter
     if (saleType !== "all") {
       queryParams.append("saleType", saleType);
     }
 
-    if (showAdvanced) {
-      if (minPrice !== undefined && minPrice > 0) {
-        queryParams.append("minPrice", minPrice.toString());
-      }
+    // Add advanced filters only if they have values
+    // Price range
+    if (minPrice !== undefined && minPrice > 0) {
+      queryParams.append("minPrice", minPrice.toString());
+    }
 
-      if (maxPrice !== undefined) {
-        queryParams.append("maxPrice", maxPrice.toString());
-      }
+    if (maxPrice !== undefined && maxPrice > 0) {
+      queryParams.append("maxPrice", maxPrice.toString());
+    }
 
-      if (bedrooms > 0) {
-        queryParams.append("minBedrooms", bedrooms.toString());
-      }
-      if (minArea !== undefined && minArea > 0) {
-        queryParams.append("minArea", minArea.toString());
-      }
-      if (maxArea !== undefined) {
-        queryParams.append("maxArea", maxArea.toString());
-      }
+    // Bedrooms
+    if (bedrooms > 0) {
+      queryParams.append("minBedrooms", bedrooms.toString());
+    }
+    
+    // Area range
+    if (minArea !== undefined && minArea > 0) {
+      queryParams.append("minArea", minArea.toString());
+    }
+    
+    if (maxArea !== undefined && maxArea > 0) {
+      queryParams.append("maxArea", maxArea.toString());
+    }
+    
+    // Amenities
+    if (amenities.length > 0) {
       queryParams.append("amenities", amenities.join(","));
     }
 
+    // Navigate to search results page with all selected filters
     setUrlLocation(`/properties?${queryParams.toString()}`);
   };
 
@@ -527,6 +539,23 @@ export default function PropertySearch({
                   <FilterSelectItem value="5">5+</FilterSelectItem>
                 </FilterSelectContent>
               </FilterSelect>
+            </div>
+            
+            {/* Apply Filters Button */}
+            <div className="col-span-1 md:col-span-2 mt-4">
+              <Button 
+                className="w-full py-5 bg-primary hover:bg-primary/90"
+                onClick={() => {
+                  handleSearch();
+                  setIsFilterOpen(false); // Close filter panel after search
+                }}
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Apply Filters
+              </Button>
+              <p className="text-xs text-center text-gray-500 mt-2">
+                Select all desired filters before clicking the button above
+              </p>
             </div>
           </div>
         </div>
