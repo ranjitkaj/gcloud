@@ -37,6 +37,9 @@ import {
   Bath,
   Maximize,
   Shield,
+  ChevronRight,
+  ChevronDown,
+  X
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Property, Agent, Company } from "@shared/schema";
@@ -490,28 +493,42 @@ interface MegaMenuProps {
 }
 
 export function MegaMenu({ isMobile = false }: MegaMenuProps) {
-  const [pathname, setLocation] = useLocation(); // Using wouter's useLocation
+  const [pathname] = useLocation();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
-  // Fetch featured properties
   const { data: properties = [] } = useQuery<Property[]>({
     queryKey: ["/api/properties/featured"],
     enabled: !isMobile,
   });
 
-  // Fetch featured agents
   const { data: agents = [] } = useQuery<Agent[]>({
     queryKey: ["/api/agents/featured"],
     enabled: !isMobile,
   });
 
-  // Fetch featured companies
   const { data: companies = [] } = useQuery<Company[]>({
     queryKey: ["/api/companies/featured"],
     enabled: !isMobile,
   });
 
-  // Create a search URL with parameters
+  const menuItems = {
+    buy: [
+      { title: "Residential", icon: <Home className="h-5 w-5" />, link: "/properties/residential" },
+      { title: "Commercial", icon: <Building className="h-5 w-5" />, link: "/properties/commercial" },
+      { title: "Premium", icon: <TrendingUp className="h-5 w-5" />, link: "/properties/premium" }
+    ],
+    rent: [
+      { title: "Houses", icon: <Home className="h-5 w-5" />, link: "/rent/houses" },
+      { title: "Apartments", icon: <Building2 className="h-5 w-5" />, link: "/rent/apartments" },
+      { title: "Office Space", icon: <Briefcase className="h-5 w-5" />, link: "/rent/office" }
+    ],
+    agents: [
+      { title: "Find Agent", icon: <Users className="h-5 w-5" />, link: "/agents/find" },
+      { title: "Top Agents", icon: <Landmark className="h-5 w-5" />, link: "/agents/top" }
+    ]
+  };
+
   const createSearchUrl = (category: any) => {
     if (!category || !category.query) return "/search-results";
 
@@ -525,7 +542,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
     return `/search-results?${searchParams.toString()}`;
   };
 
-  // Filter properties based on the active category query
   const getFilteredProperties = (category: any) => {
     if (!category || !category.query) return [];
 
@@ -546,45 +562,55 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
   };
 
   if (isMobile) {
-    // Mobile view with simple list - no complex navigation components
     return (
-      <div className="flex flex-col space-y-3 pt-2 pb-3">
-        <Link
-          to="/properties"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Buyer
-        </Link>
-        <Link
-          to="/add-property"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Seller
-        </Link>
-        <Link
-          to="/agents"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Agents
-        </Link>
-        <Link
-          to="/companies"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Companies
-        </Link>
-        <Link
-          to="/projects"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Projects
-        </Link>
-        <Link
-          to="/resources"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Resources
-        </Link>
+      <div className="flex flex-col space-y-2">
+        {Object.entries(menuItems).map(([category, items]) => (
+          <div key={category} className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenSubmenu(openSubmenu === category ? null : category)}
+              className="flex w-full items-center justify-between p-4 text-left"
+            >
+              <span className="font-medium capitalize">{category}</span>
+              {openSubmenu === category ? (
+                <ChevronDown className="h-5 w-5" />
+              ) : (
+                <ChevronRight className="h-5 w-5" />
+              )}
+            </button>
+
+            {openSubmenu === category && (
+              <div className="bg-gray-50 p-2">
+                {items.map((item) => (
+                  <Link 
+                    key={item.title}
+                    to={item.link}
+                    onClick={() => setOpenSubmenu(null)}
+                  >
+                    <div className="flex items-center space-x-3 rounded-md p-3 hover:bg-white">
+                      {item.icon}
+                      <span className="text-sm">{item.title}</span>
+                    </div>
+                  </Link>
+                ))}
+
+                {/* Featured Items */}
+                {category === 'buy' && properties.length > 0 && (
+                  <div className="mt-2 border-t border-gray-200 pt-2">
+                    <div className="px-3 py-2 text-sm font-medium">Featured Properties</div>
+                    {properties.slice(0, 2).map((property) => (
+                      <Link key={property.id} to={`/property/${property.id}`}>
+                        <div className="flex items-center space-x-3 rounded-md p-3 hover:bg-white">
+                          <MapPin className="h-5 w-5" />
+                          <span className="text-sm">{property.title}</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     );
   }
@@ -613,7 +639,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
                         <Link to={createSearchUrl(item)}>
-                          {" "}
                           {/* Use dynamic search URL with filters */}
                           <div
                             className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted"
@@ -684,8 +709,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                       ).map((property) => (
                         <div key={property.id} className="col-span-1">
                           <Link to={`/properties/${property.id}`}>
-                            {" "}
-                            {/* Changed to react-router-dom Link */}
                             <PropertyMiniCard property={property} />
                           </Link>
                         </div>
@@ -697,8 +720,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     {properties.slice(0, 4).map((property) => (
                       <div key={property.id} className="col-span-1">
                         <Link to={`/properties/${property.id}`}>
-                          {" "}
-                          {/* Changed to react-router-dom Link */}
                           <PropertyMiniCard property={property} />
                         </Link>
                       </div>
@@ -744,7 +765,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
                         <Link to={createSearchUrl(item)}>
-                          {" "}
                           {/* Use dynamic search URL with filters */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
@@ -772,8 +792,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {agents.slice(0, 4).map((agent) => (
                     <div key={agent.id} className="col-span-1">
                       <Link to={`/agents/${agent.id}`}>
-                        {" "}
-                        {/* Changed to react-router-dom Link */}
                         <AgentMiniCard agent={agent} />
                       </Link>
                     </div>
@@ -804,7 +822,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     <div key={item.title}>
                       <NavigationMenuLink asChild>
                         <Link to={createSearchUrl(item)}>
-                          {" "}
                           {/* Use dynamic search URL with filters */}
                           <div className="flex cursor-pointer items-start space-x-3 rounded-md p-2.5 hover:bg-muted">
                             {item.icon}
@@ -832,8 +849,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   {companies.slice(0, 4).map((company) => (
                     <div key={company.id} className="col-span-1">
                       <Link to={`/companies/${company.id}`}>
-                        {" "}
-                        {/* Changed to react-router-dom Link */}
                         <CompanyMiniCard company={company} />
                       </Link>
                     </div>
@@ -851,6 +866,7 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               pathname.startsWith("/resources") && "text-primary font-medium",
             )}
           >
+          >
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -863,8 +879,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                   <div key={item.title}>
                     <NavigationMenuLink asChild>
                       <Link to={item.href}>
-                        {" "}
-                        {/* Changed to react-router-dom Link */}
                         <div className="flex cursor-pointer items-start space-x-3 rounded-md p-3 hover:bg-muted">
                           {item.icon}
                           <div>
@@ -886,5 +900,122 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
+  );
+}
+
+
+// Property mini card for menu
+function PropertyMiniCard({ property }: { property: Property }) {
+  return (
+    <div className="border rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative h-24">
+        <img
+          src={
+            property.imageUrls?.[0] ||
+            "https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+          }
+          alt={property.title}
+          className="w-full h-full object-cover"
+        />
+        {property.premium && (
+          <Badge
+            variant="secondary"
+            className="absolute top-2 right-2 bg-amber-500 text-white"
+          >
+            Premium
+          </Badge>
+        )}
+      </div>
+      <div className="p-2">
+        <h3 className="font-medium text-xs truncate">{property.title}</h3>
+        <p className="text-xs text-gray-500 truncate">{property.location}</p>
+        <div className="flex items-center justify-between mt-1">
+          <span className="text-xs font-medium flex items-center">
+            <IndianRupee className="h-3 w-3 mr-0.5" />
+            {property.price.toLocaleString("en-IN")}
+          </span>
+          <div className="flex items-center space-x-1">
+            {property.bedrooms && (
+              <span className="text-xs flex items-center" title="Bedrooms">
+                <Bed className="h-3 w-3 mr-0.5" />
+                {property.bedrooms}
+              </span>
+            )}
+            {property.bathrooms && (
+              <span
+                className="text-xs flex items-center ml-1"
+                title="Bathrooms"
+              >
+                <Bath className="h-3 w-3 mr-0.5" />
+                {property.bathrooms}
+              </span>
+            )}
+            <span className="text-xs flex items-center ml-1" title="Area">
+              <Maximize className="h-3 w-3 mr-0.5" />
+              {property.area}m²
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Agent mini card for menu
+function AgentMiniCard({ agent }: { agent: Agent }) {
+  return (
+    <div className="border rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow p-2 flex items-center">
+      <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-200 mr-2 flex-shrink-0">
+        <img
+          src={`https://randomuser.me/api/portraits/men/${agent.id}.jpg`}
+          alt="Agent"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="min-w-0">
+        <h3 className="font-medium text-xs truncate">Agent {agent.userId}</h3>
+        <p className="text-xs text-gray-500 truncate">
+          {agent.specializations?.join(", ") || "Property Expert"}
+        </p>
+        <div className="flex items-center mt-0.5">
+          <div className="flex">
+            {[...Array(Math.min(5, Math.round(agent.rating || 0)))].map(
+              (_, i) => (
+                <Star
+                  key={i}
+                  className="h-2.5 w-2.5 text-amber-500 fill-amber-500"
+                />
+              ),
+            )}
+          </div>
+          <span className="text-xs ml-1">{agent.reviewCount || 0} reviews</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Company mini card for menu
+function CompanyMiniCard({ company }: { company: Company }) {
+  return (
+    <div className="border rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow p-2 flex items-center">
+      <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-200 mr-2 flex-shrink-0 flex items-center justify-center">
+        <Building className="h-6 w-6 text-gray-500" />
+      </div>
+      <div className="min-w-0">
+        <h3 className="font-medium text-xs truncate">{company.name}</h3>
+        <p className="text-xs text-gray-500 truncate">{company.city}</p>
+        <div className="flex items-center mt-0.5">
+          {company.verified && (
+            <Badge
+              variant="outline"
+              className="text-[8px] h-4 border-green-500 text-green-600 flex items-center"
+            >
+              <Shield className="h-2 w-2 mr-0.5" /> Verified
+            </Badge>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
