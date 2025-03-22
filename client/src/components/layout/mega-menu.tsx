@@ -498,6 +498,22 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
     queryKey: ["/api/properties/featured"],
     enabled: !isMobile,
   });
+  
+  // Fetch properties by type
+  const { data: apartmentProperties = [] } = useQuery<Property[]>({
+    queryKey: ["/api/properties/type/apartment"],
+    enabled: !isMobile,
+  });
+  
+  const { data: villaProperties = [] } = useQuery<Property[]>({
+    queryKey: ["/api/properties/type/villa"],
+    enabled: !isMobile,
+  });
+  
+  const { data: commercialProperties = [] } = useQuery<Property[]>({
+    queryKey: ["/api/properties/type/commercial"],
+    enabled: !isMobile,
+  });
 
   // Fetch featured agents
   const { data: agents = [] } = useQuery<Agent[]>({
@@ -979,19 +995,39 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      {getFilteredProperties(
-                        buyMenuItems.find(
-                          (item) => item.title === activeCategory,
-                        ),
-                      ).map((property) => (
-                        <div key={property.id} className="col-span-1">
-                          <Link to={`/properties/${property.id}`}>
-                            {" "}
-                            {/* Changed to react-router-dom Link */}
-                            <PropertyMiniCard property={property} />
-                          </Link>
-                        </div>
-                      ))}
+                      {(() => {
+                        // Choose property array based on activeCategory
+                        let propertiesToShow = [];
+                        
+                        if (activeCategory === "Apartment") {
+                          propertiesToShow = apartmentProperties;
+                        } else if (activeCategory === "Villa") {
+                          propertiesToShow = villaProperties;
+                        } else if (activeCategory === "Commercial") {
+                          propertiesToShow = commercialProperties;
+                        } else {
+                          // Fallback to the filtered properties method
+                          return getFilteredProperties(
+                            buyMenuItems.find(
+                              (item) => item.title === activeCategory,
+                            )
+                          ).map((property) => (
+                            <div key={property.id} className="col-span-1">
+                              <Link to={`/properties/${property.id}`}>
+                                <PropertyMiniCard property={property} />
+                              </Link>
+                            </div>
+                          ));
+                        }
+                        
+                        return propertiesToShow.slice(0, 4).map((property) => (
+                          <div key={property.id} className="col-span-1">
+                            <Link to={`/properties/${property.id}`}>
+                              <PropertyMiniCard property={property} />
+                            </Link>
+                          </div>
+                        ));
+                      })()}
                     </div>
                   </div>
                 ) : (
