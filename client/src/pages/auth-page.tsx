@@ -178,8 +178,28 @@ export default function AuthPage() {
     try {
       setIsLoginLoading(true);
       setAuthError(null);
-      await login(data);
-
+      
+      // Call login but get the full response data
+      const userData = await login(data) as any;
+      
+      // Check if user needs verification
+      if (userData && userData.needsVerification === true) {
+        // User needs to verify their email
+        toast({
+          title: "Verification required",
+          description: "Please verify your account to access all features.",
+        });
+        
+        // Set registration state and verification method for OTP verification
+        setRegisteredUser(userData);
+        setSelectedVerificationMethod("email");
+        setRegistrationState("verification");
+        
+        // Return early
+        return;
+      }
+      
+      // If we got here, user is verified and login was successful
       // Success toast
       toast({
         title: "Login successful",
@@ -207,15 +227,27 @@ export default function AuthPage() {
 
       // Navigate to homepage instead of dashboard
       navigate("/");
-    } catch (error) {
-      setAuthError("Login failed. Please check your credentials.");
-      console.error("Login error:", error);
+    } catch (error: any) {
+      // Check if this is an existing account error
+      if (error?.message?.includes("account with this email already exists")) {
+        setAuthError("This email is already associated with an account. Please use a different email or try resetting your password.");
+        toast({
+          title: "Existing account detected",
+          description: "An account with this email already exists. Please log in instead.",
+          variant: "destructive",
+        });
+        // Switch to login tab
+        setActiveTab("login");
+      } else {
+        setAuthError("Login failed. Please check your credentials.");
+        console.error("Login error:", error);
 
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
-        variant: "destructive",
-      });
+        toast({
+          title: "Login failed",
+          description: "Please check your credentials and try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoginLoading(false);
     }
@@ -239,9 +271,28 @@ export default function AuthPage() {
         // No phone provided, use email verification directly
         await signupWithVerification(registerData, "email");
       }
-    } catch (error) {
-      setAuthError("Registration failed. Please try again.");
-      console.error("Registration error:", error);
+    } catch (error: any) {
+      // Check if this is an existing account error
+      if (error?.message?.includes("Email already in use") || 
+          error?.message?.includes("Username already exists")) {
+        setAuthError("An account with this email or username already exists. Please try logging in instead.");
+        toast({
+          title: "Account already exists",
+          description: "Please use different credentials or try logging in with your existing account.",
+          variant: "destructive",
+        });
+        // Switch to login tab
+        setActiveTab("login");
+      } else {
+        setAuthError("Registration failed. Please try again.");
+        console.error("Registration error:", error);
+        
+        toast({
+          title: "Registration failed",
+          description: error?.message || "Please try again later",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsRegisterLoading(false);
     }
@@ -274,11 +325,33 @@ export default function AuthPage() {
         title: "Verification required",
         description: `A verification code has been sent to ${recipient}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
-      setAuthError("Registration failed. Please try again.");
-      // Go back to form on error
-      setRegistrationState("form");
+      
+      // Check for specific error cases
+      if (error?.message?.includes("Email already in use") || 
+          error?.message?.includes("Username already exists")) {
+        setAuthError("An account with this email or username already exists. Please try logging in instead.");
+        toast({
+          title: "Account already exists",
+          description: "Please use different credentials or try logging in with your existing account.",
+          variant: "destructive",
+        });
+        
+        // Switch to login tab and exit verification flow
+        setActiveTab("login");
+        setRegistrationState("form");
+      } else {
+        setAuthError(error?.message || "Registration failed. Please try again.");
+        toast({
+          title: "Registration failed",
+          description: error?.message || "Please try again later",
+          variant: "destructive",
+        });
+        
+        // Go back to form on error
+        setRegistrationState("form");
+      }
     } finally {
       setIsRegisterLoading(false);
     }

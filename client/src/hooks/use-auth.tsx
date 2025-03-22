@@ -36,10 +36,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
-      if (!response.ok) throw new Error('Login failed');
-      return response.json();
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+      
+      const userData = await response.json();
+      return userData;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Set the user data immediately in the cache
+      queryClient.setQueryData(['/api/user'], data);
+      // Then invalidate the query to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });
     },
   });

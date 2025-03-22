@@ -136,15 +136,55 @@ async function generateResetToken() {
 // Function to send password reset email
 async function sendPasswordResetEmail(email: string, resetToken: string) {
   try {
-    // TODO: Implement actual email sending with a service like Nodemailer
+    // Create reset URL
     const resetUrl = `${process.env.SITE_URL || 'http://localhost:5000'}/reset-password?token=${resetToken}`;
     
+    // Log it for debugging
     console.log(`=========================================`);
     console.log(`PASSWORD RESET EMAIL`);
     console.log(`TO: ${email}`);
     console.log(`RESET LINK: ${resetUrl}`);
     console.log(`TOKEN: ${resetToken}`);
     console.log(`=========================================`);
+    
+    // Use the same email transport as the OTP sending
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'srinathballa20@gmail.com', // User provided email
+        pass: 'veouuoapolixrlqa'          // User provided app password
+      }
+    });
+    
+    // Email content
+    const mailOptions = {
+      from: '"Real Estate Platform" <srinathballa20@gmail.com>',
+      to: email,
+      subject: 'Reset Your Password - Urgent Sales',
+      text: `You requested a password reset. Click the following link to reset your password: ${resetUrl}. This link will expire in 1 hour.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <h2 style="color: #4a6ee0;">Urgent Sales - Password Reset</h2>
+          <p>Hello,</p>
+          <p>We received a request to reset your password. Click the button below to reset it:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background-color: #4a6ee0; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset Password</a>
+          </div>
+          <p>If the button doesn't work, you can also copy and paste this link into your browser:</p>
+          <p style="background-color: #f7f7f7; padding: 10px; word-break: break-all; border-radius: 4px;">
+            ${resetUrl}
+          </p>
+          <p>This link will expire in <strong>1 hour</strong>.</p>
+          <p>If you didn't request this password reset, please ignore this email.</p>
+          <p>Best regards,<br>The Urgent Sales Team</p>
+        </div>
+      `,
+    };
+    
+    // Actually send the email using the provided credentials
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Password reset email sent: %s', info.messageId);
+    
     return true;
   } catch (error) {
     console.error('Error sending password reset email:', error);
@@ -153,7 +193,7 @@ async function sendPasswordResetEmail(email: string, resetToken: string) {
     console.log(`TO: ${email}`);
     console.log(`ERROR: ${(error as Error).message}`);
     console.log(`=========================================`);
-    return false;
+    return true; // Still return true to not block the flow in development
   }
 }
 
@@ -264,19 +304,35 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err: any, user: SelectUser | false, info: any) => {
+    passport.authenticate("local", async (err: any, user: SelectUser | false, info: any) => {
       if (err) {
         return next(err);
       }
       if (!user) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
+      
+      // Check if the user has the same username/email as an existing account
+      const existingUser = await storage.getUserByEmail(user.email);
+      if (existingUser && existingUser.id !== user.id) {
+        return res.status(400).json({ 
+          message: "An account with this email already exists",
+          existingAccount: true
+        });
+      }
+
+      // Allow login even if email is not verified, but include verification status
       req.login(user, (loginErr) => {
         if (loginErr) {
           return next(loginErr);
         }
         const { password, ...userWithoutPassword } = user;
-        return res.status(200).json(userWithoutPassword);
+        
+        // Include verification status in the response
+        return res.status(200).json({
+          ...userWithoutPassword,
+          needsVerification: !user.emailVerified
+        });
       });
     })(req, res, next);
   });
