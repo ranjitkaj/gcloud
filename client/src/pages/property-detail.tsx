@@ -61,6 +61,7 @@ export default function PropertyDetail() {
   const [copySuccess, setCopySuccess] = useState('');
   const [showFullscreenGallery, setShowFullscreenGallery] = useState(false);
   const [imageLoadError, setImageLoadError] = useState<Record<number, boolean>>({});
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -69,6 +70,13 @@ export default function PropertyDetail() {
   const { data: property, isLoading, isError } = useQuery<Property>({
     queryKey: [`/api/properties/${id}`],
   });
+
+  // Check if user is logged in
+  useEffect(() => {
+    if (!user && !showLoginPrompt) {
+      setShowLoginPrompt(true);
+    }
+  }, [user, showLoginPrompt]);
 
   // Track property view with recommendation engine
   const trackInteractionMutation = useMutation({
