@@ -551,7 +551,6 @@ export default function PostPropertyFree() {
                             field.onChange(checked);
                           }}
                           id="urgent-sale"
-                          disabled={!user || user.subscriptionLevel !== 'premium'}
                         />
                         <label
                           htmlFor="urgent-sale"
