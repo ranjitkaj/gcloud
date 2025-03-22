@@ -9,18 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  FilterSelect,
-  FilterSelectContent,
-  FilterSelectItem,
-  FilterSelectTrigger,
-  FilterSelectValue,
-} from "./property-select";
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Search, X } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added import
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label"; // Added import
+import { Label } from "@/components/ui/label";
 
 // Define the interface for the component props
 interface PropertySearchProps {
@@ -38,50 +30,37 @@ export default function PropertySearch({
   const [propertyType, setPropertyType] = useState<
     (typeof propertyTypes)[number] | ""
   >("");
-  const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
-  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000000);
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [saleType, setSaleType] = useState<"all" | "Sale" | "Agent">("all");
   const containerRef = useRef<HTMLDivElement>(null);
-  // New state to track filter menu open state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
-  const [categoryTab, setCategoryTab] = useState("all"); // Added state for category tabs
-  const [minArea, setMinArea] = useState<number | undefined>(undefined); // Min area 
-  const [maxArea, setMaxArea] = useState<number | undefined>(undefined); // Max area
-  const [amenities, setAmenities] = useState<string[]>([]); // Added state for amenities
-  const [selectedFilters, setSelectedFilters] = useState({
-    category: "",
-    propertyType: "",
-    saleType: "",
-    priceRange: [0, 10000000],
-    amenities: [] as string[],
-    bedrooms: 0,
-    location: "",
-  });
+  const [areaRange, setAreaRange] = useState([0, 10000]);
+  const [amenities, setAmenities] = useState<string[]>([]);
 
   // Format selected filters for display
   const getFilterDisplay = () => {
     const filters = [];
     if (locationValue) filters.push(locationValue);
-    if (selectedFilters.propertyType)
-      filters.push(selectedFilters.propertyType);
-    if (selectedFilters.saleType && selectedFilters.saleType !== "all")
-      filters.push(selectedFilters.saleType);
-    if (selectedFilters.bedrooms > 0)
-      filters.push(`${selectedFilters.bedrooms}+ beds`);
-    if (selectedFilters.amenities.length > 0)
-      filters.push(`${selectedFilters.amenities.length} amenities`);
-    return filters.join(" • ");
+    if (propertyType) filters.push(propertyType);
+    if (saleType !== "all") filters.push(saleType);
+    if (bedrooms > 0) filters.push(`${bedrooms}+ beds`);
+    if (amenities.length > 0) filters.push(`${amenities.length} amenities`);
+    if (areaRange[0] > 0 || areaRange[1] < 10000)
+      filters.push(`${areaRange[0]}-${areaRange[1]} sq ft`);
+    if (minPrice > 0 || maxPrice < 10000000)
+      filters.push(`${formatPrice(minPrice)}-${formatPrice(maxPrice)}`);
+    return filters.join(", ");
   };
 
   // Hook to manage URL location
   const [_, setUrlLocation] = useLocation();
 
   // Toggle filter menu function
-  const toggleFilter = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Stop click from bubbling
+  const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
   };
 
@@ -157,80 +136,50 @@ export default function PropertySearch({
     );
   };
 
-  // Effect to initialize form values from URL query parameters
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const cityParam = params.get("city");
-    const typeParam = params.get("propertyType");
-    const minPriceParam = params.get("minPrice");
-    const maxPriceParam = params.get("maxPrice");
-    const bedroomsParam = params.get("minBedrooms");
-
-    if (cityParam) setLocationValue(cityParam);
-    if (typeParam && propertyTypes.includes(typeParam as any)) {
-      setPropertyType(typeParam as (typeof propertyTypes)[number]);
-    }
-    if (minPriceParam) setMinPrice(parseInt(minPriceParam));
-    if (maxPriceParam) setMaxPrice(parseInt(maxPriceParam));
-    if (bedroomsParam) setBedrooms(parseInt(bedroomsParam));
-  }, []);
-
-  // Function to handle search button click and collect all selected filters
+  // Function to handle search button click and update URL with query parameters
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
 
-    // Location filter
     if (locationValue) {
       queryParams.append("city", locationValue);
     }
 
-    // Property type filter
     if (propertyType) {
       queryParams.append("propertyType", propertyType);
     }
 
-    // Sale type filter
     if (saleType !== "all") {
       queryParams.append("saleType", saleType);
     }
 
-    // Add advanced filters only if they have values
-    // Price range
-    if (minPrice !== undefined && minPrice > 0) {
-      queryParams.append("minPrice", minPrice.toString());
+    if (showAdvanced) {
+      if (minPrice > 0) {
+        queryParams.append("minPrice", minPrice.toString());
+      }
+
+      if (maxPrice < 10000000) {
+        queryParams.append("maxPrice", maxPrice.toString());
+      }
+
+      if (bedrooms > 0) {
+        queryParams.append("minBedrooms", bedrooms.toString());
+      }
+      if (areaRange[0] > 0) {
+        queryParams.append("minArea", areaRange[0].toString());
+      }
+      if (areaRange[1] < 10000) {
+        queryParams.append("maxArea", areaRange[1].toString());
+      }
+      if (amenities.length > 0) {
+        queryParams.append("amenities", amenities.join(","));
+      }
     }
 
-    if (maxPrice !== undefined && maxPrice > 0) {
-      queryParams.append("maxPrice", maxPrice.toString());
-    }
-
-    // Bedrooms
-    if (bedrooms > 0) {
-      queryParams.append("minBedrooms", bedrooms.toString());
-    }
-    
-    // Area range
-    if (minArea !== undefined && minArea > 0) {
-      queryParams.append("minArea", minArea.toString());
-    }
-    
-    if (maxArea !== undefined && maxArea > 0) {
-      queryParams.append("maxArea", maxArea.toString());
-    }
-    
-    // Amenities
-    if (amenities.length > 0) {
-      queryParams.append("amenities", amenities.join(","));
-    }
-
-    // Navigate to search results page with all selected filters
     setUrlLocation(`/properties?${queryParams.toString()}`);
   };
 
   // Function to format price for display
-  const formatPrice = (value: number | undefined) => {
-    if (!value) return "Any";
-    
+  const formatPrice = (value: number) => {
     if (value >= 10000000) {
       return `₹${(value / 10000000).toFixed(1)} Cr`;
     } else if (value >= 100000) {
@@ -331,23 +280,23 @@ export default function PropertySearch({
             </Button>
 
             {/* Property Type Selector */}
-            <FilterSelect
+            <Select
               value={propertyType}
               onValueChange={(value: (typeof propertyTypes)[number]) =>
                 setPropertyType(value)
               }
             >
-              <FilterSelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
-                <FilterSelectValue placeholder="Property Type" />
-              </FilterSelectTrigger>
-              <FilterSelectContent position="popper">
+              <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
+                <SelectValue placeholder="Property Type" />
+              </SelectTrigger>
+              <SelectContent>
                 {propertyTypes.map((type) => (
-                  <FilterSelectItem key={type} value={type}>
+                  <SelectItem key={type} value={type}>
                     {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </FilterSelectItem>
+                  </SelectItem>
                 ))}
-              </FilterSelectContent>
-            </FilterSelect>
+              </SelectContent>
+            </Select>
 
             {/* Search Button */}
             <Button
@@ -365,7 +314,6 @@ export default function PropertySearch({
       {isFilterOpen && (
         <div
           ref={filterMenuRef}
-          onClick={(e) => e.stopPropagation()} // Prevent clicks from bubbling
           className="absolute left-0 right-0 top-full mt-2 bg-white rounded-lg shadow-lg p-5 z-50 transition-all duration-200 ease-in-out"
           style={{
             opacity: 1,
@@ -380,23 +328,23 @@ export default function PropertySearch({
               <h4 className="font-medium text-sm text-gray-700">
                 Property Type
               </h4>
-              <FilterSelect
+              <Select
                 value={propertyType}
                 onValueChange={(value: (typeof propertyTypes)[number]) =>
                   setPropertyType(value)
                 }
               >
-                <FilterSelectTrigger className="w-full">
-                  <FilterSelectValue placeholder="Select type" />
-                </FilterSelectTrigger>
-                <FilterSelectContent position="popper" className="max-h-[200px]">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-[200px]">
                   {propertyTypes.map((type) => (
-                    <FilterSelectItem key={type} value={type}>
+                    <SelectItem key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </FilterSelectItem>
+                    </SelectItem>
                   ))}
-                </FilterSelectContent>
-              </FilterSelect>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Sale/Rent Selector */}
@@ -404,21 +352,21 @@ export default function PropertySearch({
               <h4 className="font-medium text-sm text-gray-700">
                 For Sale/Agent
               </h4>
-              <FilterSelect
+              <Select
                 value={saleType}
                 onValueChange={(value: "all" | "Sale" | "Agent") =>
                   setSaleType(value)
                 }
               >
-                <FilterSelectTrigger className="w-full">
-                  <FilterSelectValue placeholder="Select type" />
-                </FilterSelectTrigger>
-                <FilterSelectContent position="popper">
-                  <FilterSelectItem value="all">All Properties</FilterSelectItem>
-                  <FilterSelectItem value="Sale">For Sale</FilterSelectItem>
-                  <FilterSelectItem value="Agent">For Agent</FilterSelectItem>
-                </FilterSelectContent>
-              </FilterSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Properties</SelectItem>
+                  <SelectItem value="Sale">For Sale</SelectItem>
+                  <SelectItem value="Agent">For Agent</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Price Range Inputs */}
@@ -427,26 +375,18 @@ export default function PropertySearch({
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
-                  placeholder="Min Price"
-                  value={minPrice === undefined ? "" : minPrice}
-                  onChange={(e) => {
-                    const val = e.target.value === "" ? undefined : Number(e.target.value);
-                    setMinPrice(val);
-                  }}
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Number(e.target.value))}
                   className="w-full"
-                  onClick={(e) => e.stopPropagation()}
                 />
                 <span className="text-gray-500">-</span>
                 <Input
                   type="number"
-                  placeholder="Max Price"
-                  value={maxPrice === undefined ? "" : maxPrice}
-                  onChange={(e) => {
-                    const val = e.target.value === "" ? undefined : Number(e.target.value);
-                    setMaxPrice(val);
-                  }}
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
                   className="w-full"
-                  onClick={(e) => e.stopPropagation()}
                 />
               </div>
               <div className="text-sm text-gray-500">
@@ -462,30 +402,23 @@ export default function PropertySearch({
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
-                  placeholder="Min Area"
-                  value={minArea === undefined ? "" : minArea}
-                  onChange={(e) => {
-                    const val = e.target.value === "" ? undefined : Number(e.target.value);
-                    setMinArea(val);
-                  }}
+                  placeholder="Min"
+                  value={areaRange[0]}
+                  onChange={(e) =>
+                    setAreaRange([Number(e.target.value), areaRange[1]])
+                  }
                   className="w-full"
-                  onClick={(e) => e.stopPropagation()}
                 />
                 <span className="text-gray-500">-</span>
                 <Input
                   type="number"
-                  placeholder="Max Area"
-                  value={maxArea === undefined ? "" : maxArea}
-                  onChange={(e) => {
-                    const val = e.target.value === "" ? undefined : Number(e.target.value);
-                    setMaxArea(val);
-                  }}
+                  placeholder="Max"
+                  value={areaRange[1]}
+                  onChange={(e) =>
+                    setAreaRange([areaRange[0], Number(e.target.value)])
+                  }
                   className="w-full"
-                  onClick={(e) => e.stopPropagation()}
                 />
-              </div>
-              <div className="text-sm text-gray-500">
-                {!minArea ? "Any" : minArea} - {!maxArea ? "Any" : maxArea} sq ft
               </div>
             </div>
 
@@ -512,7 +445,6 @@ export default function PropertySearch({
                           setAmenities(amenities.filter((a) => a !== amenity));
                         }
                       }}
-                      onClick={(e) => e.stopPropagation()}
                     />
                     <Label htmlFor={`amenity-${amenity}`}>{amenity}</Label>
                   </div>
@@ -523,40 +455,35 @@ export default function PropertySearch({
             {/* Bedrooms Selector */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-gray-700">Bedrooms</h4>
-              <FilterSelect
+              <Select
                 value={bedrooms.toString()}
                 onValueChange={(value) => setBedrooms(parseInt(value))}
               >
-                <FilterSelectTrigger className="w-full">
-                  <FilterSelectValue placeholder="Any" />
-                </FilterSelectTrigger>
-                <FilterSelectContent position="popper">
-                  <FilterSelectItem value="0">Any</FilterSelectItem>
-                  <FilterSelectItem value="1">1+</FilterSelectItem>
-                  <FilterSelectItem value="2">2+</FilterSelectItem>
-                  <FilterSelectItem value="3">3+</FilterSelectItem>
-                  <FilterSelectItem value="4">4+</FilterSelectItem>
-                  <FilterSelectItem value="5">5+</FilterSelectItem>
-                </FilterSelectContent>
-              </FilterSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Any</SelectItem>
+                  <SelectItem value="1">1+</SelectItem>
+                  <SelectItem value="2">2+</SelectItem>
+                  <SelectItem value="3">3+</SelectItem>
+                  <SelectItem value="4">4+</SelectItem>
+                  <SelectItem value="5">5+</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            
-            {/* Apply Filters Button */}
-            <div className="col-span-1 md:col-span-2 mt-4">
-              <Button 
-                className="w-full py-5 bg-primary hover:bg-primary/90"
-                onClick={() => {
-                  handleSearch();
-                  setIsFilterOpen(false); // Close filter panel after search
-                }}
-              >
-                <Search className="h-5 w-5 mr-2" />
-                Apply Filters
-              </Button>
-              <p className="text-xs text-center text-gray-500 mt-2">
-                Select all desired filters before clicking the button above
-              </p>
-            </div>
+          </div>
+
+          {/* Close Button */}
+          <div className="mt-4 flex justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setIsFilterOpen(false)}
+              className="flex items-center gap-2"
+            >
+              <X className="h-4 w-4" />
+              Close
+            </Button>
           </div>
         </div>
       )}

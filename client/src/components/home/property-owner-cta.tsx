@@ -8,18 +8,24 @@ export default function PropertyOwnerCTA() {
         <div className="text-center">
           <div className="flex items-center justify-center mb-4 mt-14">
             <div className="border-t border-gray-300 flex-grow w-1/5"></div>
-            <h2 className="text-xl font-medium text-gray-900 mx-4">
+            <h2 className="text-xl font-medium text-white-900 mx-4">
               Are you a Seller?
             </h2>
-            <div className="border-t border-gray-300 flex-grow w-1/5"></div>
+            <div className="border-t border-gray-800 flex-grow w-1/5"></div>
           </div>
           <Button
             asChild
             variant="primary"
-            size="lg" 
-            className="bg-emerald-600 hover:bg-emerald-700"
+            size="lg"
+            className="bg-blue-800 hover:bg-blue-800"
           >
-            <Link href="/post-property-free" onClick={() => window.scrollTo(0, 0)}>Post Free Property Ad</Link>
+            <Link
+              href="/post-property-free"
+              onClick={() => window.scrollTo(0, 0)}
+              className="text-white font-medium"
+            >
+              Post Free Property Ad
+            </Link>
           </Button>
         </div>
       </div>
