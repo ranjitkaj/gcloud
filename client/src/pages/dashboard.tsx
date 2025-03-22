@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useLocation } from 'wouter';
@@ -25,6 +25,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import FileUpload, { FileWithPreview } from '@/components/upload/file-upload';
 import {
   Bed,
   Droplet,
@@ -41,7 +43,10 @@ import {
   Trash2,
   AlertCircle,
   Bookmark,
-  Heart
+  Heart,
+  Camera,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -50,6 +55,9 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState('properties');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<FileWithPreview[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch user properties
   const { 
@@ -167,8 +175,16 @@ export default function Dashboard() {
                 <CardContent className="p-0">
                   <div className="p-6 border-b">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="h-6 w-6 text-primary" />
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                        {profileImage ? (
+                          <img 
+                            src={profileImage} 
+                            alt={user.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <User className="h-6 w-6 text-primary" />
+                        )}
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">{user.name}</h3>
@@ -562,6 +578,86 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-6">
+                        {/* Profile Image Section */}
+                        <div className="space-y-4">
+                          <h3 className="text-lg font-medium">Profile Image</h3>
+                          <div className="flex items-start gap-6">
+                            <div className="relative">
+                              <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border">
+                                {profileImage ? (
+                                  <img 
+                                    src={profileImage} 
+                                    alt={user.name} 
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <User className="h-16 w-16 text-gray-400" />
+                                )}
+                              </div>
+                              <button 
+                                className="absolute -bottom-2 -right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors"
+                                onClick={() => fileInputRef.current?.click()}
+                              >
+                                <Camera className="h-4 w-4" />
+                              </button>
+                              <input 
+                                type="file" 
+                                ref={fileInputRef}
+                                className="hidden" 
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = (event) => {
+                                      setProfileImage(event.target?.result as string);
+                                      toast({
+                                        title: "Profile image updated",
+                                        description: "Your profile image has been updated successfully",
+                                      });
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-medium mb-1">Upload Profile Picture</h4>
+                              <p className="text-sm text-gray-500 mb-3">
+                                Add a profile photo to personalize your account. 
+                                This will be visible to other users on the platform.
+                              </p>
+                              <div className="flex space-x-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => fileInputRef.current?.click()}
+                                >
+                                  <Upload className="h-4 w-4 mr-2" />
+                                  <span>Upload Image</span>
+                                </Button>
+                                {profileImage && (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="text-red-600"
+                                    onClick={() => {
+                                      setProfileImage(null);
+                                      toast({
+                                        title: "Profile image removed",
+                                        description: "Your profile image has been removed",
+                                      });
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    <span>Remove</span>
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="space-y-2">
                           <h3 className="text-lg font-medium">Personal Information</h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -597,7 +693,7 @@ export default function Dashboard() {
                               <input 
                                 type="tel" 
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md" 
-                                value={user.phone || ""}
+                                placeholder="Phone number not available"
                                 readOnly
                               />
                             </div>

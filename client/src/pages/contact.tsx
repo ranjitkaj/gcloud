@@ -137,11 +137,11 @@ export default function ContactPage() {
                 </div>
                 <p className="text-gray-600 mb-2">General Inquiries:</p>
                 <p className="text-primary font-medium mb-3">
-                  urgentsale.in@gmail.com
+                  contact@urgentsales.in
                 </p>
                 <p className="text-gray-600 mb-2">Support:</p>
                 <p className="text-primary font-medium">
-                  urgentsale.in@gmail.com
+                  contact@urgentsales.in
                 </p>
               </div>
 
@@ -202,7 +202,7 @@ export default function ContactPage() {
                       <Mail className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">Urgent Inquiries</p>
-                        <p className="text-gray-600">urgentsale.in@gmail.com</p>
+                        <p className="text-gray-600">contact@urgentsales.in</p>
                       </div>
                     </div>
 
