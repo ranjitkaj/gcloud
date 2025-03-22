@@ -47,9 +47,24 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, [location]);
 
-  const handleLogout = () => {
-    logout();
-    setMobileMenuOpen(false); // Close menu on logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setMobileMenuOpen(false); // Close menu on logout
+      setLocation("/"); // Redirect to home page after logout
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout failed",
+        description: "There was a problem logging out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const navigateTo = (path: string) => {

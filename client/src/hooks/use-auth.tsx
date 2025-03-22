@@ -70,6 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!response.ok) throw new Error('Logout failed');
     },
     onSuccess: () => {
+      // Set user to null immediately before invalidating the query
+      queryClient.setQueryData(['/api/user'], null);
       queryClient.invalidateQueries({ queryKey: ['/api/user'] });
     },
   });
