@@ -130,7 +130,7 @@ export default function AddProperty() {
         delete propertyData.imageUrlsInput;
       }
 
-      const res = await apiRequest({
+      return await apiRequest({
         url: "/api/properties",
         method: "POST",
         body: {
@@ -138,7 +138,6 @@ export default function AddProperty() {
           userId: user?.id,
         }
       });
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
