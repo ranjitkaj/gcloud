@@ -524,6 +524,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create a property
   app.post("/api/properties", isAuthenticated, asyncHandler(async (req, res) => {
+    // Check if property has discounted price (urgency sale) but user is not premium
+    if (req.body.discountedPrice && req.user.subscriptionLevel !== 'premium') {
+      return res.status(403).json({ 
+        message: "Only premium users can create urgency sale listings with discounted prices",
+        code: "PREMIUM_REQUIRED"
+      });
+    }
+    
+    // Check if expiresAt is set (urgency sale) but user is not premium
+    if (req.body.expiresAt && req.user.subscriptionLevel !== 'premium') {
+      return res.status(403).json({ 
+        message: "Only premium users can create urgency sale listings with expiration dates",
+        code: "PREMIUM_REQUIRED"
+      });
+    }
+
     const propertyData = insertPropertySchema.parse({
       ...req.body,
       userId: req.user.id
@@ -550,6 +566,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.user.role !== 'agent' && 
         req.user.role !== 'company_admin') {
       return res.status(403).json({ message: "You don't have permission to update this property" });
+    }
+    
+    // Check if trying to add discounted price (urgency sale) but user is not premium
+    if (
+      req.body.discountedPrice && 
+      !property.discountedPrice && 
+      req.user.subscriptionLevel !== 'premium'
+    ) {
+      return res.status(403).json({ 
+        message: "Only premium users can add urgency sale discounts",
+        code: "PREMIUM_REQUIRED"
+      });
+    }
+    
+    // Check if trying to add expiration date (urgency sale) but user is not premium
+    if (
+      req.body.expiresAt && 
+      !property.expiresAt && 
+      req.user.subscriptionLevel !== 'premium'
+    ) {
+      return res.status(403).json({ 
+        message: "Only premium users can add urgency sale expiration dates",
+        code: "PREMIUM_REQUIRED"
+      });
     }
 
     const updatedProperty = await storage.updateProperty(id, req.body);
