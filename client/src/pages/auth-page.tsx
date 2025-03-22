@@ -397,7 +397,7 @@ export default function AuthPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          resetToken: data.resetToken,
+          token: data.resetToken,
           newPassword: data.password,
         }),
       });
