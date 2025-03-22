@@ -604,6 +604,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         propertyDataToInsert.discountedPrice = parseInt(propertyDataToInsert.discountedPrice) || null;
       }
       
+      // Ensure required fields are present
+      if (!propertyDataToInsert.rentOrSale) {
+        // Check if forSaleOrRent exists and use it instead
+        if (propertyDataToInsert.forSaleOrRent) {
+          propertyDataToInsert.rentOrSale = propertyDataToInsert.forSaleOrRent.toLowerCase();
+        } else {
+          // Default to "sale" if no value is provided
+          propertyDataToInsert.rentOrSale = "sale";
+        }
+      }
+      
       console.log("Property data to parse:", JSON.stringify(propertyDataToInsert, null, 2));
       
       const propertyData = insertPropertySchema.parse(propertyDataToInsert);
