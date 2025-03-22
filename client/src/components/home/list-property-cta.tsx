@@ -49,7 +49,7 @@ export default function ListPropertyCTA() {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
             <h2 className="text-3xl font-bold font-heading mb-4 leading-tight">
-              Looking to Sell or Rent Your Property?
+              Sell or Rent Your Property Without Broker Fees!
             </h2>
             <p className="text-lg mb-6 text-blue-100">
               List your property directly without paying hefty broker
