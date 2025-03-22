@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -16,6 +16,7 @@ import {
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
 
 interface OTPVerificationProps {
   userId: number;
@@ -41,6 +42,31 @@ export default function OTPVerification({
     "idle" | "success" | "error"
   >("idle");
   const { toast } = useToast();
+  const { user } = useAuth();
+  
+  // Check if user is authenticated and matches the expected userId
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      if (!user) {
+        try {
+          // If user is not authenticated in context but we have userId, attempt to check user
+          const response = await fetch('/api/user');
+          if (!response.ok) {
+            console.warn('User not authenticated for OTP verification');
+            toast({
+              title: "Authentication issue",
+              description: "Please try logging in again before verification",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          console.error('Auth check error:', error);
+        }
+      }
+    };
+    
+    checkAuthStatus();
+  }, [user, userId, toast]);
 
   const getRecipientContact = () => {
     if (type === "email") return email;
@@ -61,9 +87,30 @@ export default function OTPVerification({
       setIsVerifying(true);
       setVerificationStatus("idle");
 
-      const response = await apiRequest("POST", "/api/verify-otp", {
-        otp,
-        type,
+      // First ensure the user is authenticated
+      const userCheckResponse = await fetch('/api/user', {
+        credentials: 'include'
+      });
+      
+      if (!userCheckResponse.ok) {
+        // If user is not authenticated, try logging in first
+        toast({
+          title: "Authentication required",
+          description: "Please login before verifying OTP",
+          variant: "destructive",
+        });
+        setVerificationStatus("error");
+        return;
+      }
+
+      // Now that we know the user is authenticated, verify the OTP
+      const response = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important to include credentials
+        body: JSON.stringify({ otp, type }),
       });
 
       const data = await response.json();
@@ -105,7 +152,30 @@ export default function OTPVerification({
     try {
       setIsResending(true);
 
-      const response = await apiRequest("POST", "/api/resend-otp", { type });
+      // First ensure the user is authenticated
+      const userCheckResponse = await fetch('/api/user', {
+        credentials: 'include'
+      });
+      
+      if (!userCheckResponse.ok) {
+        // If user is not authenticated, notify user
+        toast({
+          title: "Authentication required",
+          description: "Please login before requesting a new OTP",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Now resend the OTP with proper authentication
+      const response = await fetch('/api/resend-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include credentials for authenticated request
+        body: JSON.stringify({ type, userId }),
+      });
 
       const data = await response.json();
 
