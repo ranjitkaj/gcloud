@@ -94,7 +94,7 @@ export default function Dashboard() {
   const deleteMutation = useMutation({
     mutationFn: async (propertyId: number) => {
       // This would be the real endpoint in production
-      // await apiRequest("DELETE", `/api/properties/${propertyId}`);
+      // await apiRequest(`/api/properties/${propertyId}`, "DELETE");
       
       // For now we'll just simulate success
       return true;
@@ -120,7 +120,7 @@ export default function Dashboard() {
   // Unsave property mutation 
   const unsaveMutation = useMutation({
     mutationFn: async (propertyId: number) => {
-      await apiRequest("DELETE", `/api/properties/${propertyId}/save`);
+      await apiRequest(`/api/properties/${propertyId}/save`, "DELETE");
       return true;
     },
     onSuccess: () => {

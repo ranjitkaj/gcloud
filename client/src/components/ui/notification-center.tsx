@@ -29,7 +29,7 @@ export default function NotificationCenter() {
     queryKey: ['/api/notifications'],
     queryFn: () => {
       if (!user) return Promise.resolve([]);
-      return apiRequest('GET', '/api/notifications')
+      return apiRequest('/api/notifications', 'GET')
         .then(res => res.json())
         .then(data => Array.isArray(data) ? data : []);
     },
@@ -43,7 +43,7 @@ export default function NotificationCenter() {
     if (!user) return;
     
     try {
-      await apiRequest('POST', '/api/notifications/read-all');
+      await apiRequest('/api/notifications/read-all', 'POST');
       refetch();
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);
