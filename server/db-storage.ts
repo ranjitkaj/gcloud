@@ -145,6 +145,10 @@ export class DbStorage implements IStorage {
       .set({ verified: true })
       .where(eq(otps.id, id));
   }
+  
+  async getAllOtps(): Promise<Otp[]> {
+    return await db.select().from(otps);
+  }
 
   // Booking operations
   async createBooking(booking: InsertBooking): Promise<Booking> {

@@ -21,6 +21,7 @@ export interface IStorage {
   getUsersByRole(role: string): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, userData: Partial<User>): Promise<User | undefined>;
+  updateUserPassword(id: number, newPassword: string): Promise<User | undefined>;
   verifyUserEmail(id: number): Promise<User | undefined>;
   verifyUserPhone(id: number): Promise<User | undefined>;
   
@@ -30,6 +31,7 @@ export interface IStorage {
   getOtpByUserAndType(userId: number, type: string): Promise<Otp | undefined>;
   verifyOtp(userId: number, otpCode: string, type: string): Promise<boolean>;
   invalidateOtp(id: number): Promise<void>;
+  getAllOtps(): Promise<Otp[]>;
 
   // Booking operations
   createBooking(booking: InsertBooking): Promise<Booking>;
@@ -280,6 +282,15 @@ export class MemStorage implements IStorage {
     return updatedUser;
   }
   
+  async updateUserPassword(id: number, newPassword: string): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser = { ...user, password: newPassword };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+  
   // OTP operations
   async createOtp(otp: InsertOtp): Promise<Otp> {
     const id = this.otpIdCounter++;
@@ -339,6 +350,10 @@ export class MemStorage implements IStorage {
     
     const updatedOtp = { ...otp, verified: true }; // Mark as verified to invalidate
     this.otps.set(id, updatedOtp);
+  }
+  
+  async getAllOtps(): Promise<Otp[]> {
+    return Array.from(this.otps.values());
   }
   
   // Booking operations
