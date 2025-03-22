@@ -196,11 +196,11 @@ export default function PropertySearch({
       if (bedrooms > 0) {
         queryParams.append("minBedrooms", bedrooms.toString());
       }
-      if (areaRange[0] > 0) {
-        queryParams.append("minArea", areaRange[0].toString());
+      if (minArea !== undefined && minArea > 0) {
+        queryParams.append("minArea", minArea.toString());
       }
-      if (areaRange[1] < 10000) {
-        queryParams.append("maxArea", areaRange[1].toString());
+      if (maxArea !== undefined) {
+        queryParams.append("maxArea", maxArea.toString());
       }
       queryParams.append("amenities", amenities.join(","));
     }
@@ -465,6 +465,9 @@ export default function PropertySearch({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
+              <div className="text-sm text-gray-500">
+                {!minArea ? "Any" : minArea} - {!maxArea ? "Any" : maxArea} sq ft
+              </div>
             </div>
 
             {/* Amenities */}
@@ -490,6 +493,7 @@ export default function PropertySearch({
                           setAmenities(amenities.filter((a) => a !== amenity));
                         }
                       }}
+                      onClick={(e) => e.stopPropagation()}
                     />
                     <Label htmlFor={`amenity-${amenity}`}>{amenity}</Label>
                   </div>
