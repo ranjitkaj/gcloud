@@ -32,9 +32,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-// Import our custom verification components
-import OTPVerification from "@/components/auth/otp-verification";
-import VerificationMethodSelector from "@/components/auth/verification-method-selector";
+// Import our combined verification component
+import CombinedVerification from "@/components/auth/combined-verification";
 
 // Extend the insert schema with additional validation
 const loginSchema = z.object({
@@ -536,19 +535,12 @@ export default function AuthPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="w-full md:w-1/2 max-w-md mx-auto md:mx-0">
-              {registrationState === "verification-method" && registeredUser ? (
-                <VerificationMethodSelector
-                  email={registeredUser.email}
-                  phone={registeredUser.phone}
-                  onMethodSelected={handleVerificationMethodSelected}
-                  onCancel={handleVerificationCancelled}
-                />
-              ) : registrationState === "verification" && registeredUser ? (
-                <OTPVerification
+              {(registrationState === "verification-method" || registrationState === "verification") && registeredUser ? (
+                <CombinedVerification
                   userId={registeredUser.id}
                   email={registeredUser.email}
                   phone={registeredUser.phone}
-                  type={selectedVerificationMethod}
+                  initialVerificationMethod={selectedVerificationMethod}
                   onVerified={handleVerificationCompleted}
                   onCancel={handleVerificationCancelled}
                 />
