@@ -23,6 +23,7 @@ import {
   createNotification,
   sendRoleNotifications
 } from './notification-service';
+import { getNeighborhoodInsightsHandler } from './neighborhood-service';
 
 
 // Helper to catch errors in async routes
