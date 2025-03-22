@@ -175,7 +175,7 @@ export default function PostPropertyFree() {
       title: "",
       description: "",
       propertyType: "apartment",
-      forSaleOrRent: "Sale",
+      forSaleOrRent: "sale",
       price: "",
       isUrgentSale: false,
       location: "",
