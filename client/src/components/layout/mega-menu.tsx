@@ -556,6 +556,12 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           Buyer
         </Link>
         <Link
+          to="/add-property"
+          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
+        >
+          Seller
+        </Link>
+        <Link
           to="/agents"
           className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
         >
@@ -566,12 +572,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
         >
           Companies
-        </Link>
-        <Link
-          to="/add-property"
-          className="text-gray-700 hover:text-primary font-medium transition-colors py-2"
-        >
-          Seller
         </Link>
         <Link
           to="/projects"
@@ -711,6 +711,20 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link
+              to="/add-property"
+              className={cn(
+                navigationMenuTriggerStyle(),
+                pathname === "/add-property" && "text-primary font-medium",
+              )}
+            >
+              Seller
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
           <NavigationMenuTrigger
             className={cn(
               "bg-transparent hover:bg-transparent focus:bg-transparent",
@@ -828,20 +842,6 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
               </div>
             </div>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link
-              to="/add-property"
-              className={cn(
-                navigationMenuTriggerStyle(),
-                pathname === "/add-property" && "text-primary font-medium",
-              )}
-            >
-              Seller
-            </Link>
-          </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
