@@ -130,7 +130,7 @@ export default function AddProperty() {
         delete propertyData.imageUrlsInput;
       }
 
-      const res = await apiRequest("POST", "/api/properties", {
+      const res = await apiRequest("/api/properties", "POST", {
         ...propertyData,
         userId: user?.id,
       });

@@ -112,7 +112,7 @@ export default function PostPropertyFree() {
         expiresAt: propertyData.expiresAt ? propertyData.expiresAt.toISOString() : null
       };
       
-      return apiRequest('POST', '/api/properties', cleanedData);
+      return apiRequest('/api/properties', 'POST', cleanedData);
     },
     onSuccess: () => {
       // Invalidate queries to refresh property lists

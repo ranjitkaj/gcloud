@@ -32,15 +32,26 @@ export async function apiRequest(
   method: string = 'GET',
   data?: any | undefined,
 ): Promise<Response> {
-  console.log(`API Request: ${method} ${url}`);
+  console.log(`API Request: ${url} ${method}`);
   
   try {
-    const res = await fetch(url, {
-      method,
-      headers: data ? { "Content-Type": "application/json" } : {},
-      body: data ? JSON.stringify(data) : undefined,
+    // Fix: Ensure method is properly formatted
+    const validMethod = method.toUpperCase();
+    
+    const options: RequestInit = {
+      method: validMethod,
+      headers: {
+        ...(data ? { "Content-Type": "application/json" } : {})
+      },
       credentials: "include",
-    });
+    };
+    
+    // Only include body for POST, PUT, PATCH methods
+    if (data && ['POST', 'PUT', 'PATCH'].includes(validMethod)) {
+      options.body = JSON.stringify(data);
+    }
+    
+    const res = await fetch(url, options);
     
     if (res.status === 401) {
       console.warn('Authentication required for operation:', url);
@@ -53,7 +64,7 @@ export async function apiRequest(
     await throwIfResNotOk(res);
     return res;
   } catch (error) {
-    console.error(`API Request Error (${method} ${url}):`, error);
+    console.error(`API Request Error (${url} ${method}):`, error);
     throw error;
   }
 }
