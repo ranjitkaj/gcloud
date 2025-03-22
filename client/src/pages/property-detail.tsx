@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, Link } from 'wouter';
 import { Property } from '@shared/schema';
@@ -15,6 +15,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
+import {
   MapPin,
   Bed,
   Droplet,
@@ -27,7 +34,11 @@ import {
   Heart,
   Phone,
   Mail,
-  Sparkles
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Expand,
+  X
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
@@ -48,6 +59,8 @@ export default function PropertyDetail() {
   const [interestPhone, setInterestPhone] = useState('');
   const [interestMessage, setInterestMessage] = useState('');
   const [copySuccess, setCopySuccess] = useState('');
+  const [showFullscreenGallery, setShowFullscreenGallery] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -189,6 +202,36 @@ export default function PropertyDetail() {
       setShowAiRecommendation(Math.random() > 0.7);
     }
   }, [user, property, savedProperties]);
+  
+  // Add event listener to handle carousel navigation
+  useEffect(() => {
+    const handleCarouselChange = () => {
+      // Get the current index from the carousel if it exists
+      const carousel = carouselRef.current;
+      if (carousel) {
+        // Get active element from carousel
+        const activeSlide = carousel.querySelector('[data-state="active"]');
+        if (activeSlide) {
+          const slideIndex = Array.from(carousel.querySelectorAll('[data-carousel-item]')).indexOf(activeSlide);
+          if (slideIndex !== -1 && slideIndex !== activeImageIndex) {
+            setActiveImageIndex(slideIndex);
+          }
+        }
+      }
+    };
+
+    // Add event listener for carousel changes
+    const carousel = carouselRef.current;
+    if (carousel) {
+      carousel.addEventListener('change', handleCarouselChange);
+    }
+    
+    return () => {
+      if (carousel) {
+        carousel.removeEventListener('change', handleCarouselChange);
+      }
+    };
+  }, [activeImageIndex]);
 
   // Format the price in Indian currency format
   const formatPrice = (price?: number) => {
@@ -331,28 +374,68 @@ export default function PropertyDetail() {
           {/* Property Images */}
           <div className="mb-8">
             <div className="relative rounded-xl overflow-hidden bg-gray-100 h-[400px] mb-2">
-              <img 
-                src={images[activeImageIndex]} 
-                alt={property.title} 
-                className="w-full h-full object-cover"
-              />
+              <div className="w-full h-full relative group">
+                <Carousel className="w-full h-full" ref={carouselRef}>
+                  <CarouselContent className="h-[400px]">
+                    {images.map((image, index) => (
+                      <CarouselItem key={index} className="h-full">
+                        <div className="relative w-full h-full">
+                          <img 
+                            src={image} 
+                            alt={`${property.title} - ${index + 1}`} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  
+                  <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <CarouselPrevious className="relative h-9 w-9 rounded-full" />
+                    <CarouselNext className="relative h-9 w-9 rounded-full" />
+                  </div>
+                  
+                  <Button 
+                    variant="secondary" 
+                    size="icon" 
+                    className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-80 transition-opacity"
+                    onClick={() => setShowFullscreenGallery(true)}
+                  >
+                    <Expand className="h-4 w-4" />
+                  </Button>
+                </Carousel>
+              </div>
+              
+              {/* Badges */}
               {property.featured && (
                 <Badge className="absolute top-4 left-4 z-10 bg-primary">FEATURED</Badge>
               )}
               {showAiRecommendation && (
-                <Badge className="absolute top-4 right-4 z-10 bg-indigo-600 flex items-center gap-1">
+                <Badge className="absolute top-4 right-14 z-10 bg-indigo-600 flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
                   <span>AI RECOMMENDED</span>
                 </Badge>
               )}
             </div>
+            
+            {/* Thumbnail Navigation */}
             {images.length > 1 && (
-              <div className="flex space-x-2 overflow-x-auto py-2 scrollbar-hide">
+              <div className="flex space-x-2 overflow-x-auto py-2">
                 {images.map((image, index) => (
                   <div 
                     key={index}
-                    className={`h-16 w-24 rounded-md overflow-hidden cursor-pointer border-2 ${index === activeImageIndex ? 'border-primary' : 'border-transparent'}`}
-                    onClick={() => setActiveImageIndex(index)}
+                    className={`h-16 w-24 rounded-md overflow-hidden cursor-pointer border-2 transition-all ${activeImageIndex === index ? 'border-primary' : 'border-transparent hover:border-gray-300'}`}
+                    onClick={() => {
+                      setActiveImageIndex(index);
+                      const slides = carouselRef.current?.querySelectorAll('[data-carousel-slide]');
+                      if (slides && slides[index]) {
+                        slides[index].scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'nearest',
+                          inline: 'center'
+                        });
+                      }
+                    }}
                   >
                     <img 
                       src={image} 
@@ -364,6 +447,50 @@ export default function PropertyDetail() {
               </div>
             )}
           </div>
+          
+          {/* Fullscreen Gallery Modal */}
+          {showFullscreenGallery && (
+            <div className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center">
+              <div className="relative w-full h-full max-w-5xl max-h-[85vh]">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="absolute top-4 right-4 z-50 text-white bg-black bg-opacity-50 hover:bg-opacity-70"
+                  onClick={() => setShowFullscreenGallery(false)}
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+                
+                <Carousel className="w-full h-full">
+                  <CarouselContent className="h-full">
+                    {images.map((image, index) => (
+                      <CarouselItem key={index} className="h-full flex items-center justify-center p-4">
+                        <img 
+                          src={image} 
+                          alt={`${property.title} - ${index + 1}`} 
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  
+                  <div className="absolute inset-y-0 left-4 flex items-center">
+                    <CarouselPrevious className="relative h-10 w-10 rounded-full" />
+                  </div>
+                  
+                  <div className="absolute inset-y-0 right-4 flex items-center">
+                    <CarouselNext className="relative h-10 w-10 rounded-full" />
+                  </div>
+                </Carousel>
+                
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 px-4 py-2 rounded-full">
+                  <span className="text-white text-sm">
+                    {activeImageIndex + 1} / {images.length}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Property Details */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
