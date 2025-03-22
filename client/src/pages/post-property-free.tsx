@@ -103,7 +103,16 @@ export default function PostPropertyFree() {
   // Set up the mutation for submitting property data
   const createPropertyMutation = useMutation({
     mutationFn: (propertyData: any) => {
-      return apiRequest('POST', '/api/properties', propertyData);
+      console.log("Submitting property data:", propertyData);
+      
+      // Convert JSON dates that might cause issues with API
+      const cleanedData = {
+        ...propertyData,
+        // Convert Date objects to ISO strings to avoid Date serialization issues
+        expiresAt: propertyData.expiresAt ? propertyData.expiresAt.toISOString() : null
+      };
+      
+      return apiRequest('POST', '/api/properties', cleanedData);
     },
     onSuccess: () => {
       // Invalidate queries to refresh property lists
@@ -134,10 +143,23 @@ export default function PostPropertyFree() {
         // Go back to first step where urgency sale option is
         setCurrentStep(1);
       } else {
+        // Enhanced error handling - extract server error message if available
+        let errorMessage = "Unknown error occurred";
+        
+        if (error.response && error.response.data) {
+          if (error.response.data.error) {
+            errorMessage = error.response.data.error;
+          } else if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          }
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
         // Generic error handling
         toast({
-          title: "Error",
-          description: `Failed to submit property: ${error.message || "Unknown error occurred"}`,
+          title: "Error Submitting Property",
+          description: `Failed to submit property: ${errorMessage}`,
           variant: "destructive",
         });
       }

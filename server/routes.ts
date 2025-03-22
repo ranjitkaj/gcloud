@@ -539,29 +539,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create a property
   app.post("/api/properties", isAuthenticated, asyncHandler(async (req, res) => {
-    // Check if property has discounted price (urgency sale) but user is not premium
-    if (req.body.discountedPrice && req.user.subscriptionLevel !== 'premium') {
-      return res.status(403).json({ 
-        message: "Only premium users can create urgency sale listings with discounted prices",
-        code: "PREMIUM_REQUIRED"
-      });
+    try {
+      console.log("Property submission body:", JSON.stringify(req.body, null, 2));
+      
+      // Check if property has discounted price (urgency sale) but user is not premium
+      if (req.body.discountedPrice && req.user.subscriptionLevel !== 'premium') {
+        return res.status(403).json({ 
+          message: "Only premium users can create urgency sale listings with discounted prices",
+          code: "PREMIUM_REQUIRED"
+        });
+      }
+      
+      // Check if expiresAt is set (urgency sale) but user is not premium
+      if (req.body.expiresAt && req.user.subscriptionLevel !== 'premium') {
+        return res.status(403).json({ 
+          message: "Only premium users can create urgency sale listings with expiration dates",
+          code: "PREMIUM_REQUIRED"
+        });
+      }
+      
+      // Handle the case when expiresAt is a string or Date object
+      const propertyDataToInsert = {
+        ...req.body,
+        userId: req.user.id,
+      };
+      
+      // If expiresAt is present as a Date object, convert it to proper format
+      if (propertyDataToInsert.expiresAt && typeof propertyDataToInsert.expiresAt === 'object') {
+        propertyDataToInsert.expiresAt = new Date(propertyDataToInsert.expiresAt);
+      }
+      
+      console.log("Property data to parse:", JSON.stringify(propertyDataToInsert, null, 2));
+      
+      const propertyData = insertPropertySchema.parse(propertyDataToInsert);
+      console.log("Property data after parse:", JSON.stringify(propertyData, null, 2));
+      
+      const property = await storage.createProperty(propertyData);
+      res.status(201).json(property);
+    } catch (error) {
+      console.error("Error creating property:", error);
+      // Provide more detailed error message to the client
+      if (error instanceof Error) {
+        res.status(500).json({ 
+          message: "Failed to create property", 
+          error: error.message,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+      } else {
+        res.status(500).json({ message: "Unknown error occurred" });
+      }
     }
-    
-    // Check if expiresAt is set (urgency sale) but user is not premium
-    if (req.body.expiresAt && req.user.subscriptionLevel !== 'premium') {
-      return res.status(403).json({ 
-        message: "Only premium users can create urgency sale listings with expiration dates",
-        code: "PREMIUM_REQUIRED"
-      });
-    }
-
-    const propertyData = insertPropertySchema.parse({
-      ...req.body,
-      userId: req.user.id
-    });
-
-    const property = await storage.createProperty(propertyData);
-    res.status(201).json(property);
   }));
 
   // Update a property

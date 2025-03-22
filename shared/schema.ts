@@ -256,6 +256,10 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
 export const insertPropertySchema = createInsertSchema(properties).omit({
   id: true,
   createdAt: true,
+  expiresAt: true, // Exclude expiresAt from auto-validation to handle manually
+}).extend({
+  // Add expiresAt field with custom validation that accepts date or null
+  expiresAt: z.date().nullable().optional(),
 });
 
 export const insertInquirySchema = createInsertSchema(inquiries).omit({
