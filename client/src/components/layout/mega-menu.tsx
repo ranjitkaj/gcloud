@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { 
+  PersistentNavigationMenuContent as NavigationMenuContent,
+  PersistentNavigationMenuLink as NavigationMenuLink 
+} from "./mega-menu-util";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
