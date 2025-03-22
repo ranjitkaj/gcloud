@@ -349,7 +349,7 @@ export default function AuthPage() {
       setIsForgotPasswordLoading(true);
       setAuthError(null);
       
-      const response = await fetch("/api/auth/forgot-password", {
+      const response = await fetch("/api/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -391,7 +391,7 @@ export default function AuthPage() {
       setAuthError(null);
       
       // The token should come from URL param, but we're using the form for simplicity
-      const response = await fetch("/api/auth/reset-password", {
+      const response = await fetch("/api/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
