@@ -73,7 +73,7 @@ const propertySchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
   description: z.string().min(20, { message: "Description must be at least 20 characters" }),
   propertyType: z.enum(["apartment", "villa", "house", "plot", "commercial", "office"]),
-  forSaleOrRent: z.enum(["Sale", "Rent"]),
+  forSaleOrRent: z.enum(["sale", "rent"]),
   price: z.string().min(1, { message: "Price is required" }),
   isUrgentSale: z.boolean().default(false),
   location: z.string().min(5, { message: "Location must be at least 5 characters" }),
@@ -582,8 +582,8 @@ export default function PostPropertyFree() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Sale">Sale</SelectItem>
-                        <SelectItem value="Rent">Rent</SelectItem>
+                        <SelectItem value="sale">Sale</SelectItem>
+                        <SelectItem value="rent">Rent</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
