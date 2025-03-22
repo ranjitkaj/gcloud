@@ -285,6 +285,33 @@ export default function AddProperty() {
 
                           <FormField
                             control={form.control}
+                            name="rentOrSale"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>For Sale or Rent</FormLabel>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value || "for_sale"}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Sale or Rent" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="for_sale">For Sale</SelectItem>
+                                    <SelectItem value="for_rent">For Rent</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                          <FormField
+                            control={form.control}
                             name="price"
                             render={({ field }) => (
                               <FormItem>
