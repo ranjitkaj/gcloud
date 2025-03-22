@@ -88,7 +88,7 @@ export default function Navbar() {
           </div>
 
           {/* Post Property Button and Support Icon */}
-          <div className="hidden md:flex items-center space-x-3 mr-3">
+          <div className="hidden md:flex items-center space-x-2 mr-0">
             <Link
               to={user ? "/post-property-free" : "/auth"}
               onClick={() => {
@@ -142,10 +142,8 @@ export default function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-3">
+            {/* Auth Buttons */}
             {user ? (
               <>
                 <NotificationCenter />

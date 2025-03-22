@@ -18,8 +18,48 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
-import { Property, User } from '@shared/schema';
 import { AlertCircle, CheckCircle2, XCircle, Search, Database, Eye } from 'lucide-react';
+
+// Define interfaces for type safety
+interface Property {
+  id: number;
+  title: string;
+  description?: string;
+  location?: string;
+  city?: string;
+  address?: string;
+  propertyType?: string;
+  price?: number;
+  discountedPrice?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: number;
+  amenities?: string[];
+  imageUrls?: string[];
+  approvalStatus: 'pending' | 'approved' | 'rejected';
+  approvedBy?: number;
+  approvalDate?: Date;
+  rejectionReason?: string;
+  userId: number;
+  agentId?: number;
+  companyId?: number;
+  rentOrSale: 'rent' | 'sale';
+  featured?: boolean;
+  premium?: boolean;
+  expiresAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface DatabaseTable {
+  tableName: string;
+  rowCount: number;
+}
+
+interface TableRecords {
+  records: any[];
+  total: number;
+}
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -41,19 +81,43 @@ export default function AdminDashboard() {
   }, [user, navigate, toast]);
 
   // Fetch pending properties
-  const { data: pendingProperties, isLoading: pendingLoading, refetch: refetchPending } = useQuery({
+  const { data: pendingProperties, isLoading: pendingLoading, refetch: refetchPending } = useQuery<Property[]>({
     queryKey: ['/api/properties/pending'],
+    queryFn: async () => {
+      const response = await fetch('/api/properties/pending', { 
+        credentials: 'include' 
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to fetch pending properties');
+      }
+      
+      return response.json();
+    },
     enabled: !!user && user.role === 'admin',
   });
 
   // Fetch all properties
-  const { data: allProperties, isLoading: allLoading } = useQuery({
+  const { data: allProperties, isLoading: allLoading } = useQuery<Property[]>({
     queryKey: ['/api/properties/all'],
+    queryFn: async () => {
+      const response = await fetch('/api/properties/all', { 
+        credentials: 'include' 
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to fetch all properties');
+      }
+      
+      return response.json();
+    },
     enabled: !!user && user.role === 'admin',
   });
   
   // Fetch database tables info
-  const { data: dbTablesInfo, isLoading: dbTablesLoading } = useQuery({
+  const { data: dbTablesInfo, isLoading: dbTablesLoading } = useQuery<DatabaseTable[]>({
     queryKey: ['/api/admin/database/tables'],
     enabled: !!user && user.role === 'admin',
   });
@@ -68,8 +132,23 @@ export default function AdminDashboard() {
     data: tableRecords, 
     isLoading: tableRecordsLoading,
     refetch: refetchTableRecords
-  } = useQuery({
+  } = useQuery<TableRecords>({
     queryKey: ['/api/admin/database/tables', selectedTable, currentPage, recordsPerPage],
+    queryFn: async () => {
+      if (!selectedTable) return { records: [], total: 0 };
+      
+      const response = await fetch(
+        `/api/admin/database/tables/${selectedTable}?page=${currentPage}&limit=${recordsPerPage}`,
+        { credentials: 'include' }
+      );
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to fetch table records');
+      }
+      
+      return response.json();
+    },
     enabled: !!selectedTable && !!user && user.role === 'admin',
   });
 
