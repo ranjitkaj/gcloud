@@ -9,6 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  FilterSelect,
+  FilterSelectContent,
+  FilterSelectItem,
+  FilterSelectTrigger,
+  FilterSelectValue,
+} from "./property-select";
 import { MapPin, Search } from "lucide-react";
 import { propertyTypes } from "@shared/schema";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added import
@@ -312,23 +319,23 @@ export default function PropertySearch({
             </Button>
 
             {/* Property Type Selector */}
-            <Select
+            <FilterSelect
               value={propertyType}
               onValueChange={(value: (typeof propertyTypes)[number]) =>
                 setPropertyType(value)
               }
             >
-              <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
-                <SelectValue placeholder="Property Type" />
-              </SelectTrigger>
-              <SelectContent position="popper">
+              <FilterSelectTrigger className="bg-gray-50 border border-gray-300 text-gray-700 h-12 min-w-[10px]">
+                <FilterSelectValue placeholder="Property Type" />
+              </FilterSelectTrigger>
+              <FilterSelectContent position="popper">
                 {propertyTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
+                  <FilterSelectItem key={type} value={type}>
                     {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </SelectItem>
+                  </FilterSelectItem>
                 ))}
-              </SelectContent>
-            </Select>
+              </FilterSelectContent>
+            </FilterSelect>
 
             {/* Search Button */}
             <Button
@@ -361,23 +368,23 @@ export default function PropertySearch({
               <h4 className="font-medium text-sm text-gray-700">
                 Property Type
               </h4>
-              <Select
+              <FilterSelect
                 value={propertyType}
                 onValueChange={(value: (typeof propertyTypes)[number]) =>
                   setPropertyType(value)
                 }
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent position="popper" className="max-h-[200px]">
+                <FilterSelectTrigger className="w-full">
+                  <FilterSelectValue placeholder="Select type" />
+                </FilterSelectTrigger>
+                <FilterSelectContent position="popper" className="max-h-[200px]">
                   {propertyTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
+                    <FilterSelectItem key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </SelectItem>
+                    </FilterSelectItem>
                   ))}
-                </SelectContent>
-              </Select>
+                </FilterSelectContent>
+              </FilterSelect>
             </div>
 
             {/* Sale/Rent Selector */}
@@ -385,21 +392,21 @@ export default function PropertySearch({
               <h4 className="font-medium text-sm text-gray-700">
                 For Sale/Agent
               </h4>
-              <Select
+              <FilterSelect
                 value={saleType}
                 onValueChange={(value: "all" | "Sale" | "Agent") =>
                   setSaleType(value)
                 }
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="all">All Properties</SelectItem>
-                  <SelectItem value="Sale">For Sale</SelectItem>
-                  <SelectItem value="Agent">For Agent</SelectItem>
-                </SelectContent>
-              </Select>
+                <FilterSelectTrigger className="w-full">
+                  <FilterSelectValue placeholder="Select type" />
+                </FilterSelectTrigger>
+                <FilterSelectContent position="popper">
+                  <FilterSelectItem value="all">All Properties</FilterSelectItem>
+                  <FilterSelectItem value="Sale">For Sale</FilterSelectItem>
+                  <FilterSelectItem value="Agent">For Agent</FilterSelectItem>
+                </FilterSelectContent>
+              </FilterSelect>
             </div>
 
             {/* Price Range Inputs */}
@@ -504,22 +511,22 @@ export default function PropertySearch({
             {/* Bedrooms Selector */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-gray-700">Bedrooms</h4>
-              <Select
+              <FilterSelect
                 value={bedrooms.toString()}
                 onValueChange={(value) => setBedrooms(parseInt(value))}
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Any" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="0">Any</SelectItem>
-                  <SelectItem value="1">1+</SelectItem>
-                  <SelectItem value="2">2+</SelectItem>
-                  <SelectItem value="3">3+</SelectItem>
-                  <SelectItem value="4">4+</SelectItem>
-                  <SelectItem value="5">5+</SelectItem>
-                </SelectContent>
-              </Select>
+                <FilterSelectTrigger className="w-full">
+                  <FilterSelectValue placeholder="Any" />
+                </FilterSelectTrigger>
+                <FilterSelectContent position="popper">
+                  <FilterSelectItem value="0">Any</FilterSelectItem>
+                  <FilterSelectItem value="1">1+</FilterSelectItem>
+                  <FilterSelectItem value="2">2+</FilterSelectItem>
+                  <FilterSelectItem value="3">3+</FilterSelectItem>
+                  <FilterSelectItem value="4">4+</FilterSelectItem>
+                  <FilterSelectItem value="5">5+</FilterSelectItem>
+                </FilterSelectContent>
+              </FilterSelect>
             </div>
           </div>
         </div>
