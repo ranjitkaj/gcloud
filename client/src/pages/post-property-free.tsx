@@ -73,6 +73,7 @@ export default function PostPropertyFree() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [propertyImages, setPropertyImages] = useState<FileWithPreview[]>([]);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   
   // Set up the mutation for submitting property data
   const createPropertyMutation = useMutation({
@@ -94,13 +95,28 @@ export default function PostPropertyFree() {
       // Navigate to dashboard after success
       navigate('/dashboard');
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
       console.error("Error submitting property:", error);
-      toast({
-        title: "Error",
-        description: `Failed to submit property: ${error.message}`,
-        variant: "destructive",
-      });
+      
+      // Check if it's a premium feature error
+      if (error.response && error.response.data && error.response.data.code === "PREMIUM_REQUIRED") {
+        toast({
+          title: "Premium Feature Required",
+          description: "Urgency sale listings are only available for premium members. Please upgrade your subscription to use this feature.",
+          variant: "destructive",
+        });
+        
+        // Go back to first step where urgency sale option is
+        setCurrentStep(1);
+      } else {
+        // Generic error handling
+        toast({
+          title: "Error",
+          description: `Failed to submit property: ${error.message || "Unknown error occurred"}`,
+          variant: "destructive",
+        });
+      }
+      
       setFormSubmitted(false);
     }
   });
@@ -503,11 +519,8 @@ export default function PostPropertyFree() {
                           onCheckedChange={(checked) => {
                             // Check if the user has a premium subscription
                             if (checked && (!user || user.subscriptionLevel !== 'premium')) {
-                              toast({
-                                title: "Premium Feature",
-                                description: "Urgency Sale is only available for premium members. Please upgrade your subscription.",
-                                variant: "destructive",
-                              });
+                              // Show premium upgrade modal
+                              setShowPremiumModal(true);
                               return;
                             }
                             field.onChange(checked);
