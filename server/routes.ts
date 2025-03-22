@@ -1033,6 +1033,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const inquiries = await storage.getInquiriesByUser(req.user.id, true);
     res.json(inquiries);
   }));
+  
+  // Get neighborhood insights
+  app.get("/api/neighborhood/insights", asyncHandler(getNeighborhoodInsightsHandler));
 
   // Mark an inquiry as read
   app.patch("/api/inquiries/:id/read", isAuthenticated, asyncHandler(async (req, res) => {

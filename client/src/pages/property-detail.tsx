@@ -10,6 +10,7 @@ import {
   CardContent,
   CardFooter 
 } from '@/components/ui/card';
+import NeighborhoodInsights from '@/components/property/neighborhood-insights';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -374,6 +375,16 @@ export default function PropertyDetail() {
                       </div>
                     </TabsContent>
                   </Tabs>
+                </CardContent>
+              </Card>
+              
+              {/* Neighborhood Insights */}
+              <Card className="mb-6">
+                <CardContent className="pt-6">
+                  <NeighborhoodInsights 
+                    neighborhood={property.location} 
+                    city={property.city} 
+                  />
                 </CardContent>
               </Card>
             </div>
