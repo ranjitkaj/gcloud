@@ -39,6 +39,13 @@ export default function PropertyDetail() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showAiRecommendation, setShowAiRecommendation] = useState(false);
+  const [showInterestForm, setShowInterestForm] = useState(false);
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [isSubmittingInterest, setIsSubmittingInterest] = useState(false);
+  const [interestName, setInterestName] = useState('');
+  const [interestEmail, setInterestEmail] = useState('');
+  const [interestPhone, setInterestPhone] = useState('');
+  const [interestMessage, setInterestMessage] = useState('');
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -407,14 +414,34 @@ export default function PropertyDetail() {
                       </div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                      <Button className="w-full bg-primary hover:bg-primary/90">
-                        <Phone className="h-4 w-4 mr-2" />
-                        <span>Call Owner</span>
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        <Mail className="h-4 w-4 mr-2" />
-                        <span>Email Owner</span>
-                      </Button>
+                      {accessGranted ? (
+                        <>
+                          <Button className="w-full bg-primary hover:bg-primary/90">
+                            <Phone className="h-4 w-4 mr-2" /> Call Owner
+                          </Button>
+                          <Button variant="outline" className="w-full">
+                            <Mail className="h-4 w-4 mr-2" /> Email Owner
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button 
+                            className="w-full bg-primary hover:bg-primary/90"
+                            onClick={() => setShowInterestForm(true)}
+                          >
+                            <Phone className="h-4 w-4 mr-2" />
+                            <span>Request Contact Info</span>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            className="w-full"
+                            onClick={() => setShowInterestForm(true)}
+                          >
+                            <Mail className="h-4 w-4 mr-2" />
+                            <span>Express Interest</span>
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -430,6 +457,114 @@ export default function PropertyDetail() {
         </div>
       </main>
       <Footer />
+
+      {/* Interest Form Dialog */}
+      {showInterestForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 relative">
+            <button 
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowInterestForm(false)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="mb-4 text-center">
+              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold">Express Interest</h3>
+              <p className="text-gray-600 mt-1">
+                This property listing is private. Submit your information to get access to contact details.
+              </p>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              setIsSubmittingInterest(true);
+              
+              // Simulate sending interest to admin/company
+              setTimeout(() => {
+                setIsSubmittingInterest(false);
+                setAccessGranted(true);
+                setShowInterestForm(false);
+                
+                toast({
+                  title: "Interest Submitted",
+                  description: "Your request has been sent to the property owner. Contact details are now available.",
+                });
+              }, 1500);
+            }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                <input
+                  type="text"
+                  value={interestName}
+                  onChange={(e) => setInterestName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={interestEmail}
+                  onChange={(e) => setInterestEmail(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  value={interestPhone}
+                  onChange={(e) => setInterestPhone(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="Your contact number"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+                <textarea
+                  value={interestMessage}
+                  onChange={(e) => setInterestMessage(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md h-24"
+                  placeholder="Please let me know more about this property..."
+                />
+              </div>
+              
+              <Button type="submit" className="w-full" disabled={isSubmittingInterest}>
+                {isSubmittingInterest ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Interest"
+                )}
+              </Button>
+              
+              <p className="text-xs text-gray-500 text-center mt-4">
+                By submitting this form, you agree to our terms and privacy policy.
+                Your information will be sent to the property owner or manager.
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

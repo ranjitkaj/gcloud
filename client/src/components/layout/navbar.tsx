@@ -72,7 +72,7 @@ export default function Navbar() {
               <img
                 src="/src/Images/logo.png"
                 alt="UrgentSales.in"
-                className="h-10 md:h-12 w-auto" // Adjusted the height for responsiveness
+                className="h-12 md:h-14 w-auto" // Adjusted the height for responsiveness
                 onError={(e) => {
                   console.error("Logo failed to load:", e);
                   e.currentTarget.src = "/src/Images/logo.png";
@@ -88,7 +88,7 @@ export default function Navbar() {
           </div>
 
           {/* Post Property Button and Support Icon */}
-          <div className="hidden md:flex items-center space-x-3 mr-3">
+          <div className="hidden md:flex items-center space-x-3 mr-0">
             <Link
               to={user ? "/post-property-free" : "/auth"}
               onClick={() => {
@@ -142,10 +142,8 @@ export default function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-3">
+            {/* Auth Buttons */}
             {user ? (
               <>
                 <NotificationCenter />
@@ -228,17 +226,19 @@ export default function Navbar() {
                 </Link>
               </>
             )}
-            <button
-              className="md:hidden flex items-center text-gray-700"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
           </div>
+
+          {/* side menu button  */}
+          <button
+            className="md:hidden flex items-center text-gray-700"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
         </div>
       </div>
 

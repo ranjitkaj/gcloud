@@ -11,7 +11,7 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
   return (
-    <Link href={`/properties/${property.id}`}>
+    <Link href={`/property/${property.id}`}>
       <Card className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
         <div className="relative h-48">
           {property.imageUrls && property.imageUrls.length > 0 ? (

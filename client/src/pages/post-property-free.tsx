@@ -395,7 +395,7 @@ export default function PostPropertyFree() {
         bedrooms: bedrooms,
         bathrooms: bathrooms,
         area: parseInt(data.area),
-        imageUrls: propertyImages.map(img => img.preview || ''),
+        imageUrls: propertyImages.map(img => img.preview || 'https://via.placeholder.com/800x600?text=Property+Image'),
         videoUrls: [], // Empty array for now
         amenities: [], // Empty array for now
         contactName: data.contactName,
