@@ -238,7 +238,7 @@ export default function Dashboard() {
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Total Properties</span>
                       <span className="font-semibold">
-                        {isLoading ? <Skeleton className="h-4 w-10" /> : properties?.length || 0}
+                        {isLoading ? <Skeleton className="h-4 w-10" /> : (properties && properties.length) || 0}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -246,7 +246,7 @@ export default function Dashboard() {
                       <span className="font-semibold">
                         {isLoading ? 
                           <Skeleton className="h-4 w-10" /> : 
-                          properties?.filter(p => p.featured).length || 0
+                          (properties && properties.filter(p => p.featured).length) || 0
                         }
                       </span>
                     </div>
@@ -255,7 +255,7 @@ export default function Dashboard() {
                       <span className="font-semibold">
                         {isSavedPropertiesLoading ? 
                           <Skeleton className="h-4 w-10" /> : 
-                          savedProperties?.length || 0
+                          (savedProperties && savedProperties.length) || 0
                         }
                       </span>
                     </div>
@@ -387,6 +387,7 @@ export default function Dashboard() {
                                     variant="outline" 
                                     size="sm" 
                                     className="text-blue-600"
+                                    onClick={() => navigate(`/edit-property/${property.id}`)}
                                   >
                                     <Edit className="h-4 w-4 mr-2" />
                                     <span>Edit</span>
@@ -403,7 +404,7 @@ export default function Dashboard() {
                                 </div>
                               </div>
                               <div className="mt-2 pt-2 border-t text-xs text-gray-500 flex justify-between">
-                                <span>Listed {formatDistanceToNow(new Date(property.createdAt), { addSuffix: true })}</span>
+                                <span>Listed {property.createdAt ? formatDistanceToNow(new Date(property.createdAt), { addSuffix: true }) : 'recently'}</span>
                                 <span>ID: #{property.id}</span>
                               </div>
                             </div>

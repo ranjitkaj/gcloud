@@ -15,6 +15,7 @@ import NotFound from "@/pages/not-found";
 import TopPropertiesList from "@/pages/top-properties-list";
 import AuthPage from "@/pages/auth-page";
 import AddProperty from "@/pages/add-property";
+import EditProperty from "@/pages/edit-property";
 import PostPropertyFree from "@/pages/post-property-free";
 import Dashboard from "@/pages/dashboard";
 import PropertyDetail from "@/pages/property-detail";
@@ -63,6 +64,7 @@ function App() {
           {/* User Routes */}
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/add-property" component={AddProperty} />
+          <Route path="/edit-property/:id" component={EditProperty} />
           <Route path="/recommendations" component={RecommendationsPage} />
           
           {/* Admin Routes */}
