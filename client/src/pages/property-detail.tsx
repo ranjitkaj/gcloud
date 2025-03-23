@@ -83,13 +83,13 @@ export default function PropertyDetail() {
 
   // Check if user is logged in and show login prompt after a short delay
   useEffect(() => {
-    // We'll show the login prompt for non-registered users, but with a slight delay 
+    // We'll show the login prompt for non-registered users, but with a slight delay
     // so they can see the property details first
     if (!user && !showLoginPrompt) {
       const timer = setTimeout(() => {
         setShowLoginPrompt(true);
       }, 1500); // 1.5 second delay
-      
+
       return () => clearTimeout(timer);
     }
   }, [user, showLoginPrompt]);
@@ -1126,62 +1126,67 @@ export default function PropertyDetail() {
       )}
 
       {/* Login Suggestion Dialog - Non-intrusive */}
-      <Dialog 
-        open={showLoginPrompt && !user} 
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowLoginPrompt(false);
-          }
-        }}
-      >
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Get More Property Features</DialogTitle>
-            <DialogDescription>
-              You can view this property without logging in, but creating a free account gives you:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 py-2">
-            <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-500" />
-              <p className="text-sm">Save properties to your favorites</p>
+      {showLoginPrompt && !user && (
+        <Dialog
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) {
+              setShowLoginPrompt(false);
+            }
+          }}
+        >
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Login Required</DialogTitle>
+              <DialogDescription>
+                Please login to view property details and contact information.
+                Creating an account allows you to:
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3 py-2">
+              <div className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-500" />
+                <p className="text-sm">Save properties to your favorites</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-500" />
+                <p className="text-sm">Contact property owners and agents</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-500" />
+                <p className="text-sm">
+                  Receive personalized property recommendations
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-500" />
+                <p className="text-sm">
+                  Access detailed property information and analytics
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-500" />
-              <p className="text-sm">Contact property owners and agents</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-500" />
-              <p className="text-sm">
-                Receive personalized property recommendations
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-500" />
-              <p className="text-sm">
-                Access detailed property information and analytics
-              </p>
-            </div>
-          </div>
-          <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowLoginPrompt(false)}
-              type="button"
-            >
-              <span>Not Now</span>
-            </Button>
-            <Button
-              onClick={() => {
-                window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
-              }}
-              type="button"
-            >
-              <span>Login / Register</span>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter className="flex justify-center gap-4 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowLoginPrompt(false)}
+                type="button"
+                className="px-8 border-2"
+              >
+                <span>Not Now</span>
+              </Button>
+              <Button
+                onClick={() => {
+                  window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+                }}
+                type="button"
+                className="px-8 bg-blue-600 hover:bg-blue-700"
+              >
+                <span>Login / Register</span>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
