@@ -452,12 +452,11 @@ export default function SearchResults() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="For Sale/Rent" />
+                    <SelectValue placeholder="Property Status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Properties</SelectItem>
                     <SelectItem value="Sale">For Sale</SelectItem>
-                    <SelectItem value="Rent">For Rent</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -765,7 +764,7 @@ export default function SearchResults() {
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium">
-                        For Sale/Rent
+                        Property Status
                       </label>
                       <Select
                         value={filters.forSaleOrRent || ""}
@@ -774,14 +773,13 @@ export default function SearchResults() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="For Sale/Rent" />
+                          <SelectValue placeholder="Property Status" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all_properties">
+                          <SelectItem value="">
                             All Properties
                           </SelectItem>
                           <SelectItem value="Sale">For Sale</SelectItem>
-                          <SelectItem value="Rent">For Rent</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
