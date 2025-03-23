@@ -48,7 +48,7 @@ const editPropertyFormSchema = z.object({
   bedrooms: z.coerce.number().optional(),
   bathrooms: z.coerce.number().optional(),
   area: z.coerce.number().optional(),
-  rentOrSale: z.enum(["rent", "sale"]),
+  rentOrSale: z.enum(["sale"]),
   imageUrlsInput: z.string().optional(),
   featured: z.boolean().optional(),
   premium: z.boolean().optional(),
@@ -78,7 +78,7 @@ export default function EditProperty() {
     bathrooms?: number;
     area?: number;
     imageUrls?: string[];
-    rentOrSale: 'rent' | 'sale';
+    rentOrSale: 'sale';
     featured?: boolean;
     premium?: boolean;
     createdAt?: Date;
@@ -529,11 +529,10 @@ export default function EditProperty() {
                           >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="For rent or sale?" />
+                                <SelectValue placeholder="For sale" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="rent">For Rent</SelectItem>
                               <SelectItem value="sale">For Sale</SelectItem>
                             </SelectContent>
                           </Select>
