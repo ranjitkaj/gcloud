@@ -290,19 +290,18 @@ export default function AddProperty() {
                             name="rentOrSale"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>For Sale or Rent</FormLabel>
+                                <FormLabel>For Sale</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   defaultValue={field.value || "for_sale"}
                                 >
                                   <FormControl>
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Sale or Rent" />
+                                      <SelectValue placeholder="For Sale" />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
                                     <SelectItem value="for_sale">For Sale</SelectItem>
-                                    <SelectItem value="for_rent">For Rent</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
