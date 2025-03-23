@@ -44,6 +44,7 @@ function App() {
           <Route path="/" component={HomePage} />
           <Route path="/auth" component={AuthPage} />
           <Route path="/properties" component={PropertiesPage} />
+          <Route path="/properties/:id" component={PropertyDetail} />
           <Route path="/property/:id" component={PropertyDetail} />
           <Route path="/property-detail/:id" component={PropertyDetail} />
           <Route path="/search-results" component={SearchResults} />

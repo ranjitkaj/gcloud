@@ -1120,56 +1120,63 @@ export default function PropertyDetail() {
       )}
 
       {/* Login Prompt Dialog */}
-      {showLoginPrompt && !user && (
-        <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Login Required</DialogTitle>
-              <DialogDescription>
-                Please login to view property details and contact information.
-                Creating an account allows you to:
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-3 py-2">
-              <div className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <p className="text-sm">Save properties to your favorites</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <p className="text-sm">Contact property owners and agents</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <p className="text-sm">
-                  Receive personalized property recommendations
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <p className="text-sm">
-                  Access detailed property information and analytics
-                </p>
-              </div>
+      <Dialog 
+        open={showLoginPrompt && !user} 
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowLoginPrompt(false);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              Please login to view property details and contact information.
+              Creating an account allows you to:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <p className="text-sm">Save properties to your favorites</p>
             </div>
-            <DialogFooter className="flex flex-col sm:flex-row gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowLoginPrompt(false)}
-              >
-                <span>Not Now</span>
-              </Button>
-              <Button
-                onClick={() => {
-                  window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
-                }}
-              >
-                <span>Login / Register</span>
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <p className="text-sm">Contact property owners and agents</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <p className="text-sm">
+                Receive personalized property recommendations
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <p className="text-sm">
+                Access detailed property information and analytics
+              </p>
+            </div>
+          </div>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowLoginPrompt(false)}
+              type="button"
+            >
+              <span>Not Now</span>
+            </Button>
+            <Button
+              onClick={() => {
+                window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+              }}
+              type="button"
+            >
+              <span>Login / Register</span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
