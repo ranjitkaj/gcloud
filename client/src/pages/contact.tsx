@@ -415,9 +415,6 @@ export default function ContactPage() {
                       type="submit"
                       className="w-full md:w-auto bg-primary text-white"
                       disabled={isSubmitting}
-                      onClick={() => {
-                        window.location.href = "mailto:contact@urgentsales.in";
-                      }}
                     >
                       {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>
