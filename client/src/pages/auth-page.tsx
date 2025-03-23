@@ -138,26 +138,7 @@ export default function AuthPage() {
       role: "user",
     },
   });
-
-  // Redirect if already logged in
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const verificationRequired = urlParams.get('verification') === 'required';
-    
-    // Handle verification required parameter - show verification UI if needed
-    if (verificationRequired && user) {
-      setRegisteredUser(user);
-      setSelectedVerificationMethod("email");
-      setRegistrationState("verification");
-      return;
-    }
-    
-    // If user is already logged in and doesn't need verification, redirect to dashboard
-    if (user && !verificationRequired && !user.needsVerification) {
-      navigate('/');
-    }
-  }, [user, navigate]);
-
+  
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
@@ -185,6 +166,37 @@ export default function AuthPage() {
       resetToken: "",
     },
   });
+
+  // Redirect if already logged in and check for reset token
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const verificationRequired = urlParams.get('verification') === 'required';
+    const resetTokenFromUrl = urlParams.get('token');
+    
+    // Check if there's a reset token in the URL
+    if (resetTokenFromUrl) {
+      setResetToken(resetTokenFromUrl);
+      setShowForgotPasswordDialog(true);
+      setForgotPasswordSuccess(true);
+      
+      // Set token value in the reset password form
+      resetPasswordForm.setValue('resetToken', resetTokenFromUrl);
+      return;
+    }
+    
+    // Handle verification required parameter - show verification UI if needed
+    if (verificationRequired && user) {
+      setRegisteredUser(user);
+      setSelectedVerificationMethod("email");
+      setRegistrationState("verification");
+      return;
+    }
+    
+    // If user is already logged in and doesn't need verification, redirect to dashboard
+    if (user && !verificationRequired && !user.needsVerification) {
+      navigate('/');
+    }
+  }, [user, navigate, resetPasswordForm]);
 
   const onLoginSubmit = async (data: LoginFormValues) => {
     try {
@@ -1019,9 +1031,21 @@ export default function AuthPage() {
             // Success message (when email is sent)
             <div className="py-6 flex flex-col items-center justify-center">
               <Mail className="h-16 w-16 text-primary mb-4" />
-              <p className="text-center mb-6">
+              <p className="text-center mb-2 font-medium">
+                Password Reset Email Sent
+              </p>
+              <p className="text-center mb-4 text-sm text-gray-600">
                 If an account exists with this email, you'll receive a password reset link shortly.
               </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 text-sm">
+                <p className="mb-1 font-medium text-blue-700">Important instructions:</p>
+                <ol className="list-decimal pl-5 text-blue-700">
+                  <li>Check your email inbox at <span className="font-semibold">{forgotPasswordForm.getValues().email}</span></li>
+                  <li>Look for an email from <span className="font-semibold">srinathballa20@gmail.com</span></li>
+                  <li>Click on the reset password link in the email</li>
+                  <li>You'll be redirected back to set a new password</li>
+                </ol>
+              </div>
               <Button 
                 onClick={() => setShowForgotPasswordDialog(false)}
                 className="w-full"
