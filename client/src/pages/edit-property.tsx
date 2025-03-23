@@ -240,17 +240,11 @@ export default function EditProperty() {
     
     // Only use server URLs for files that have been successfully uploaded
     const newFileUrls = files
-      .filter(file => file.status === "success")
-      .map(file => {
-        // Always prioritize the server URL if it exists
-        if (file.serverUrl && file.serverUrl.trim() !== '') {
-          return file.serverUrl;
-        }
-        // Fall back to the preview URL only if no server URL exists
-        // (This should only happen for files that haven't been uploaded yet)
-        return file.preview || "";
-      })
+      .filter(file => file.status === "success" && file.serverUrl)
+      .map(file => file.serverUrl || "")
       .filter(url => url && url.trim() !== '');
+      
+    console.log('Successfully uploaded file URLs:', newFileUrls);
     
     // Combine existing URLs with new ones and remove duplicates
     const uniqueUrls = [...existingUrls, ...newFileUrls].filter(
@@ -292,7 +286,7 @@ export default function EditProperty() {
 
     // Process imageUrlsInput to include only valid URLs and remove duplicates
     if (processedData.imageUrlsInput) {
-      // Split by commas, trim whitespace, and filter out empty strings
+      // Split by commas, trim whitespace, and filter out empty strings and blob URLs
       const urls = processedData.imageUrlsInput
         .split(",")
         .map(url => url.trim())
@@ -301,11 +295,14 @@ export default function EditProperty() {
       // Get serverUrls from uploaded files that have successfully completed upload
       const uploadedFileUrls = uploadedFiles
         .filter(file => file.status === "success" && file.serverUrl)
-        .map(file => file.serverUrl as string);
+        .map(file => file.serverUrl as string)
+        .filter(url => url && url.length > 0);
+
+      console.log('Successfully uploaded file URLs for submission:', uploadedFileUrls);
 
       // Combine all valid URLs and remove duplicates
       const allUrls = [...urls, ...uploadedFileUrls].filter(
-        (url, index, self) => self.indexOf(url) === index
+        (url, index, self) => url && self.indexOf(url) === index
       );
       
       // Ensure we're saving valid URLs
