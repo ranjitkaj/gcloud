@@ -1011,22 +1011,56 @@ export default function PropertyDetail() {
             </div>
 
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 setIsSubmittingInterest(true);
 
-                // Simulate sending interest to admin/company
-                setTimeout(() => {
-                  setIsSubmittingInterest(false);
-                  setAccessGranted(true);
-                  setShowInterestForm(false);
-
-                  toast({
-                    title: "Interest Submitted Successfully",
-                    description:
-                      "Your request has been sent to the property owner and to srinathballa20@gmail.com. Contact details are now available.",
+                try {
+                  // Send actual API request to the property-interest endpoint
+                  const response = await fetch('/api/property-interest', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      name: interestName,
+                      email: interestEmail,
+                      phone: interestPhone,
+                      message: interestMessage,
+                      propertyId: property?.id,
+                      propertyTitle: property?.title,
+                      propertyPrice: property?.price,
+                      propertyLocation: property?.location
+                    }),
                   });
-                }, 1500);
+
+                  const data = await response.json();
+                  
+                  if (response.ok) {
+                    setAccessGranted(true);
+                    setShowInterestForm(false);
+                    toast({
+                      title: "Interest Submitted Successfully",
+                      description:
+                        "Your request has been sent to the property owner and to srinathballa20@gmail.com. Contact details are now available.",
+                    });
+                  } else {
+                    toast({
+                      title: "Error",
+                      description: data.message || "Failed to submit your interest. Please try again.",
+                      variant: "destructive",
+                    });
+                  }
+                } catch (error) {
+                  console.error("Error submitting property interest:", error);
+                  toast({
+                    title: "Error",
+                    description: "Failed to submit your interest. Please try again later.",
+                    variant: "destructive",
+                  });
+                } finally {
+                  setIsSubmittingInterest(false);
+                }
               }}
               className="space-y-4"
             >
