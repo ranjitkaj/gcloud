@@ -458,7 +458,7 @@ export default function PropertyDetail() {
                           <img
                             src={image}
                             alt={`${property.title} - ${index + 1}`}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="w-full h-full object-contain md:object-cover transition-transform duration-500 group-hover:scale-105"
                             onError={(e) => {
                               handleImageError(index);
                               e.currentTarget.onerror = null;
@@ -674,6 +674,7 @@ export default function PropertyDetail() {
                       <TabsTrigger value="description">Description</TabsTrigger>
                       <TabsTrigger value="features">Features</TabsTrigger>
                       <TabsTrigger value="location">Location</TabsTrigger>
+                      <TabsTrigger value="media">Video & Virtual Tour</TabsTrigger>
                     </TabsList>
                     <TabsContent value="description">
                       <div className="space-y-4 text-gray-700">
@@ -705,6 +706,43 @@ export default function PropertyDetail() {
                           <MapIcon className="h-12 w-12 mx-auto mb-2 text-gray-400" />
                           <p>Map location: {property.address}</p>
                         </div>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="media">
+                      <div className="space-y-6">
+                        {property.videoUrls && property.videoUrls.length > 0 ? (
+                          <div>
+                            <h3 className="text-lg font-medium mb-3">Property Video</h3>
+                            <div className="rounded-lg overflow-hidden bg-gray-100 h-[300px]">
+                              <video 
+                                src={property.videoUrls[0]} 
+                                controls 
+                                className="w-full h-full object-contain"
+                                poster={property.imageUrls ? property.imageUrls[0] : undefined}
+                              >
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-center text-gray-500 py-8">
+                            <p>No video available for this property</p>
+                          </div>
+                        )}
+                        
+                        {property.virtualTourUrl ? (
+                          <div>
+                            <h3 className="text-lg font-medium mb-3">Virtual Tour</h3>
+                            <div className="rounded-lg overflow-hidden bg-gray-100 h-[300px]">
+                              <iframe 
+                                src={property.virtualTourUrl} 
+                                className="w-full h-full border-0"
+                                allowFullScreen
+                                title="Virtual Tour"
+                              ></iframe>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                     </TabsContent>
                   </Tabs>
