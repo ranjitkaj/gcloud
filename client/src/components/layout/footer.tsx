@@ -76,37 +76,11 @@ export default function Footer() {
                   Post Property FREE
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/add-property?type=residential"
-                  onClick={() => window.scrollTo(0, 0)}
-                  className="hover:text-white transition-colors"
-                >
-                  List Your Property
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about?type=residential"
-                  onClick={() => window.scrollTo(0, 0)}
-                  className="hover:text-white transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contact?type=residential"
-                  onClick={() => window.scrollTo(0, 0)}
-                  className="hover:text-white transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </li>
+
               <li>
                 <Link
                   href="/?tag=urgent?type=residential"
-                  onClick={() => window.scrollTo(500, 500)}
+                  onClick={() => window.scrollTo(1000, 1000)}
                   className="hover:text-white transition-colors"
                 >
                   Urgency Sales
@@ -189,7 +163,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="mr-3 flex-shrink-0" />
-                <span>support@UrgentSales.in</span>
+                <span>support@UrgentSales.com</span>
               </li>
             </ul>
             <div className="mt-4">
@@ -271,7 +245,8 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Omnexa AI Labs
+                {" "}
+                Omnexa AI Labs{" "}
               </a>
               All rights reserved.
             </p>
@@ -282,12 +257,7 @@ export default function Footer() {
               >
                 About Us
               </Link>
-              <Link
-                to="/contact"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                Contact Us
-              </Link>
+
               <Link
                 to="/post-property-free"
                 className="text-gray-400 hover:text-white transition-colors"

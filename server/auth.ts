@@ -31,21 +31,21 @@ async function sendEmailOTP(email: string, otp: string) {
   try {
     // Log the OTP for testing purposes in the console
     console.log(`EMAIL OTP for ${email}: ${otp}`);
-    
+
     // Gmail SMTP setup with the provided credentials
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'srinathballa20@gmail.com', // User provided email
-        pass: 'veouuoapolixrlqa'         // User provided app password
-      }
+        user: "srinathballa20@gmail.com", // User provided email
+        pass: "veouuoapolixrlqa", // User provided app password
+      },
     });
-    
+
     // Email content
     const mailOptions = {
       from: '"Real Estate Platform" <srinathballa20@gmail.com>',
       to: email,
-      subject: 'Your Real Estate Platform Verification Code',
+      subject: "Your Real Estate Platform Verification Code",
       text: `Your OTP for account verification is: ${otp}. This code will expire in 10 minutes.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
@@ -61,21 +61,21 @@ async function sendEmailOTP(email: string, otp: string) {
         </div>
       `,
     };
-    
+
     // Actually send the email using the provided credentials
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: %s', info.messageId);
-    
+    console.log("Email sent: %s", info.messageId);
+
     // Still display the OTP in the console for development
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`EMAIL: ${email}`);
     console.log(`SENDING STATUS: Email sent successfully`);
     console.log(`=========================================`);
-    
+
     return true;
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     // Still display the OTP in the logs for testing purposes
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
@@ -95,7 +95,7 @@ async function sendWhatsAppOTP(phone: string, otp: string) {
     console.log(`=========================================`);
     return true;
   } catch (error) {
-    console.error('Error sending WhatsApp message:', error);
+    console.error("Error sending WhatsApp message:", error);
     console.log(`=========================================`);
     console.log(`OTP VERIFICATION CODE: ${otp}`);
     console.log(`PHONE: ${phone}`);
@@ -106,13 +106,17 @@ async function sendWhatsAppOTP(phone: string, otp: string) {
 }
 
 // Generic function to send OTP based on method
-async function sendOTP(recipient: string, otp: string, method: 'email' | 'whatsapp' | 'sms') {
+async function sendOTP(
+  recipient: string,
+  otp: string,
+  method: "email" | "whatsapp" | "sms",
+) {
   switch (method) {
-    case 'email':
+    case "email":
       return sendEmailOTP(recipient, otp);
-    case 'whatsapp':
+    case "whatsapp":
       return sendWhatsAppOTP(recipient, otp);
-    case 'sms':
+    case "sms":
       // TODO: Implement SMS sending (could use Twilio or similar)
       console.log(`SMS OTP for ${recipient}: ${otp}`);
       return true;
@@ -130,15 +134,15 @@ async function comparePasswords(supplied: string, stored: string) {
 
 // Function to generate a secure reset token
 async function generateResetToken() {
-  return randomBytes(32).toString('hex');
+  return randomBytes(32).toString("hex");
 }
 
 // Function to send password reset email
 async function sendPasswordResetEmail(email: string, resetToken: string) {
   try {
     // Create reset URL
-    const resetUrl = `${process.env.SITE_URL || 'http://localhost:5000'}/reset-password?token=${resetToken}`;
-    
+    const resetUrl = `${process.env.SITE_URL || "http://localhost:5000"}/reset-password?token=${resetToken}`;
+
     // Log it for debugging
     console.log(`=========================================`);
     console.log(`PASSWORD RESET EMAIL`);
@@ -146,21 +150,21 @@ async function sendPasswordResetEmail(email: string, resetToken: string) {
     console.log(`RESET LINK: ${resetUrl}`);
     console.log(`TOKEN: ${resetToken}`);
     console.log(`=========================================`);
-    
+
     // Use the same email transport as the OTP sending
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'srinathballa20@gmail.com', // User provided email
-        pass: 'veouuoapolixrlqa'          // User provided app password
-      }
+        user: "srinathballa20@gmail.com", // User provided email
+        pass: "veouuoapolixrlqa", // User provided app password
+      },
     });
-    
+
     // Email content
     const mailOptions = {
       from: '"Real Estate Platform" <srinathballa20@gmail.com>',
       to: email,
-      subject: 'Reset Your Password - Urgent Sales',
+      subject: "Reset Your Password - Urgent Sales",
       text: `You requested a password reset. Click the following link to reset your password: ${resetUrl}. This link will expire in 1 hour.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
@@ -180,14 +184,14 @@ async function sendPasswordResetEmail(email: string, resetToken: string) {
         </div>
       `,
     };
-    
+
     // Actually send the email using the provided credentials
     const info = await transporter.sendMail(mailOptions);
-    console.log('Password reset email sent: %s', info.messageId);
-    
+    console.log("Password reset email sent: %s", info.messageId);
+
     return true;
   } catch (error) {
-    console.error('Error sending password reset email:', error);
+    console.error("Error sending password reset email:", error);
     console.log(`=========================================`);
     console.log(`PASSWORD RESET EMAIL FAILED`);
     console.log(`TO: ${email}`);
@@ -226,24 +230,28 @@ export function setupAuth(app: Express) {
 
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id: number, done) => {
-    try {
-      const user = await storage.getUser(id);
-      if (!user) {
-        return done(null, false);
-      }
-      done(null, user);
-    } catch (error) {
-      done(error, null);
-    }
+    const user = await storage.getUser(id);
+    done(null, user);
   });
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { username, email, phone, password, verificationMethod = "email", ...otherFields } = req.body;
-      
+      const {
+        username,
+        email,
+        phone,
+        password,
+        verificationMethod = "email",
+        ...otherFields
+      } = req.body;
+
       // Validate the verification method
       if (!verificationMethods.includes(verificationMethod)) {
-        return res.status(400).json({ message: `Invalid verification method. Supported methods: ${verificationMethods.join(', ')}` });
+        return res
+          .status(400)
+          .json({
+            message: `Invalid verification method. Supported methods: ${verificationMethods.join(", ")}`,
+          });
       }
 
       // Check for existing user
@@ -264,12 +272,12 @@ export function setupAuth(app: Express) {
         email,
         phone,
         password: await hashPassword(password),
-        ...otherFields
+        ...otherFields,
       });
 
       // Generate OTP
       const otp = await generateOTP();
-      
+
       // Create OTP record
       await storage.createOtp({
         userId: user.id,
@@ -277,7 +285,7 @@ export function setupAuth(app: Express) {
         type: verificationMethod,
         expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
       });
-      
+
       // Send OTP via the selected method
       if (verificationMethod === "email") {
         await sendOTP(email, otp, "email");
@@ -286,8 +294,8 @@ export function setupAuth(app: Express) {
       } else if (verificationMethod === "sms" && phone) {
         await sendOTP(phone, otp, "sms");
       } else {
-        return res.status(400).json({ 
-          message: `${verificationMethod} verification requires a valid phone number` 
+        return res.status(400).json({
+          message: `${verificationMethod} verification requires a valid phone number`,
         });
       }
 
@@ -301,52 +309,57 @@ export function setupAuth(app: Express) {
           verificationMethod,
           needsVerification: true,
           emailVerified: false,
-          phoneVerified: false
+          phoneVerified: false,
         });
       });
     } catch (error) {
-      console.error('Auth error:', error);
-      res.status(500).json({ 
+      console.error("Auth error:", error);
+      res.status(500).json({
         message: "Authentication failed",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", async (err: any, user: SelectUser | false, info: any) => {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        return res.status(401).json({ message: "Invalid username or password" });
-      }
-      
-      // Check if the user has the same username/email as an existing account
-      const existingUser = await storage.getUserByEmail(user.email);
-      if (existingUser && existingUser.id !== user.id) {
-        return res.status(400).json({ 
-          message: "An account with this email already exists",
-          existingAccount: true
-        });
-      }
-
-      // Allow login even if email is not verified, but include verification status
-      req.login(user, (loginErr) => {
-        if (loginErr) {
-          return next(loginErr);
+    passport.authenticate(
+      "local",
+      async (err: any, user: SelectUser | false, info: any) => {
+        if (err) {
+          return next(err);
         }
-        const { password, ...userWithoutPassword } = user;
-        
-        // Include verification status in the response
-        return res.status(200).json({
-          ...userWithoutPassword,
-          needsVerification: !user.emailVerified,
-          emailVerified: !!user.emailVerified,
-          phoneVerified: !!user.phoneVerified
+        if (!user) {
+          return res
+            .status(401)
+            .json({ message: "Invalid username or password" });
+        }
+
+        // Check if the user has the same username/email as an existing account
+        const existingUser = await storage.getUserByEmail(user.email);
+        if (existingUser && existingUser.id !== user.id) {
+          return res.status(400).json({
+            message: "An account with this email already exists",
+            existingAccount: true,
+          });
+        }
+
+        // Allow login even if email is not verified, but include verification status
+        req.login(user, (loginErr) => {
+          if (loginErr) {
+            return next(loginErr);
+          }
+          const { password, ...userWithoutPassword } = user;
+
+          // Include verification status in the response
+          return res.status(200).json({
+            ...userWithoutPassword,
+            needsVerification: !user.emailVerified,
+            emailVerified: !!user.emailVerified,
+            phoneVerified: !!user.phoneVerified,
+          });
         });
-      });
-    })(req, res, next);
+      },
+    )(req, res, next);
   });
 
   app.post("/api/logout", (req, res, next) => {
@@ -359,13 +372,13 @@ export function setupAuth(app: Express) {
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const { password, ...userWithoutPassword } = req.user;
-    
+
     // Include verification status in the response for consistency
     res.json({
       ...userWithoutPassword,
       needsVerification: !req.user.emailVerified,
       emailVerified: !!req.user.emailVerified,
-      phoneVerified: !!req.user.phoneVerified
+      phoneVerified: !!req.user.phoneVerified,
     });
   });
 
@@ -379,22 +392,22 @@ export function setupAuth(app: Express) {
       const { type = "email" } = req.body;
 
       if (!verificationMethods.includes(type)) {
-        return res.status(400).json({ 
-          message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
+        return res.status(400).json({
+          message: `Invalid verification type. Supported types: ${verificationMethods.join(", ")}`,
         });
       }
 
       // Generate new OTP
       const otp = await generateOTP();
-      
+
       // Get previous OTP to update it
       const existingOtp = await storage.getOtpByUserAndType(userId, type);
-      
+
       if (existingOtp) {
         // Invalidate old OTP
         await storage.invalidateOtp(existingOtp.id);
       }
-      
+
       // Create new OTP record
       await storage.createOtp({
         userId,
@@ -402,7 +415,7 @@ export function setupAuth(app: Express) {
         type,
         expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
       });
-      
+
       // Send OTP via the selected method
       if (type === "email") {
         await sendOTP(req.user.email, otp, "email");
@@ -414,15 +427,15 @@ export function setupAuth(app: Express) {
         await sendOTP(req.user.phone, otp, "sms");
         res.json({ success: true, message: "OTP sent to your phone" });
       } else {
-        return res.status(400).json({ 
-          message: `${type} verification requires a valid phone number` 
+        return res.status(400).json({
+          message: `${type} verification requires a valid phone number`,
         });
       }
     } catch (error) {
-      console.error('OTP resend error:', error);
-      res.status(500).json({ 
+      console.error("OTP resend error:", error);
+      res.status(500).json({
         message: "Failed to resend OTP",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -441,21 +454,21 @@ export function setupAuth(app: Express) {
       }
 
       if (!verificationMethods.includes(type)) {
-        return res.status(400).json({ 
-          message: `Invalid verification type. Supported types: ${verificationMethods.join(', ')}` 
+        return res.status(400).json({
+          message: `Invalid verification type. Supported types: ${verificationMethods.join(", ")}`,
         });
       }
 
       // Verify the OTP
       const isValid = await storage.verifyOtp(userId, otp, type);
-      
+
       if (!isValid) {
         return res.status(400).json({ message: "Invalid or expired OTP" });
       }
 
       // Update user verification status based on the type
       let updatedUser;
-      
+
       if (type === "email") {
         updatedUser = await storage.verifyUserEmail(userId);
       } else if (type === "whatsapp" || type === "sms") {
@@ -463,124 +476,133 @@ export function setupAuth(app: Express) {
       }
 
       if (!updatedUser) {
-        return res.status(500).json({ message: "Failed to update verification status" });
+        return res
+          .status(500)
+          .json({ message: "Failed to update verification status" });
       }
 
       // Return success response with updated user data
       const { password, ...userWithoutPassword } = updatedUser;
-      
-      res.json({ 
-        success: true, 
+
+      res.json({
+        success: true,
         message: `${type} verification successful`,
         user: {
           ...userWithoutPassword,
           needsVerification: !updatedUser.emailVerified,
           emailVerified: !!updatedUser.emailVerified,
-          phoneVerified: !!updatedUser.phoneVerified
-        }
+          phoneVerified: !!updatedUser.phoneVerified,
+        },
       });
     } catch (error) {
-      console.error('OTP verification error:', error);
-      res.status(500).json({ 
+      console.error("OTP verification error:", error);
+      res.status(500).json({
         message: "Verification failed",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
-  
+
   // Forgot password request
   app.post("/api/forgot-password", async (req, res) => {
     try {
       const { email } = req.body;
-      
+
       if (!email) {
         return res.status(400).json({ message: "Email is required" });
       }
-      
+
       // Find user by email
       const user = await storage.getUserByEmail(email);
-      
+
       if (!user) {
         // Send a 200 response even if user not found for security reasons
         // But don't actually send an email
-        return res.status(200).json({ 
-          success: true, 
-          message: "If your email exists in our system, you will receive password reset instructions." 
+        return res.status(200).json({
+          success: true,
+          message:
+            "If your email exists in our system, you will receive password reset instructions.",
         });
       }
-      
+
       // Generate reset token
       const resetToken = await generateResetToken();
-      
+
       // Store it in OTP table (using 'reset' as type)
       await storage.createOtp({
         userId: user.id,
         otp: resetToken,
-        type: 'reset',
+        type: "reset",
         expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
       });
-      
+
       // Send reset email with token
       await sendPasswordResetEmail(email, resetToken);
-      
-      res.status(200).json({ 
-        success: true, 
-        message: "If your email exists in our system, you will receive password reset instructions." 
+
+      res.status(200).json({
+        success: true,
+        message:
+          "If your email exists in our system, you will receive password reset instructions.",
       });
     } catch (error) {
-      console.error('Password reset request error:', error);
-      res.status(500).json({ 
+      console.error("Password reset request error:", error);
+      res.status(500).json({
         message: "Failed to process password reset request",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
-  
+
   // Reset password with token
   app.post("/api/reset-password", async (req, res) => {
     try {
       const { token, newPassword } = req.body;
-      
+
       if (!token || !newPassword) {
-        return res.status(400).json({ 
-          message: "Reset token and new password are required" 
+        return res.status(400).json({
+          message: "Reset token and new password are required",
         });
       }
-      
+
       // Find the OTP record by token
       const allOtps = await storage.getAllOtps();
-      const resetOtp = allOtps.find(otp => otp.otp === token && otp.type === 'reset');
-      
+      const resetOtp = allOtps.find(
+        (otp) => otp.otp === token && otp.type === "reset",
+      );
+
       if (!resetOtp || resetOtp.expiresAt < new Date()) {
-        return res.status(400).json({ 
-          message: "Invalid or expired reset token"
+        return res.status(400).json({
+          message: "Invalid or expired reset token",
         });
       }
-      
+
       // Hash the new password
       const hashedPassword = await hashPassword(newPassword);
-      
+
       // Update user's password
-      const user = await storage.updateUserPassword(resetOtp.userId, hashedPassword);
-      
+      const user = await storage.updateUserPassword(
+        resetOtp.userId,
+        hashedPassword,
+      );
+
       if (!user) {
-        return res.status(500).json({ 
-          message: "Failed to update password" 
+        return res.status(500).json({
+          message: "Failed to update password",
         });
       }
-      
+
       // Invalidate the used token
       await storage.invalidateOtp(resetOtp.id);
-      
-      res.status(200).json({ 
-        success: true, 
-        message: "Password has been reset successfully" 
+
+      res.status(200).json({
+        success: true,
+        message: "Password has been reset successfully",
       });
     } catch (error) {
-      console.error('Password reset error:', error);
-      res.status(500).json({ 
+      console.error("Password reset error:", error);
+      res.status(500).json({
         message: "Failed to reset password",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });

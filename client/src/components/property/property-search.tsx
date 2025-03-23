@@ -300,7 +300,7 @@ export default function PropertySearch({
 
             {/* Search Button */}
             <Button
-              className="py-6 px-2 whitespace-nowrap flex items-center bg-primary hover:bg-primary/90"
+              className="py-6 px-2 whitespace-nowrap flex items-center bg-blue-800 hover:bg-blue-800"
               onClick={handleSearch}
             >
               <Search className="h-5 w-5" />
