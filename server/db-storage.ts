@@ -345,6 +345,41 @@ export class DbStorage implements IStorage {
     return result[0];
   }
 
+  async deleteProperty(id: number): Promise<boolean> {
+    try {
+      // First check if the property exists
+      const property = await this.getProperty(id);
+      if (!property) {
+        return false;
+      }
+      
+      // Delete property views
+      await db.delete(propertyViews)
+        .where(eq(propertyViews.propertyId, id));
+      
+      // Delete saved properties
+      await db.delete(savedProperties)
+        .where(eq(savedProperties.propertyId, id));
+      
+      // Delete property recommendations
+      await db.delete(propertyRecommendations)
+        .where(eq(propertyRecommendations.propertyId, id));
+      
+      // Delete inquiries
+      await db.delete(inquiries)
+        .where(eq(inquiries.propertyId, id));
+      
+      // Finally delete the property
+      const result = await db.delete(properties)
+        .where(eq(properties.id, id));
+        
+      return true;
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      return false;
+    }
+  }
+
   async getAllProperties(): Promise<Property[]> {
     return await db.select().from(properties);
   }

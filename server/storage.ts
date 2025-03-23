@@ -70,6 +70,7 @@ export interface IStorage {
   createProperty(property: InsertProperty): Promise<Property>;
   getProperty(id: number): Promise<Property | undefined>;
   updateProperty(id: number, propertyData: Partial<Property>): Promise<Property | undefined>;
+  deleteProperty(id: number): Promise<boolean>;
   getAllProperties(): Promise<Property[]>;
   getPropertiesByUser(userId: number): Promise<Property[]>;
   getPropertiesByAgent(agentId: number): Promise<Property[]>;
