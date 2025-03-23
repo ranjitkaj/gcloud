@@ -805,4 +805,47 @@ export class DbStorage implements IStorage {
       WHERE user_id = ${userId} AND is_read = false
     `);
   }
+
+  async getPropertyCities(): Promise<string[]> {
+    const result = await db.execute(sql`
+      SELECT DISTINCT city FROM properties
+      WHERE approval_status = 'approved' AND city IS NOT NULL
+      ORDER BY city ASC
+    `);
+    
+    return result.rows.map(row => row.city);
+  }
+
+  async getTopProperties(category: string = 'premium', location?: string, limit: number = 10): Promise<Property[]> {
+    let query = sql`
+      SELECT * FROM properties 
+      WHERE status = 'available'
+    `;
+    
+    // Add location filter if provided
+    if (location) {
+      query = sql`${query} AND LOWER(city) = LOWER(${location})`;
+    }
+    
+    // Apply category-specific filters and sorting
+    switch (category) {
+      case 'premium':
+        query = sql`${query} AND premium = true ORDER BY price DESC LIMIT ${limit}`;
+        break;
+      
+      case 'featured':
+        query = sql`${query} AND featured = true ORDER BY created_at DESC LIMIT ${limit}`;
+        break;
+      
+      case 'urgent':
+        query = sql`${query} AND expires_at IS NOT NULL AND expires_at > NOW() ORDER BY expires_at ASC LIMIT ${limit}`;
+        break;
+      
+      default:
+        query = sql`${query} ORDER BY created_at DESC LIMIT ${limit}`;
+    }
+    
+    const result = await db.execute(query);
+    return result.rows;
+  }
 }
