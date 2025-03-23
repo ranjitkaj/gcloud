@@ -93,7 +93,7 @@ export default function FileUpload({
       fileWithPreview.id = generateFileId();
       fileWithPreview.preview = URL.createObjectURL(file);
       fileWithPreview.uploadProgress = 0;
-      fileWithPreview.status = 'uploading';
+      fileWithPreview.status = 'uploading' as const;
 
       // Simulate upload progress
       simulateUploadProgress(fileWithPreview);
@@ -135,7 +135,11 @@ export default function FileUpload({
       setFiles(prevFiles => 
         prevFiles.map(f => 
           f.id === file.id 
-            ? { ...f, uploadProgress: 10, status: 'uploading' } 
+            ? { 
+                ...f, 
+                uploadProgress: 10, 
+                status: 'uploading' as const
+              } 
             : f
         )
       );
@@ -148,7 +152,7 @@ export default function FileUpload({
       setFiles(prevFiles => 
         prevFiles.map(f => 
           f.id === file.id 
-            ? { ...f, uploadProgress: 50 } 
+            ? { ...f, uploadProgress: 50, status: 'uploading' as const } 
             : f
         )
       );
@@ -171,7 +175,7 @@ export default function FileUpload({
               ? { 
                   ...f, 
                   uploadProgress: 100, 
-                  status: 'success',
+                  status: 'success' as const,
                   // Add server URL to the file object
                   serverUrl: responseData.files[0]
                 } 
@@ -194,7 +198,7 @@ export default function FileUpload({
             ? { 
                 ...f, 
                 uploadProgress: 0, 
-                status: 'error',
+                status: 'error' as const,
                 errorMessage: error instanceof Error ? error.message : 'Upload failed'
               } 
             : f

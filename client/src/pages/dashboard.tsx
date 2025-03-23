@@ -90,17 +90,19 @@ export default function Dashboard() {
     }
   };
 
-  // Demo delete mutation (would connect to a real endpoint in production)
+  // Delete property mutation
   const deleteMutation = useMutation({
     mutationFn: async (propertyId: number) => {
-      // This would be the real endpoint in production
-      // await apiRequest(`/api/properties/${propertyId}`, "DELETE");
-      
-      // For now we'll just simulate success
-      return true;
+      // Delete property through the API
+      return await apiRequest({
+        url: `/api/properties/${propertyId}`,
+        method: "DELETE"
+      });
     },
     onSuccess: () => {
+      // Invalidate all relevant queries
       queryClient.invalidateQueries({ queryKey: ['/api/user/properties'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/properties'] });
       refetch();
       
       toast({
