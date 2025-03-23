@@ -73,7 +73,7 @@ const propertySchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
   description: z.string().min(20, { message: "Description must be at least 20 characters" }),
   propertyType: z.enum(["apartment", "villa", "house", "plot", "commercial", "office"]),
-  forSaleOrRent: z.enum(["sale", "rent"]),
+  forSaleOrRent: z.enum(["sale"]),
   price: z.string().min(1, { message: "Price is required" }),
   isUrgentSale: z.boolean().default(false),
   location: z.string().min(5, { message: "Location must be at least 5 characters" }),
@@ -575,7 +575,7 @@ export default function PostPropertyFree() {
                 name="forSaleOrRent"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>For Sale or Rent</FormLabel>
+                    <FormLabel>For Sale</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
                       defaultValue={field.value}
@@ -587,7 +587,6 @@ export default function PostPropertyFree() {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="sale">Sale</SelectItem>
-                        <SelectItem value="rent">Rent</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
