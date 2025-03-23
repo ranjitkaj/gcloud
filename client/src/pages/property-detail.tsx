@@ -83,16 +83,19 @@ export default function PropertyDetail() {
 
   // Check if user is logged in and show login prompt after a short delay
   useEffect(() => {
+    // Check if the user has dismissed the login prompt in this session
+    const hasUserDismissedPrompt = sessionStorage.getItem(`dismissedLoginPrompt_${id}`);
+    
     // We'll show the login prompt for non-registered users, but with a slight delay
-    // so they can see the property details first
-    if (!user && !showLoginPrompt) {
+    // and only if they haven't dismissed it before
+    if (!user && !showLoginPrompt && !hasUserDismissedPrompt) {
       const timer = setTimeout(() => {
         setShowLoginPrompt(true);
       }, 1500); // 1.5 second delay
 
       return () => clearTimeout(timer);
     }
-  }, [user, showLoginPrompt]);
+  }, [user, showLoginPrompt, id]);
 
   // Track property view with recommendation engine
   const trackInteractionMutation = useMutation({
@@ -1132,6 +1135,8 @@ export default function PropertyDetail() {
           onOpenChange={(open) => {
             if (!open) {
               setShowLoginPrompt(false);
+              // Remember user's preference when clicking X button
+              sessionStorage.setItem(`dismissedLoginPrompt_${id}`, 'true');
             }
           }}
         >
@@ -1168,7 +1173,11 @@ export default function PropertyDetail() {
             <DialogFooter className="flex justify-center gap-4 mt-4">
               <Button
                 variant="outline"
-                onClick={() => setShowLoginPrompt(false)}
+                onClick={() => {
+                  setShowLoginPrompt(false);
+                  // Remember user's preference in this session
+                  sessionStorage.setItem(`dismissedLoginPrompt_${id}`, 'true');
+                }}
                 type="button"
                 className="px-8 border-2"
               >
