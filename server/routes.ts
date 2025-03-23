@@ -375,6 +375,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(filteredProperties);
   }));
 
+  // Get top properties (by category and location)
+  app.get("/api/properties/top", asyncHandler(async (req, res) => {
+    const category = req.query.category as string || 'premium';
+    const location = req.query.location as string;
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+    
+    const properties = await storage.getTopProperties(category, location, limit);
+    
+    // Check if user is admin
+    const isAdmin = req.user && req.user.role === 'admin';
+    
+    // If not admin, only return approved properties
+    const filteredProperties = isAdmin 
+      ? properties 
+      : properties.filter(property => property.approvalStatus === 'approved');
+    
+    res.json(filteredProperties);
+  }));
+
+  // Get all available property cities
+  app.get("/api/properties/cities", asyncHandler(async (req, res) => {
+    const cities = await storage.getPropertyCities();
+    res.json(cities);
+  }));
+
   // Get urgent properties (properties with discounted prices)
   app.get("/api/properties/urgent", asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
