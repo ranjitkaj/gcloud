@@ -377,12 +377,15 @@ export default function PropertyDetail() {
     );
   }
 
-  // Use the first image from imageUrls array or a default image
+  // Use property images or a default image
   const images = property.imageUrls?.length
     ? property.imageUrls
     : [
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
       ];
+      
+  // Videos from property if available
+  const videos = property.videoUrls || [];
 
   const handleImageError = (index: number) => {
     setImageLoadError((prev) => ({
@@ -710,23 +713,28 @@ export default function PropertyDetail() {
                     </TabsContent>
                     <TabsContent value="media">
                       <div className="space-y-6">
-                        {property.videoUrls && property.videoUrls.length > 0 ? (
+                        {videos && videos.length > 0 ? (
                           <div>
-                            <h3 className="text-lg font-medium mb-3">Property Video</h3>
-                            <div className="rounded-lg overflow-hidden bg-gray-100 h-[300px]">
-                              <video 
-                                src={property.videoUrls[0]} 
-                                controls 
-                                className="w-full h-full object-contain"
-                                poster={property.imageUrls ? property.imageUrls[0] : undefined}
-                              >
-                                Your browser does not support the video tag.
-                              </video>
-                            </div>
+                            <h3 className="text-lg font-medium mb-3">Property Videos ({videos.length})</h3>
+                            {videos.map((videoUrl, index) => (
+                              <div key={index} className="rounded-lg overflow-hidden bg-gray-100 h-[300px] mb-4">
+                                <video 
+                                  src={videoUrl} 
+                                  controls 
+                                  className="w-full h-full object-contain"
+                                  poster={property.imageUrls && property.imageUrls.length > 0 ? property.imageUrls[0] : undefined}
+                                >
+                                  Your browser does not support the video tag.
+                                </video>
+                                {videos.length > 1 && (
+                                  <p className="text-sm text-gray-500 mt-2 px-2">Video {index + 1} of {videos.length}</p>
+                                )}
+                              </div>
+                            ))}
                           </div>
                         ) : (
                           <div className="text-center text-gray-500 py-8">
-                            <p>No video available for this property</p>
+                            <p>No videos available for this property</p>
                           </div>
                         )}
                         
