@@ -161,11 +161,14 @@ export default function ReportProblem() {
               <p className="text-gray-600 mb-4">
                 We've received your problem report and our technical team will
                 investigate the issue. You'll receive a confirmation email
-                shortly with a reference number for your report.
+                at {form.getValues().email} shortly with details.
               </p>
-              <p className="text-gray-700 font-medium">
+              <p className="text-gray-700 font-medium mb-2">
                 Reference #:{" "}
                 {Math.random().toString(36).substring(2, 10).toUpperCase()}
+              </p>
+              <p className="text-gray-600 text-sm">
+                A copy of your report has been sent to srinathballa20@gmail.com
               </p>
             </div>
           ) : (

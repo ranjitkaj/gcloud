@@ -81,9 +81,9 @@ export default function ContactPage() {
 
       // Show success message
       toast({
-        title: "Message Sent",
+        title: "Message Sent Successfully",
         description:
-          "We've received your message and will get back to you shortly.",
+          `Thank you for contacting us! Your message has been sent to srinathballa20@gmail.com. We'll respond to ${data.email} shortly.`,
         variant: "default",
       });
 

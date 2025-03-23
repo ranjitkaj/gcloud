@@ -1022,9 +1022,9 @@ export default function PropertyDetail() {
                   setShowInterestForm(false);
 
                   toast({
-                    title: "Interest Submitted",
+                    title: "Interest Submitted Successfully",
                     description:
-                      "Your request has been sent to the property owner. Contact details are now available.",
+                      "Your request has been sent to the property owner and to srinathballa20@gmail.com. Contact details are now available.",
                   });
                 }, 1500);
               }}

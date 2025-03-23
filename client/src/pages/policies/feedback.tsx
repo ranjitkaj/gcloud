@@ -81,7 +81,7 @@ export default function Feedback() {
       toast({
         title: "Feedback submitted successfully",
         description:
-          "Thank you for your feedback! We'll review it and get back to you if needed.",
+          "Thank you for your feedback! We'll review it and respond to " + data.email + " if needed. A copy has been sent to srinathballa20@gmail.com",
       });
 
       form.reset();
