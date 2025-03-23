@@ -81,10 +81,16 @@ export default function PropertyDetail() {
     queryKey: [`/api/properties/${id}`],
   });
 
-  // Check if user is logged in
+  // Check if user is logged in and show login prompt after a short delay
   useEffect(() => {
+    // We'll show the login prompt for non-registered users, but with a slight delay 
+    // so they can see the property details first
     if (!user && !showLoginPrompt) {
-      setShowLoginPrompt(true);
+      const timer = setTimeout(() => {
+        setShowLoginPrompt(true);
+      }, 1500); // 1.5 second delay
+      
+      return () => clearTimeout(timer);
     }
   }, [user, showLoginPrompt]);
 
@@ -1119,7 +1125,7 @@ export default function PropertyDetail() {
         </div>
       )}
 
-      {/* Login Prompt Dialog */}
+      {/* Login Suggestion Dialog - Non-intrusive */}
       <Dialog 
         open={showLoginPrompt && !user} 
         onOpenChange={(open) => {
@@ -1130,10 +1136,9 @@ export default function PropertyDetail() {
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Login Required</DialogTitle>
+            <DialogTitle>Get More Property Features</DialogTitle>
             <DialogDescription>
-              Please login to view property details and contact information.
-              Creating an account allows you to:
+              You can view this property without logging in, but creating a free account gives you:
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
