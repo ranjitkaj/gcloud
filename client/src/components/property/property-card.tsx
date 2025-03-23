@@ -6,7 +6,7 @@ import { Link } from "wouter";
 
 interface PropertyCardProps {
   property: Property;
-  isAiRecommended?: boolean;
+  isAiRecommended?: boolean | null;
 }
 
 export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {

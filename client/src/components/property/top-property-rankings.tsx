@@ -33,11 +33,11 @@ export default function TopPropertyRankings({
   const { data: properties, isLoading, error } = useQuery({
     queryKey: ['/api/properties/top', { category, location, limit: parseInt(selectedTab) }],
     queryFn: async ({ queryKey }) => {
-      const [_, params] = queryKey;
+      const [_, params] = queryKey as [string, { category: string; location?: string; limit: number }];
       const searchParams = new URLSearchParams();
       
-      if (params.category) searchParams.append('category', params.category as string);
-      if (params.location) searchParams.append('location', params.location as string);
+      if (params.category) searchParams.append('category', params.category);
+      if (params.location) searchParams.append('location', params.location);
       if (params.limit) searchParams.append('limit', params.limit.toString());
       
       const response = await fetch(`/api/properties/top?${searchParams.toString()}`);
@@ -146,7 +146,7 @@ export default function TopPropertyRankings({
                       )}
                       <PropertyCard 
                         property={property} 
-                        isAiRecommended={property.premium} 
+                        isAiRecommended={!!property.premium} 
                       />
                     </div>
                   ))
