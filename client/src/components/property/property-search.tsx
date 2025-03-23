@@ -34,7 +34,7 @@ export default function PropertySearch({
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [bedrooms, setBedrooms] = useState(0);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [saleType, setSaleType] = useState<"all" | "Sale" | "Agent">("all");
+  const [propertyStatus, setPropertyStatus] = useState<"all" | "sale" | "premium">("all");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
@@ -46,7 +46,7 @@ export default function PropertySearch({
     const filters = [];
     if (locationValue) filters.push(locationValue);
     if (propertyType) filters.push(propertyType);
-    if (saleType !== "all") filters.push(saleType);
+    if (propertyStatus !== "all") filters.push(propertyStatus);
     if (bedrooms > 0) filters.push(`${bedrooms}+ beds`);
     if (amenities.length > 0) filters.push(`${amenities.length} amenities`);
     if (areaRange[0] > 0 || areaRange[1] < 10000)
@@ -148,8 +148,8 @@ export default function PropertySearch({
       queryParams.append("propertyType", propertyType);
     }
 
-    if (saleType !== "all") {
-      queryParams.append("saleType", saleType);
+    if (propertyStatus !== "all") {
+      queryParams.append("propertyStatus", propertyStatus);
     }
 
     if (showAdvanced) {
@@ -347,15 +347,15 @@ export default function PropertySearch({
               </Select>
             </div>
 
-            {/* Sale/Rent Selector */}
+            {/* Property Status Selector */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-gray-700">
-                For Sale/Agent
+                Property Status
               </h4>
               <Select
-                value={saleType}
-                onValueChange={(value: "all" | "Sale" | "Agent") =>
-                  setSaleType(value)
+                value={propertyStatus}
+                onValueChange={(value: "all" | "sale" | "premium") =>
+                  setPropertyStatus(value)
                 }
               >
                 <SelectTrigger className="w-full">
@@ -363,8 +363,8 @@ export default function PropertySearch({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Properties</SelectItem>
-                  <SelectItem value="Sale">For Sale</SelectItem>
-                  <SelectItem value="Agent">For Agent</SelectItem>
+                  <SelectItem value="sale">For Sale</SelectItem>
+                  <SelectItem value="premium">Premium Properties</SelectItem>
                 </SelectContent>
               </Select>
             </div>

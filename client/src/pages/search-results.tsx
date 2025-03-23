@@ -40,7 +40,7 @@ import {
 
 interface SearchFilters {
   propertyType?: string;
-  forSaleOrRent?: string;
+  propertyStatus?: string;
   location?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -75,7 +75,7 @@ export default function SearchResults() {
 
   const [filters, setFilters] = useState<SearchFilters>({
     propertyType: searchParams.get("propertyType") || "",
-    forSaleOrRent: searchParams.get("forSaleOrRent") || "",
+    propertyStatus: searchParams.get("propertyStatus") || "",
     location: searchParams.get("location") || "",
     minPrice: searchParams.get("minPrice")
       ? Number(searchParams.get("minPrice"))
@@ -126,8 +126,8 @@ export default function SearchResults() {
 
       if (filters.propertyType)
         queryParams.set("propertyType", filters.propertyType);
-      if (filters.forSaleOrRent)
-        queryParams.set("forSaleOrRent", filters.forSaleOrRent);
+      if (filters.propertyStatus)
+        queryParams.set("propertyStatus", filters.propertyStatus);
       if (filters.location) queryParams.set("location", filters.location);
       if (filters.minPrice)
         queryParams.set("minPrice", String(filters.minPrice));
