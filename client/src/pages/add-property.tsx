@@ -49,6 +49,7 @@ const addPropertyFormSchema = insertPropertySchema
   .extend({
     imageUrlsInput: z.string().optional(),
     subscriptionLevel: z.enum(["free", "paid", "premium"]).default("free"),
+    rentOrSale: z.enum(["sale"]).default("sale"), // Only allow "sale" option
   })
   .omit({ imageUrls: true, userId: true });
 
@@ -293,7 +294,7 @@ export default function AddProperty() {
                                 <FormLabel>For Sale</FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
-                                  defaultValue={field.value || "for_sale"}
+                                  defaultValue={field.value || "sale"}
                                 >
                                   <FormControl>
                                     <SelectTrigger>
@@ -301,7 +302,7 @@ export default function AddProperty() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="for_sale">For Sale</SelectItem>
+                                    <SelectItem value="sale">For Sale</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
