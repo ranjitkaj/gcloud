@@ -171,11 +171,13 @@ export default function AddProperty() {
 
     // Handle direct file uploads and convert to URLs if needed
     if (uploadedFiles.length > 0) {
-      // In a real application, you would upload these files to a storage service
-      // and get back URLs. For this demo, we'll use the preview URLs.
+      // Get only successfully uploaded files with server URLs
       const fileUrls = uploadedFiles
-        .filter((file) => file.status === "success")
-        .map((file) => file.preview || "");
+        .filter((file) => file.status === "success" && file.serverUrl)
+        .map((file) => file.serverUrl || "")
+        .filter(url => url.length > 0);
+      
+      console.log('Successfully uploaded file URLs:', fileUrls);
 
       // Add these URLs to any existing image URLs
       const existingUrls = processedData.imageUrlsInput

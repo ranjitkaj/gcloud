@@ -26,10 +26,16 @@ const storage = multer.diskStorage({
     // Generate a unique file name to prevent conflicts
     const uniqueId = crypto.randomBytes(8).toString('hex');
     const fileExt = path.extname(file.originalname);
-    const safeName = file.originalname
-      .replace(/[^a-zA-Z0-9]/g, '-')
+    
+    // Ensure we get a meaningful filename by handling file.originalname properly
+    const originalName = file.originalname || `image${fileExt}`;
+    
+    // Create a safe name by removing invalid characters
+    const safeName = originalName
+      .replace(/[^a-zA-Z0-9.]/g, '-')  // Keep the dot for extension detection
       .replace(/-+/g, '-')
       .toLowerCase();
+    
     cb(null, `${safeName.substring(0, 40)}-${uniqueId}${fileExt}`);
   }
 });
