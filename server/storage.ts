@@ -82,6 +82,8 @@ export interface IStorage {
   getPropertiesByStatus(status: string): Promise<Property[]>;
   getPropertiesByRentOrSale(rentOrSale: string): Promise<Property[]>;
   getUrgentSaleProperties(limit?: number): Promise<Property[]>;
+  getTopProperties(category: string, location?: string, limit?: number): Promise<Property[]>;
+  getPropertyCities(): Promise<string[]>;
   searchProperties(query: {
     city?: string;
     propertyType?: string;
@@ -666,17 +668,89 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getTopProperties(limit: number = 10, city?: string): Promise<Property[]> {
-    let query = db.select()
-      .from(schema.properties)
-      .where(sql`subscription_level != 'free'`)
-      .orderBy(sql`subscription_amount desc`);
-      
-    if (city) {
-      query = query.where(sql`city = ${city}`);
+  async getTopProperties(category: string = 'premium', location?: string, limit: number = 10): Promise<Property[]> {
+    let properties: Property[] = [];
+    const now = new Date();
+    
+    // Filter properties by approval status and availability
+    const approvedProperties = Array.from(this.properties.values())
+      .filter(property => property.approvalStatus === 'approved' && property.status === 'available');
+    
+    // Filter by location if provided
+    const filteredByLocation = location
+      ? approvedProperties.filter(property => 
+          property.city && property.city.toLowerCase() === location.toLowerCase())
+      : approvedProperties;
+    
+    // Apply category-specific filters
+    switch(category) {
+      case 'premium':
+        properties = filteredByLocation
+          .filter(property => property.premium)
+          .sort((a, b) => {
+            // Sort by premium status first, then by price (high to low)
+            return b.price - a.price;
+          });
+        break;
+        
+      case 'featured':
+        properties = filteredByLocation
+          .filter(property => property.featured)
+          .sort((a, b) => {
+            // Sort by creation date (newest first)
+            if (a.createdAt && b.createdAt) {
+              return b.createdAt.getTime() - a.createdAt.getTime();
+            }
+            return 0;
+          });
+        break;
+        
+      case 'urgent':
+        properties = filteredByLocation
+          .filter(property => 
+            property.discountedPrice && 
+            property.expiresAt && 
+            property.expiresAt > now)
+          .sort((a, b) => {
+            // Sort by discount percentage (highest first)
+            const discountA = a.discountedPrice ? (1 - a.discountedPrice / a.price) : 0;
+            const discountB = b.discountedPrice ? (1 - b.discountedPrice / b.price) : 0;
+            return discountB - discountA;
+          });
+        break;
+        
+      case 'newest':
+        properties = filteredByLocation
+          .sort((a, b) => {
+            // Sort by creation date (newest first)
+            if (a.createdAt && b.createdAt) {
+              return b.createdAt.getTime() - a.createdAt.getTime();
+            }
+            return 0;
+          });
+        break;
+        
+      default:
+        // Default sort by price (high to low)
+        properties = filteredByLocation.sort((a, b) => b.price - a.price);
     }
     
-    return query.limit(limit);
+    return properties.slice(0, limit);
+  }
+  
+  async getPropertyCities(): Promise<string[]> {
+    // Get all unique cities from properties
+    const cities = new Set<string>();
+    
+    Array.from(this.properties.values())
+      .filter(property => property.approvalStatus === 'approved' && property.city)
+      .forEach(property => {
+        if (property.city) {
+          cities.add(property.city);
+        }
+      });
+    
+    return Array.from(cities).sort();
   }
 
   async getFeaturedProperties(limit: number = 6): Promise<Property[]> {
