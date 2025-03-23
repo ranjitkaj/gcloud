@@ -19,7 +19,7 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
               <img 
                 src={property.imageUrls[0]} 
                 alt={property.title} 
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                className="w-full h-full object-contain md:object-cover transition-transform duration-500 hover:scale-105"
                 onError={(e) => {
                   // Fallback to placeholder on error
                   e.currentTarget.onerror = null;
