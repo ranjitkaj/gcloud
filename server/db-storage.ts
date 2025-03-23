@@ -819,7 +819,7 @@ export class DbStorage implements IStorage {
   async getTopProperties(category: string = 'premium', location?: string, limit: number = 10): Promise<Property[]> {
     let query = sql`
       SELECT * FROM properties 
-      WHERE status = 'available'
+      WHERE approval_status = 'approved'
     `;
     
     // Add location filter if provided
@@ -841,6 +841,10 @@ export class DbStorage implements IStorage {
         query = sql`${query} AND expires_at IS NOT NULL AND expires_at > NOW() ORDER BY expires_at ASC LIMIT ${limit}`;
         break;
       
+      case 'newest':
+        query = sql`${query} ORDER BY created_at DESC LIMIT ${limit}`;
+        break;
+        
       default:
         query = sql`${query} ORDER BY created_at DESC LIMIT ${limit}`;
     }
