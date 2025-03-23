@@ -40,7 +40,7 @@ import {
 
 interface SearchFilters {
   propertyType?: string;
-  propertyStatus?: string; // 'all', 'sale', or 'premium'
+  forSaleOrRent?: string;
   location?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -75,7 +75,7 @@ export default function SearchResults() {
 
   const [filters, setFilters] = useState<SearchFilters>({
     propertyType: searchParams.get("propertyType") || "",
-    propertyStatus: searchParams.get("propertyStatus") || "",
+    forSaleOrRent: searchParams.get("forSaleOrRent") || "",
     location: searchParams.get("location") || "",
     minPrice: searchParams.get("minPrice")
       ? Number(searchParams.get("minPrice"))
@@ -126,8 +126,8 @@ export default function SearchResults() {
 
       if (filters.propertyType)
         queryParams.set("propertyType", filters.propertyType);
-      if (filters.propertyStatus)
-        queryParams.set("propertyStatus", filters.propertyStatus);
+      if (filters.forSaleOrRent)
+        queryParams.set("forSaleOrRent", filters.forSaleOrRent);
       if (filters.location) queryParams.set("location", filters.location);
       if (filters.minPrice)
         queryParams.set("minPrice", String(filters.minPrice));
@@ -213,8 +213,8 @@ export default function SearchResults() {
 
     if (filters.propertyType)
       newParams.set("propertyType", filters.propertyType);
-    if (filters.propertyStatus)
-      newParams.set("propertyStatus", filters.propertyStatus);
+    if (filters.forSaleOrRent)
+      newParams.set("forSaleOrRent", filters.forSaleOrRent);
     if (filters.location) newParams.set("location", filters.location);
     if (filters.minPrice) newParams.set("minPrice", String(filters.minPrice));
     if (filters.maxPrice) newParams.set("maxPrice", String(filters.maxPrice));
@@ -304,10 +304,10 @@ export default function SearchResults() {
       title += "Properties ";
     }
 
-    if (filters.propertyStatus === "sale") {
+    if (filters.forSaleOrRent === "Sale") {
       title += "For Sale ";
-    } else if (filters.propertyStatus === "premium") {
-      title += "Premium ";
+    } else if (filters.forSaleOrRent === "Rent") {
+      title += "For Rent ";
     }
 
     if (filters.location) {
@@ -446,9 +446,9 @@ export default function SearchResults() {
                 </Select>
 
                 <Select
-                  value={filters.propertyStatus || ""}
+                  value={filters.forSaleOrRent || ""}
                   onValueChange={(value) =>
-                    updateFilters({ propertyStatus: value })
+                    updateFilters({ forSaleOrRent: value })
                   }
                 >
                   <SelectTrigger>
@@ -456,8 +456,7 @@ export default function SearchResults() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Properties</SelectItem>
-                    <SelectItem value="sale">For Sale</SelectItem>
-                    <SelectItem value="premium">Premium</SelectItem>
+                    <SelectItem value="Sale">For Sale</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -545,111 +544,37 @@ export default function SearchResults() {
                         >
                           Any
                         </Button>
-                        <Button
-                          variant={
-                            filters.minBedrooms === 1 && filters.maxBedrooms === 1
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBedrooms: 1,
-                              maxBedrooms: 1,
-                            })
-                          }
-                          className={
-                            filters.minBedrooms === 1 && filters.maxBedrooms === 1
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          1
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBedrooms === 2 && filters.maxBedrooms === 2
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBedrooms: 2,
-                              maxBedrooms: 2,
-                            })
-                          }
-                          className={
-                            filters.minBedrooms === 2 && filters.maxBedrooms === 2
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          2
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBedrooms === 3 && filters.maxBedrooms === 3
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBedrooms: 3,
-                              maxBedrooms: 3,
-                            })
-                          }
-                          className={
-                            filters.minBedrooms === 3 && filters.maxBedrooms === 3
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          3
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBedrooms === 4 && filters.maxBedrooms === 4
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBedrooms: 4,
-                              maxBedrooms: 4,
-                            })
-                          }
-                          className={
-                            filters.minBedrooms === 4 && filters.maxBedrooms === 4
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          4
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBedrooms === 5 && filters.maxBedrooms === undefined
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBedrooms: 5,
-                              maxBedrooms: undefined,
-                            })
-                          }
-                          className={
-                            filters.minBedrooms === 5 && filters.maxBedrooms === undefined
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          5+
-                        </Button>
+                        {[1, 2, 3, 4, "+5"].map((num, index) => (
+                          <Button
+                            key={num}
+                            variant={
+                              filters.minBedrooms === index + 1
+                                ? "default"
+                                : "outline"
+                            }
+                            size="sm"
+                            onClick={() => {
+                              if (num === "+5") {
+                                updateFilters({
+                                  minBedrooms: 5,
+                                  maxBedrooms: undefined,
+                                });
+                              } else {
+                                updateFilters({
+                                  minBedrooms: index + 1,
+                                  maxBedrooms: index + 1,
+                                });
+                              }
+                            }}
+                            className={
+                              filters.minBedrooms === index + 1
+                                ? "bg-primary"
+                                : ""
+                            }
+                          >
+                            {num}
+                          </Button>
+                        ))}
                       </div>
                     </AccordionContent>
                   </AccordionItem>
@@ -679,90 +604,37 @@ export default function SearchResults() {
                         >
                           Any
                         </Button>
-                        <Button
-                          variant={
-                            filters.minBathrooms === 1 && filters.maxBathrooms === 1
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBathrooms: 1,
-                              maxBathrooms: 1,
-                            })
-                          }
-                          className={
-                            filters.minBathrooms === 1 && filters.maxBathrooms === 1
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          1
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBathrooms === 2 && filters.maxBathrooms === 2
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBathrooms: 2,
-                              maxBathrooms: 2,
-                            })
-                          }
-                          className={
-                            filters.minBathrooms === 2 && filters.maxBathrooms === 2
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          2
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBathrooms === 3 && filters.maxBathrooms === 3
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBathrooms: 3,
-                              maxBathrooms: 3,
-                            })
-                          }
-                          className={
-                            filters.minBathrooms === 3 && filters.maxBathrooms === 3
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          3
-                        </Button>
-                        <Button
-                          variant={
-                            filters.minBathrooms === 4 && filters.maxBathrooms === undefined
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            updateFilters({
-                              minBathrooms: 4,
-                              maxBathrooms: undefined,
-                            })
-                          }
-                          className={
-                            filters.minBathrooms === 4 && filters.maxBathrooms === undefined
-                              ? "bg-primary"
-                              : ""
-                          }
-                        >
-                          4+
-                        </Button>
+                        {[1, 2, 3, 4, "+5"].map((num, index) => (
+                          <Button
+                            key={num}
+                            variant={
+                              filters.minBathrooms === index + 1
+                                ? "default"
+                                : "outline"
+                            }
+                            size="sm"
+                            onClick={() => {
+                              if (num === "+5") {
+                                updateFilters({
+                                  minBathrooms: 5,
+                                  maxBathrooms: undefined,
+                                });
+                              } else {
+                                updateFilters({
+                                  minBathrooms: index + 1,
+                                  maxBathrooms: index + 1,
+                                });
+                              }
+                            }}
+                            className={
+                              filters.minBathrooms === index + 1
+                                ? "bg-primary"
+                                : ""
+                            }
+                          >
+                            {num}
+                          </Button>
+                        ))}
                       </div>
                     </AccordionContent>
                   </AccordionItem>
@@ -895,9 +767,9 @@ export default function SearchResults() {
                         Property Status
                       </label>
                       <Select
-                        value={filters.propertyStatus || ""}
+                        value={filters.forSaleOrRent || ""}
                         onValueChange={(value) =>
-                          updateFilters({ propertyStatus: value })
+                          updateFilters({ forSaleOrRent: value })
                         }
                       >
                         <SelectTrigger>
@@ -907,8 +779,7 @@ export default function SearchResults() {
                           <SelectItem value="">
                             All Properties
                           </SelectItem>
-                          <SelectItem value="sale">For Sale</SelectItem>
-                          <SelectItem value="premium">Premium</SelectItem>
+                          <SelectItem value="Sale">For Sale</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

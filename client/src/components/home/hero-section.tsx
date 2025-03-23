@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import PropertySearch from "@/components/property/property-search";
-import PropertyFilterBar from "@/components/property/property-filter-bar";
 
 const slides = [
   {
@@ -161,9 +160,6 @@ export default function HeroSection() {
             className="shadow-lg backdrop-blur-md"
             showAdvanced={false}
           />
-          <div className="mt-24 md:mt-20">
-            <PropertyFilterBar className="max-w-4xl mx-auto" />
-          </div>
         </div>
       </div>
     </div>

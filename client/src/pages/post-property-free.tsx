@@ -73,11 +73,10 @@ const propertySchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
   description: z.string().min(20, { message: "Description must be at least 20 characters" }),
   propertyType: z.enum(["apartment", "villa", "house", "plot", "commercial", "office"]),
-  forSaleOrRent: z.enum(["sale"]), // This will be converted to rentOrSale in the submission
+  forSaleOrRent: z.enum(["sale"]),
   price: z.string().min(1, { message: "Price is required" }),
   isUrgentSale: z.boolean().default(false),
   location: z.string().min(5, { message: "Location must be at least 5 characters" }),
-  city: z.string().min(2, { message: "City is required" }).optional(),
   pincode: z.string().min(5, { message: "Pincode must be at least 5 characters" }),
   bedrooms: z.string().optional(),
   bathrooms: z.string().optional(),
@@ -137,19 +136,6 @@ export default function PostPropertyFree() {
     onError: (error: any) => {
       console.error("Error submitting property:", error);
       
-      // Handle not authenticated error
-      if (error.response && error.response.status === 401) {
-        toast({
-          title: "Session Expired",
-          description: "Your login session has expired. Please log in again.",
-          variant: "destructive",
-        });
-        
-        // Redirect to login
-        navigate('/auth');
-        return;
-      }
-      
       // Check if it's a premium feature error
       if (error.response && error.response.data && error.response.data.code === "PREMIUM_REQUIRED") {
         toast({
@@ -160,13 +146,6 @@ export default function PostPropertyFree() {
         
         // Go back to first step where urgency sale option is
         setCurrentStep(1);
-      } else if (error.response && error.response.status === 400 && error.response.data && error.response.data.error) {
-        // Validation error
-        toast({
-          title: "Validation Error",
-          description: error.response.data.error,
-          variant: "destructive",
-        });
       } else {
         // Enhanced error handling - extract server error message if available
         let errorMessage = "Unknown error occurred";
@@ -187,13 +166,6 @@ export default function PostPropertyFree() {
           description: `Failed to submit property: ${errorMessage}`,
           variant: "destructive",
         });
-        
-        // Log more detailed error for troubleshooting
-        console.error("Detailed error:", JSON.stringify({
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message
-        }, null, 2));
       }
       
       setFormSubmitted(false);
@@ -230,24 +202,11 @@ export default function PostPropertyFree() {
         variant: "default",
       });
       navigate('/auth');
-      return;
+    } else {
+      setShowLoginModal(false);
+      // Pre-fill user name if available
+      form.setValue("contactName", user.name || "");
     }
-    
-    // User is logged in, hide login modal and pre-fill form
-    setShowLoginModal(false);
-    
-    // Pre-fill user name if available
-    if (user.name) {
-      form.setValue("contactName", user.name);
-    }
-    
-    // Refresh authentication state every minute to ensure session stays active
-    const refreshInterval = setInterval(() => {
-      // Just checking user state will trigger a refresh
-      console.log("Refreshing authentication state...");
-    }, 60000);
-    
-    return () => clearInterval(refreshInterval);
   }, [user, form, toast, navigate]);
 
   // Function to scroll to top of form
@@ -524,27 +483,28 @@ export default function PostPropertyFree() {
         title: data.title,
         description: data.description,
         propertyType: data.propertyType,
-        rentOrSale: "sale", // Hardcoded as per schema requirements in schema.ts
+        rentOrSale: data.forSaleOrRent.toLowerCase(), // Using schema field name
         price: price,
         // If urgency sale, calculate 25% discount (only for premium users)
         discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
         location: data.location,
-        city: data.city || city || 'Unknown',
+        city: city || 'Unknown',
         address: data.location, // Using location as address too
+        pincode: data.pincode,
         bedrooms: bedrooms,
         bathrooms: bathrooms,
         area: parseInt(data.area),
         imageUrls: imageUrls,
         videoUrls: videoUrls,
         amenities: [], // Empty array for now
-        // Set subscription level if user is logged in
-        subscriptionLevel: user?.subscriptionLevel || 'free',
-        status: 'for_sale', // Setting initial status per schema
+        contactName: data.contactName,
+        contactPhone: data.contactPhone,
+        subscriptionLevel: user.subscriptionLevel || 'free',
+        status: 'available', // Setting initial status
         approvalStatus: 'pending',
         // Set expiry date for urgency listings (7 days from now)
         expiresAt: expiresAt,
-        // Include userId from current user session
-        userId: user?.id // Required field
+        userId: user.id // Required field
       };
       
       console.log("Property data submitted:", JSON.stringify(propertyData, null, 2));
