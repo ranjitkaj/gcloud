@@ -40,7 +40,7 @@ import {
 
 interface SearchFilters {
   propertyType?: string;
-  propertyStatus?: string;
+  propertyStatus?: string; // 'all', 'sale', or 'premium'
   location?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -213,8 +213,8 @@ export default function SearchResults() {
 
     if (filters.propertyType)
       newParams.set("propertyType", filters.propertyType);
-    if (filters.forSaleOrRent)
-      newParams.set("forSaleOrRent", filters.forSaleOrRent);
+    if (filters.propertyStatus)
+      newParams.set("propertyStatus", filters.propertyStatus);
     if (filters.location) newParams.set("location", filters.location);
     if (filters.minPrice) newParams.set("minPrice", String(filters.minPrice));
     if (filters.maxPrice) newParams.set("maxPrice", String(filters.maxPrice));
@@ -304,10 +304,10 @@ export default function SearchResults() {
       title += "Properties ";
     }
 
-    if (filters.forSaleOrRent === "Sale") {
+    if (filters.propertyStatus === "sale") {
       title += "For Sale ";
-    } else if (filters.forSaleOrRent === "Rent") {
-      title += "For Rent ";
+    } else if (filters.propertyStatus === "premium") {
+      title += "Premium ";
     }
 
     if (filters.location) {
@@ -446,9 +446,9 @@ export default function SearchResults() {
                 </Select>
 
                 <Select
-                  value={filters.forSaleOrRent || ""}
+                  value={filters.propertyStatus || ""}
                   onValueChange={(value) =>
-                    updateFilters({ forSaleOrRent: value })
+                    updateFilters({ propertyStatus: value })
                   }
                 >
                   <SelectTrigger>
@@ -456,7 +456,8 @@ export default function SearchResults() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Properties</SelectItem>
-                    <SelectItem value="Sale">For Sale</SelectItem>
+                    <SelectItem value="sale">For Sale</SelectItem>
+                    <SelectItem value="premium">Premium</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -767,9 +768,9 @@ export default function SearchResults() {
                         Property Status
                       </label>
                       <Select
-                        value={filters.forSaleOrRent || ""}
+                        value={filters.propertyStatus || ""}
                         onValueChange={(value) =>
-                          updateFilters({ forSaleOrRent: value })
+                          updateFilters({ propertyStatus: value })
                         }
                       >
                         <SelectTrigger>
@@ -779,7 +780,8 @@ export default function SearchResults() {
                           <SelectItem value="">
                             All Properties
                           </SelectItem>
-                          <SelectItem value="Sale">For Sale</SelectItem>
+                          <SelectItem value="sale">For Sale</SelectItem>
+                          <SelectItem value="premium">Premium</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
