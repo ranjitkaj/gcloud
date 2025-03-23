@@ -80,6 +80,66 @@ export default function Navbar() {
               />
             </Link>
             <LocationSelector />
+
+            {/* Mobile User Dashboard Icon (only when logged in) */}
+            {user && (
+              <div className="md:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full p-0"
+                    >
+                      <User className="h-5 w-5 text-primary" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem className="font-medium">
+                      {user.name}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => navigateTo("/dashboard")}
+                      >
+                        <Home className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/add-property"
+                        onClick={() => navigateTo("/add-property")}
+                      >
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        <span>Add Property</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/recommendations"
+                        onClick={() => navigateTo("/recommendations")}
+                      >
+                        <Star className="mr-2 h-4 w-4" />
+                        <span>Recommendations</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    {user?.role === "admin" && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" onClick={() => navigateTo("/admin")}>
+                          <Home className="mr-2 h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
 
           {/* Navigation (Desktop) */}

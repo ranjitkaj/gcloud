@@ -37,10 +37,15 @@ import {
   Bath,
   Maximize,
   Shield,
+  User,
+  LogOut,
+  Home as HomeIcon,
+  PlusCircle,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Property, Agent, Company } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/use-auth";
 
 // Mega menu items for Buy Properties
 const buyMenuItems = [
@@ -545,16 +550,29 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
       .slice(0, 2); // Display only 2 properties per category
   };
 
-  // State to track which mobile menu category is expanded
-  const [expandedMobileCategory, setExpandedMobileCategory] = useState<
-    string | null
-  >(null);
-
   // Toggle mobile category expansion
   const toggleMobileCategory = (category: string) => {
     setExpandedMobileCategory(
       expandedMobileCategory === category ? null : category,
     );
+  };
+
+  // ... existing state
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState<
+    string | null
+  >(null);
+  const { user, logout } = useAuth(); // Add this to access user info
+  const [, navigate] = useLocation();
+
+  const navigateTo = (path: string) => {
+    navigate(path);
+    // Close mobile categories if needed
+    setExpandedMobileCategory(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setExpandedMobileCategory(null);
   };
 
   if (isMobile) {
@@ -570,30 +588,107 @@ export function MegaMenu({ isMobile = false }: MegaMenuProps) {
           height: "75vh",
         }}
       >
-        {/* Login Button for Mobile */}
-        <div className="px-3 py-2 mb-2">
-          <Link
-            to="/auth"
-            onClick={() => window.scrollTo(0, 0)}
-            className="inline-flex items-center justify-center w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+        {/* User Dashboard Section for Mobile (only show when logged in) */}
+        {/* {user && (
+        <div className="border-b border-gray-100 pb-2 mb-1">
+          <div 
+            className="flex justify-between items-center py-2 px-1 cursor-pointer"
+            onClick={() => toggleMobileCategory('user-dashboard')}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <div className="flex items-center">
+              <User className="mr-2 h-5 w-5 text-primary" />
+              <span className="text-gray-800 font-medium">{user.name}</span>
+            </div>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className={`transition-transform ${expandedMobileCategory === 'user-dashboard' ? 'rotate-180' : ''}`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-              />
+              <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-            Login / Register
-          </Link>
+          </div>
+
+          {expandedMobileCategory === 'user-dashboard' && (
+            <div className="pl-3 mt-1 space-y-2 animate-slideDown">
+              <Link
+                to="/dashboard"
+                onClick={() => navigateTo("/dashboard")}
+                className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
+              >
+                <HomeIcon className="mr-2 h-4 w-4" />
+                <span>Dashboard</span>
+              </Link>
+              <Link
+                to="/add-property"
+                onClick={() => navigateTo("/add-property")}
+                className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                <span>Add Property</span>
+              </Link>
+              <Link
+                to="/recommendations"
+                onClick={() => navigateTo("/recommendations")}
+                className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
+              >
+                <Star className="mr-2 h-4 w-4" />
+                <span>Recommendations</span>
+              </Link>
+              {user?.role === "admin" && (
+                <Link 
+                  to="/admin" 
+                  onClick={() => navigateTo("/admin")}
+                  className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary"
+                >
+                  <HomeIcon className="mr-2 h-4 w-4" />
+                  <span>Admin Dashboard</span>
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex items-center py-1.5 text-sm text-gray-600 hover:text-primary w-full text-left"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </button>
+            </div>
+          )}
         </div>
+      )} */}
+
+        {/* Login Button for Mobile (only show when not logged in) */}
+        {!user && (
+          <div className="px-3 py-2 mb-2">
+            <Link
+              to="/auth"
+              onClick={() => window.scrollTo(0, 0)}
+              className="inline-flex items-center justify-center w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                />
+              </svg>
+              Login / Register
+            </Link>
+          </div>
+        )}
         {/* Buyer Section */}
         <div className="border-b border-gray-100 pb-2 mb-1">
           <div

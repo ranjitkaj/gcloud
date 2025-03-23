@@ -16,9 +16,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Column 1: Company Info */}
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">
-              Urgent Sales.IN
-            </h3>
+            <Link to="/" className="inline-block mb-4">
+              <img
+                src="/src/Images/logo.png"
+                alt="UrgentSales.in"
+                className="h-10 md:h-12 w-auto"
+                onError={(e) => {
+                  console.error("Logo failed to load:", e);
+                  e.currentTarget.src = "/src/Images/logo.png";
+                }}
+              />
+            </Link>
             <p className="mb-4">
               India's leading platform for direct property transactions without
               broker commissions.
