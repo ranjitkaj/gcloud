@@ -384,6 +384,101 @@ export default function PostPropertyFree() {
         ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) 
         : null;
       
+      // First upload all files and collect their server URLs
+      const imageUrls: string[] = [];
+      const videoUrls: string[] = [];
+      
+      // Show a loading toast
+      toast({
+        title: "Uploading Files",
+        description: "Please wait while we upload your property images...",
+      });
+      
+      try {
+        // Process each file in propertyImages
+        for (const file of propertyImages) {
+          // Skip files that already have a server URL
+          if (file.serverUrl) {
+            if (file.type?.startsWith('video/')) {
+              videoUrls.push(file.serverUrl);
+            } else {
+              imageUrls.push(file.serverUrl);
+            }
+            continue;
+          }
+          
+          // Create form data for the file
+          const formData = new FormData();
+          formData.append('files', file);
+          
+          // Upload the file to the server
+          const response = await fetch('/api/upload/property-images', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            if (result.files && result.files.length > 0) {
+              const serverUrl = result.files[0];
+              
+              // Add to the appropriate array based on file type
+              if (file.type?.startsWith('video/')) {
+                videoUrls.push(serverUrl);
+              } else {
+                imageUrls.push(serverUrl);
+              }
+              
+              // Update file status in state
+              setPropertyImages(prev => 
+                prev.map(f => 
+                  f.id === file.id 
+                    ? { ...f, serverUrl, status: 'success' as const, uploadProgress: 100 } 
+                    : f
+                )
+              );
+            }
+          } else {
+            console.error('File upload failed:', file.name);
+            // Mark the file as having an error
+            setPropertyImages(prev => 
+              prev.map(f => 
+                f.id === file.id 
+                  ? { ...f, status: 'error' as const, errorMessage: 'Upload failed' } 
+                  : f
+              )
+            );
+            
+            // Show error toast
+            toast({
+              title: "Upload Failed",
+              description: `Failed to upload ${file.name}. Please try again.`,
+              variant: "destructive",
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error during file uploads:', error);
+        toast({
+          title: "Upload Error",
+          description: "There was a problem uploading your files. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Check if at least one image was uploaded successfully
+      if (imageUrls.length === 0) {
+        toast({
+          title: "No Images",
+          description: "Please upload at least one property image that could be processed successfully.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Prepare property data with the uploaded file URLs
       const propertyData = {
         title: data.title,
         description: data.description,
@@ -399,8 +494,8 @@ export default function PostPropertyFree() {
         bedrooms: bedrooms,
         bathrooms: bathrooms,
         area: parseInt(data.area),
-        imageUrls: propertyImages.map(img => img.preview || 'https://via.placeholder.com/800x600?text=Property+Image'),
-        videoUrls: [], // Empty array for now
+        imageUrls: imageUrls,
+        videoUrls: videoUrls,
         amenities: [], // Empty array for now
         contactName: data.contactName,
         contactPhone: data.contactPhone,
