@@ -305,7 +305,7 @@ export default function PostPropertyFree() {
   };
   
   // Handle form submission
-  const onSubmit = (data: PropertyFormValues) => {
+  const onSubmit = async (data: PropertyFormValues) => {
     if (!user) {
       toast({
         title: "Login Required",

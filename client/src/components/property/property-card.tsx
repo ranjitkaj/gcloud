@@ -19,7 +19,7 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
               <img 
                 src={property.imageUrls[0]} 
                 alt={property.title} 
-                className="w-full h-full object-contain md:object-cover transition-transform duration-500 hover:scale-105"
+                className="w-full h-full object-contain transition-transform duration-500 hover:scale-105"
                 onError={(e) => {
                   // Fallback to placeholder on error
                   e.currentTarget.onerror = null;
@@ -27,8 +27,8 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
                 }}
               />
               {property.imageUrls.length > 1 && (
-                <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-md">
-                  +{property.imageUrls.length} photos
+                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded-md">
+                  +{property.imageUrls.length - 1} more photos
                 </div>
               )}
             </div>
