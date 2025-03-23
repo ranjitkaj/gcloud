@@ -545,37 +545,111 @@ export default function SearchResults() {
                         >
                           Any
                         </Button>
-                        {[1, 2, 3, 4, "+5"].map((num, index) => (
-                          <Button
-                            key={num}
-                            variant={
-                              filters.minBedrooms === index + 1
-                                ? "default"
-                                : "outline"
-                            }
-                            size="sm"
-                            onClick={() => {
-                              if (num === "+5") {
-                                updateFilters({
-                                  minBedrooms: 5,
-                                  maxBedrooms: undefined,
-                                });
-                              } else {
-                                updateFilters({
-                                  minBedrooms: index + 1,
-                                  maxBedrooms: index + 1,
-                                });
-                              }
-                            }}
-                            className={
-                              filters.minBedrooms === index + 1
-                                ? "bg-primary"
-                                : ""
-                            }
-                          >
-                            {num}
-                          </Button>
-                        ))}
+                        <Button
+                          variant={
+                            filters.minBedrooms === 1 && filters.maxBedrooms === 1
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBedrooms: 1,
+                              maxBedrooms: 1,
+                            })
+                          }
+                          className={
+                            filters.minBedrooms === 1 && filters.maxBedrooms === 1
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          1
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBedrooms === 2 && filters.maxBedrooms === 2
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBedrooms: 2,
+                              maxBedrooms: 2,
+                            })
+                          }
+                          className={
+                            filters.minBedrooms === 2 && filters.maxBedrooms === 2
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          2
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBedrooms === 3 && filters.maxBedrooms === 3
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBedrooms: 3,
+                              maxBedrooms: 3,
+                            })
+                          }
+                          className={
+                            filters.minBedrooms === 3 && filters.maxBedrooms === 3
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          3
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBedrooms === 4 && filters.maxBedrooms === 4
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBedrooms: 4,
+                              maxBedrooms: 4,
+                            })
+                          }
+                          className={
+                            filters.minBedrooms === 4 && filters.maxBedrooms === 4
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          4
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBedrooms === 5 && filters.maxBedrooms === undefined
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBedrooms: 5,
+                              maxBedrooms: undefined,
+                            })
+                          }
+                          className={
+                            filters.minBedrooms === 5 && filters.maxBedrooms === undefined
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          5+
+                        </Button>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
@@ -605,37 +679,90 @@ export default function SearchResults() {
                         >
                           Any
                         </Button>
-                        {[1, 2, 3, 4, "+5"].map((num, index) => (
-                          <Button
-                            key={num}
-                            variant={
-                              filters.minBathrooms === index + 1
-                                ? "default"
-                                : "outline"
-                            }
-                            size="sm"
-                            onClick={() => {
-                              if (num === "+5") {
-                                updateFilters({
-                                  minBathrooms: 5,
-                                  maxBathrooms: undefined,
-                                });
-                              } else {
-                                updateFilters({
-                                  minBathrooms: index + 1,
-                                  maxBathrooms: index + 1,
-                                });
-                              }
-                            }}
-                            className={
-                              filters.minBathrooms === index + 1
-                                ? "bg-primary"
-                                : ""
-                            }
-                          >
-                            {num}
-                          </Button>
-                        ))}
+                        <Button
+                          variant={
+                            filters.minBathrooms === 1 && filters.maxBathrooms === 1
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBathrooms: 1,
+                              maxBathrooms: 1,
+                            })
+                          }
+                          className={
+                            filters.minBathrooms === 1 && filters.maxBathrooms === 1
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          1
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBathrooms === 2 && filters.maxBathrooms === 2
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBathrooms: 2,
+                              maxBathrooms: 2,
+                            })
+                          }
+                          className={
+                            filters.minBathrooms === 2 && filters.maxBathrooms === 2
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          2
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBathrooms === 3 && filters.maxBathrooms === 3
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBathrooms: 3,
+                              maxBathrooms: 3,
+                            })
+                          }
+                          className={
+                            filters.minBathrooms === 3 && filters.maxBathrooms === 3
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          3
+                        </Button>
+                        <Button
+                          variant={
+                            filters.minBathrooms === 4 && filters.maxBathrooms === undefined
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            updateFilters({
+                              minBathrooms: 4,
+                              maxBathrooms: undefined,
+                            })
+                          }
+                          className={
+                            filters.minBathrooms === 4 && filters.maxBathrooms === undefined
+                              ? "bg-primary"
+                              : ""
+                          }
+                        >
+                          4+
+                        </Button>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
