@@ -1155,9 +1155,7 @@ export default function PropertyDetail() {
             <DialogFooter className="flex flex-col sm:flex-row gap-2">
               <Button
                 variant="outline"
-                onClick={() => {
-                  setShowLoginPrompt(false);
-                }}
+                onClick={() => setShowLoginPrompt(false)}
               >
                 <span>Not Now</span>
               </Button>
