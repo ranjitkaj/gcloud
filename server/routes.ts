@@ -783,6 +783,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const updatedProperty = await storage.updateProperty(id, req.body);
     res.json(updatedProperty);
   }));
+  
+  // Delete a property
+  app.delete("/api/properties/:id", isAuthenticated, asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid property ID" });
+    }
+
+    // Get existing property
+    const property = await storage.getProperty(id);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    // Check if user owns this property or is an admin
+    if (property.userId !== req.user.id && 
+        req.user.role !== 'admin' && 
+        req.user.role !== 'company_admin') {
+      return res.status(403).json({ message: "You don't have permission to delete this property" });
+    }
+
+    // Delete the property
+    const success = await storage.deleteProperty(id);
+    if (!success) {
+      return res.status(500).json({ message: "Error deleting property" });
+    }
+    
+    // Also delete property images from uploads if they exist
+    if (property.imageUrls && property.imageUrls.length > 0) {
+      for (const imageUrl of property.imageUrls) {
+        try {
+          await deleteFile(imageUrl);
+        } catch (error) {
+          console.error(`Error deleting file ${imageUrl}:`, error);
+          // Continue with deletion even if image deletion fails
+        }
+      }
+    }
+    
+    return res.json({ success: true, message: "Property deleted successfully" });
+  }));
 
   // Get current user's properties
   app.get("/api/user/properties", isAuthenticated, asyncHandler(async (req, res) => {

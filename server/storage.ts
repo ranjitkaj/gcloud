@@ -600,6 +600,46 @@ export class MemStorage implements IStorage {
     return updatedProperty;
   }
 
+  async deleteProperty(id: number): Promise<boolean> {
+    // Check if property exists
+    const property = this.properties.get(id);
+    if (!property) return false;
+
+    // Delete related data
+    // 1. Delete property views
+    for (const [viewKey, view] of this.propertyViews.entries()) {
+      if (view.propertyId === id) {
+        this.propertyViews.delete(viewKey);
+      }
+    }
+
+    // 2. Delete saved properties
+    for (const [savedKey, savedProp] of this.savedProps.entries()) {
+      if (savedProp.propertyId === id) {
+        this.savedProps.delete(savedKey);
+      }
+    }
+
+    // 3. Delete recommendations
+    for (const [recKey, rec] of this.recommendations.entries()) {
+      if (rec.propertyId === id) {
+        this.recommendations.delete(recKey);
+      }
+    }
+
+    // 4. Delete inquiries
+    for (const [inquiryKey, inquiry] of this.inquiries.entries()) {
+      if (inquiry.propertyId === id) {
+        this.inquiries.delete(inquiryKey);
+      }
+    }
+
+    // 5. Delete the property itself
+    this.properties.delete(id);
+    
+    return true;
+  }
+
   async getProperty(id: number): Promise<Property | undefined> {
     return this.properties.get(id);
   }
