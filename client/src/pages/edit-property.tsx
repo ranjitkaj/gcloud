@@ -85,6 +85,24 @@ export default function EditProperty() {
     updatedAt?: Date;
     userId: number;
   };
+  
+  // Define form values type
+  type FormValues = {
+    title: string;
+    description: string;
+    location: string;
+    city: string;
+    address: string;
+    propertyType: string;
+    price: number;
+    bedrooms: number;
+    bathrooms: number;
+    area: number;
+    rentOrSale: string;
+    imageUrlsInput: string;
+    featured: boolean;
+    premium: boolean;
+  };
 
   // Fetch property data
   const { data: property, isLoading, isError } = useQuery<Property>({
@@ -107,6 +125,7 @@ export default function EditProperty() {
       bathrooms: 0,
       area: 0,
       rentOrSale: "sale",
+      imageUrlsInput: "",
       featured: false,
       premium: false,
     },
@@ -219,11 +238,25 @@ export default function EditProperty() {
           .filter(url => url.length > 0 && !url.startsWith("blob:"))
       : [];
     
+    // Only use server URLs for files that have been successfully uploaded
     const newFileUrls = files
-      .filter(file => file.status === "success" && file.preview)
-      .map(file => file.serverUrl || file.preview || "");
+      .filter(file => file.status === "success")
+      .map(file => {
+        // Always prioritize the server URL if it exists
+        if (file.serverUrl && file.serverUrl.trim() !== '') {
+          return file.serverUrl;
+        }
+        // Fall back to the preview URL only if no server URL exists
+        // (This should only happen for files that haven't been uploaded yet)
+        return file.preview || "";
+      })
+      .filter(url => url && url.trim() !== '');
     
-    form.setValue("imageUrlsInput", [...existingUrls, ...newFileUrls].join(","));
+    // Combine existing URLs with new ones and remove duplicates
+    const uniqueUrls = [...existingUrls, ...newFileUrls].filter(
+      (url, index, self) => self.indexOf(url) === index
+    );
+    form.setValue("imageUrlsInput", uniqueUrls.join(","));
   };
 
   const handleFileRemoved = (fileId: string) => {
@@ -254,28 +287,32 @@ export default function EditProperty() {
     
     setIsSubmitting(true);
 
-    // Process uploaded files
+    // Process uploaded files and input data
     let processedData = { ...data };
 
-    // Handle direct file uploads and convert to URLs if needed
-    if (uploadedFiles.length > 0) {
-      // In a real application, you would upload these files to a storage service
-      // and get back URLs. For this demo, we'll use the preview URLs.
-      const fileUrls = uploadedFiles
-        .filter((file) => file.status === "success")
-        .map((file) => file.serverUrl || file.preview || "");
+    // Process imageUrlsInput to include only valid URLs and remove duplicates
+    if (processedData.imageUrlsInput) {
+      // Split by commas, trim whitespace, and filter out empty strings
+      const urls = processedData.imageUrlsInput
+        .split(",")
+        .map(url => url.trim())
+        .filter(url => url.length > 0 && !url.startsWith("blob:"));
 
-      // Add these URLs to any existing image URLs
-      const existingUrls = processedData.imageUrlsInput
-        ? processedData.imageUrlsInput
-            .split(",")
-            .map((url) => url.trim())
-            .filter((url) => url.length > 0)
-        : [];
+      // Get serverUrls from uploaded files that have successfully completed upload
+      const uploadedFileUrls = uploadedFiles
+        .filter(file => file.status === "success" && file.serverUrl)
+        .map(file => file.serverUrl as string);
 
-      processedData.imageUrlsInput = [...existingUrls, ...fileUrls].join(",");
+      // Combine all valid URLs and remove duplicates
+      const allUrls = [...urls, ...uploadedFileUrls].filter(
+        (url, index, self) => self.indexOf(url) === index
+      );
+      
+      // Ensure we're saving valid URLs
+      processedData.imageUrlsInput = allUrls.join(",");
     }
 
+    console.log("Submitting property with image URLs:", processedData.imageUrlsInput);
     updateMutation.mutate(processedData);
   };
 

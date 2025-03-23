@@ -125,11 +125,17 @@ export default function FileUpload({
   // Upload file to server
   const simulateUploadProgress = async (file: FileWithPreview) => {
     try {
+      // If this is an existing file with a serverUrl already, don't re-upload it
+      if (file.serverUrl && file.status === 'success') {
+        console.log('File already uploaded, skipping:', file.name);
+        return;
+      }
+      
       // Start with initial progress
       setFiles(prevFiles => 
         prevFiles.map(f => 
           f.id === file.id 
-            ? { ...f, uploadProgress: 10 } 
+            ? { ...f, uploadProgress: 10, status: 'uploading' } 
             : f
         )
       );
@@ -138,7 +144,17 @@ export default function FileUpload({
       const formData = new FormData();
       formData.append('files', file);
       
+      // Show progress at 50% while uploading
+      setFiles(prevFiles => 
+        prevFiles.map(f => 
+          f.id === file.id 
+            ? { ...f, uploadProgress: 50 } 
+            : f
+        )
+      );
+      
       // Upload file to server
+      console.log('Uploading file to server:', file.name);
       const responseData = await apiRequest<{ files: string[] }>({
         url: '/api/upload/property-images',
         method: 'POST',
@@ -147,9 +163,10 @@ export default function FileUpload({
       });
       
       if (responseData && responseData.files && responseData.files.length > 0) {
+        console.log('File uploaded successfully. Server URL:', responseData.files[0]);
         // Update file with server URL
-        setFiles(prevFiles => 
-          prevFiles.map(f => 
+        setFiles(prevFiles => {
+          const updatedFiles = prevFiles.map(f => 
             f.id === file.id 
               ? { 
                   ...f, 
@@ -159,15 +176,20 @@ export default function FileUpload({
                   serverUrl: responseData.files[0]
                 } 
               : f
-          )
-        );
+          );
+          
+          // Notify parent component about the updated files
+          onFilesSelected(updatedFiles);
+          
+          return updatedFiles;
+        });
       } else {
         throw new Error('No file URLs returned from server');
       }
     } catch (error) {
       console.error('Error uploading file:', error);
-      setFiles(prevFiles => 
-        prevFiles.map(f => 
+      setFiles(prevFiles => {
+        const updatedFiles = prevFiles.map(f => 
           f.id === file.id 
             ? { 
                 ...f, 
@@ -176,8 +198,13 @@ export default function FileUpload({
                 errorMessage: error instanceof Error ? error.message : 'Upload failed'
               } 
             : f
-        )
-      );
+        );
+        
+        // Notify parent component about the updated files
+        onFilesSelected(updatedFiles);
+        
+        return updatedFiles;
+      });
     }
   };
 
