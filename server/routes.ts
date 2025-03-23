@@ -30,7 +30,7 @@ import {
   handleReportProblem,
   handlePropertyInterest 
 } from './email-service';
-import { upload, getFileUrl } from './file-upload';
+import { upload, getFileUrl, deleteFile } from './file-upload';
 
 
 // Helper to catch errors in async routes
