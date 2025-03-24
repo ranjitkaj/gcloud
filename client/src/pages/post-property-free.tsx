@@ -105,8 +105,8 @@ const propertySchema = z.object({
   pincode: z
     .string()
     .min(5, { message: "Pincode must be at least 5 characters" }),
-  bedrooms: z.number({ invalid_type_error: "Bedrooms must be a number" }).optional(),
-  bathrooms: z.number({ invalid_type_error: "Bathrooms must be a number" }).optional(),
+  bedrooms: z.coerce.number({ invalid_type_error: "Bedrooms must be a number" }).optional(),
+  bathrooms: z.coerce.number({ invalid_type_error: "Bathrooms must be a number" }).optional(),
   area: z.coerce.number({ required_error: "Area is required", invalid_type_error: "Area must be a number" }),
   areaUnit: z.enum(["sqft", "sqm", "acres", "hectares"]),
   contactName: z.string().min(2, { message: "Contact name is required" }),
@@ -228,6 +228,7 @@ export default function PostPropertyFree() {
       contactName: user?.name || "",
       contactPhone: "",
     },
+    mode: "onBlur", // Validate fields when they lose focus
   });
 
   // Redirect to auth page if not logged in
@@ -423,9 +424,7 @@ export default function PostPropertyFree() {
         }
       }
 
-      // Convert string values to numbers where needed
-      const bedrooms = data.bedrooms ? parseInt(data.bedrooms as unknown as string) : undefined;
-      const bathrooms = data.bathrooms ? parseInt(data.bathrooms as unknown as string) : undefined;
+      // Since we're using z.coerce.number() in the schema, values are already converted to numbers
       
       // Prepare expiry date for urgency sales
       const expiresAt = data.isUrgentSale
@@ -550,8 +549,8 @@ export default function PostPropertyFree() {
         city: city || "Unknown",
         address: data.location, // Using location as address too
         pincode: data.pincode,
-        bedrooms: bedrooms,
-        bathrooms: bathrooms,
+        bedrooms: data.bedrooms,
+        bathrooms: data.bathrooms,
         area: data.area,
         imageUrls: imageUrls,
         videoUrls: videoUrls,
@@ -1401,8 +1400,11 @@ export default function PostPropertyFree() {
                 Previous
               </Button>
               <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit)}
+                type="button"
+                onClick={() => {
+                  console.log("Submit button clicked", form.getValues());
+                  form.handleSubmit(onSubmit)();
+                }}
                 className="bg-primary hover:bg-primary/90 text-white"
                 disabled={formSubmitted || createPropertyMutation.isPending}
               >
@@ -1412,7 +1414,7 @@ export default function PostPropertyFree() {
                     Submitting...
                   </>
                 ) : (
-                  <>Submit Property Listing</>
+                  <>List My Property</>
                 )}
               </Button>
             </div>
