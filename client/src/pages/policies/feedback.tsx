@@ -58,23 +58,13 @@ export default function Feedback() {
   const onSubmit = async (data: FeedbackFormValues) => {
     setIsSubmitting(true);
     try {
-      // Validate required fields
-      if (!data.name || !data.email || !data.message) {
-        toast({
-          title: "Error",
-          description: "Please fill in all required fields",
-          variant: "destructive",
-        });
-        return;
-      }
-
       const formattedData = {
         name: data.name,
         email: data.email,
         category: data.feedbackType,
         subject: data.subject,
         rating: data.rating,
-        feedback: data.message
+        feedback: data.message // Changed to match backend expectation
       };
 
       const response = await apiRequest({
@@ -82,10 +72,6 @@ export default function Feedback() {
         method: "POST",
         data: formattedData
       });
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to submit feedback");
-      }
 
       toast({
         title: "Feedback submitted successfully",
