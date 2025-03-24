@@ -424,8 +424,8 @@ export default function PostPropertyFree() {
       }
 
       // Convert string values to numbers where needed
-      const bedrooms = data.bedrooms ? parseInt(data.bedrooms as string) : undefined;
-      const bathrooms = data.bathrooms ? parseInt(data.bathrooms as string) : undefined;
+      const bedrooms = data.bedrooms ? parseInt(data.bedrooms as unknown as string) : undefined;
+      const bathrooms = data.bathrooms ? parseInt(data.bathrooms as unknown as string) : undefined;
       
       // Prepare expiry date for urgency sales
       const expiresAt = data.isUrgentSale
@@ -971,8 +971,8 @@ export default function PostPropertyFree() {
                   <FormItem>
                     <FormLabel>Bedrooms</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                      defaultValue={field.value?.toString() || ""}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -1001,8 +1001,8 @@ export default function PostPropertyFree() {
                   <FormItem>
                     <FormLabel>Bathrooms</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                      defaultValue={field.value?.toString() || ""}
                     >
                       <FormControl>
                         <SelectTrigger>
