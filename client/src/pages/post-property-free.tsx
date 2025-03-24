@@ -423,10 +423,10 @@ export default function PostPropertyFree() {
         }
       }
 
-      // Use bedrooms and bathrooms directly as they're already numbers
-      const bedrooms = data.bedrooms;
-      const bathrooms = data.bathrooms;
-
+      // Convert string values to numbers where needed
+      const bedrooms = data.bedrooms ? parseInt(data.bedrooms as string) : undefined;
+      const bathrooms = data.bathrooms ? parseInt(data.bathrooms as string) : undefined;
+      
       // Prepare expiry date for urgency sales
       const expiresAt = data.isUrgentSale
         ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
@@ -980,13 +980,13 @@ export default function PostPropertyFree() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={undefined}>Select</SelectItem>
-                        <SelectItem value={1}>1</SelectItem>
-                        <SelectItem value={2}>2</SelectItem>
-                        <SelectItem value={3}>3</SelectItem>
-                        <SelectItem value={4}>4</SelectItem>
-                        <SelectItem value={5}>5</SelectItem>
-                        <SelectItem value={6}>5+</SelectItem>
+                        <SelectItem value="">Select</SelectItem>
+                        <SelectItem value="1">1</SelectItem>
+                        <SelectItem value="2">2</SelectItem>
+                        <SelectItem value="3">3</SelectItem>
+                        <SelectItem value="4">4</SelectItem>
+                        <SelectItem value="5">5</SelectItem>
+                        <SelectItem value="6">5+</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -1010,12 +1010,12 @@ export default function PostPropertyFree() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={undefined}>Select</SelectItem>
-                        <SelectItem value={1}>1</SelectItem>
-                        <SelectItem value={2}>2</SelectItem>
-                        <SelectItem value={3}>3</SelectItem>
-                        <SelectItem value={4}>4</SelectItem>
-                        <SelectItem value={5}>5</SelectItem>
+                        <SelectItem value="">Select</SelectItem>
+                        <SelectItem value="1">1</SelectItem>
+                        <SelectItem value="2">2</SelectItem>
+                        <SelectItem value="3">3</SelectItem>
+                        <SelectItem value="4">4</SelectItem>
+                        <SelectItem value="5">5</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -1258,7 +1258,7 @@ export default function PostPropertyFree() {
                         <span className="text-red-600 font-semibold">
                           ₹
                           {Math.round(
-                            parseInt(form.getValues().price || "0") * 0.75,
+                            (form.getValues().price || 0) * 0.75
                           ).toLocaleString()}
                         </span>
                         <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
@@ -1273,7 +1273,7 @@ export default function PostPropertyFree() {
                   ) : (
                     <p className="text-base">
                       ₹
-                      {parseInt(form.getValues().price || "0").toLocaleString()}
+                      {(form.getValues().price || 0).toLocaleString()}
                     </p>
                   )}
                 </div>
