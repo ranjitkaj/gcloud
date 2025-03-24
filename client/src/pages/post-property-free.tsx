@@ -388,11 +388,8 @@ export default function PostPropertyFree() {
     }
 
     try {
-      // Create a complete property object with form data and images
-      const price = data.price;
-
       // Additional validations
-      if (price <= 0) {
+      if (data.price <= 0) {
         toast({
           title: "Invalid Price",
           description: "Please enter a valid price greater than 0",
@@ -542,9 +539,9 @@ export default function PostPropertyFree() {
         description: data.description,
         propertyType: data.propertyType,
         rentOrSale: data.forSaleOrRent.toLowerCase(), // Using schema field name
-        price: price,
+        price: data.price,
         // If urgency sale, calculate 25% discount (only for premium users)
-        discountedPrice: data.isUrgentSale ? Math.round(price * 0.75) : null,
+        discountedPrice: data.isUrgentSale ? Math.round(data.price * 0.75) : null,
         location: data.location,
         city: city || "Unknown",
         address: data.location, // Using location as address too
