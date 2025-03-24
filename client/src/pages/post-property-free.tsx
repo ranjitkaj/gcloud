@@ -97,7 +97,7 @@ const propertySchema = z.object({
     "office",
   ]),
   forSaleOrRent: z.enum(["sale"]),
-  price: z.string().min(1, { message: "Price is required" }),
+  price: z.coerce.number({ required_error: "Price is required", invalid_type_error: "Price must be a number" }),
   isUrgentSale: z.boolean().default(false),
   location: z
     .string()
@@ -105,9 +105,9 @@ const propertySchema = z.object({
   pincode: z
     .string()
     .min(5, { message: "Pincode must be at least 5 characters" }),
-  bedrooms: z.string().optional(),
-  bathrooms: z.string().optional(),
-  area: z.string().min(1, { message: "Area is required" }),
+  bedrooms: z.number({ invalid_type_error: "Bedrooms must be a number" }).optional(),
+  bathrooms: z.number({ invalid_type_error: "Bathrooms must be a number" }).optional(),
+  area: z.coerce.number({ required_error: "Area is required", invalid_type_error: "Area must be a number" }),
   areaUnit: z.enum(["sqft", "sqm", "acres", "hectares"]),
   contactName: z.string().min(2, { message: "Contact name is required" }),
   contactPhone: z
@@ -217,13 +217,13 @@ export default function PostPropertyFree() {
       description: "",
       propertyType: "apartment",
       forSaleOrRent: "sale",
-      price: "",
+      price: 0,
       isUrgentSale: false,
       location: "",
       pincode: "",
-      bedrooms: "",
-      bathrooms: "",
-      area: "",
+      bedrooms: undefined,
+      bathrooms: undefined,
+      area: 0,
       areaUnit: "sqft",
       contactName: user?.name || "",
       contactPhone: "",
@@ -388,22 +388,22 @@ export default function PostPropertyFree() {
 
     try {
       // Create a complete property object with form data and images
-      const price = parseInt(data.price);
+      const price = data.price;
 
       // Additional validations
-      if (isNaN(price)) {
+      if (price <= 0) {
         toast({
           title: "Invalid Price",
-          description: "Please enter a valid price",
+          description: "Please enter a valid price greater than 0",
           variant: "destructive",
         });
         return;
       }
 
-      if (data.area && isNaN(parseInt(data.area))) {
+      if (data.area <= 0) {
         toast({
           title: "Invalid Area",
-          description: "Please enter a valid area",
+          description: "Please enter a valid area greater than 0",
           variant: "destructive",
         });
         return;
@@ -423,9 +423,9 @@ export default function PostPropertyFree() {
         }
       }
 
-      // Convert bedrooms and bathrooms to numbers or null
-      const bedrooms = data.bedrooms ? parseInt(data.bedrooms) : null;
-      const bathrooms = data.bathrooms ? parseInt(data.bathrooms) : null;
+      // Use bedrooms and bathrooms directly as they're already numbers
+      const bedrooms = data.bedrooms;
+      const bathrooms = data.bathrooms;
 
       // Prepare expiry date for urgency sales
       const expiresAt = data.isUrgentSale
@@ -552,7 +552,7 @@ export default function PostPropertyFree() {
         pincode: data.pincode,
         bedrooms: bedrooms,
         bathrooms: bathrooms,
-        area: parseInt(data.area),
+        area: data.area,
         imageUrls: imageUrls,
         videoUrls: videoUrls,
         amenities: [], // Empty array for now
@@ -980,13 +980,13 @@ export default function PostPropertyFree() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Select</SelectItem>
-                        <SelectItem value="1">1</SelectItem>
-                        <SelectItem value="2">2</SelectItem>
-                        <SelectItem value="3">3</SelectItem>
-                        <SelectItem value="4">4</SelectItem>
-                        <SelectItem value="5">5</SelectItem>
-                        <SelectItem value="5+">5+</SelectItem>
+                        <SelectItem value={undefined}>Select</SelectItem>
+                        <SelectItem value={1}>1</SelectItem>
+                        <SelectItem value={2}>2</SelectItem>
+                        <SelectItem value={3}>3</SelectItem>
+                        <SelectItem value={4}>4</SelectItem>
+                        <SelectItem value={5}>5</SelectItem>
+                        <SelectItem value={6}>5+</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -1010,12 +1010,12 @@ export default function PostPropertyFree() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Select</SelectItem>
-                        <SelectItem value="1">1</SelectItem>
-                        <SelectItem value="2">2</SelectItem>
-                        <SelectItem value="3">3</SelectItem>
-                        <SelectItem value="4">4</SelectItem>
-                        <SelectItem value="5">5</SelectItem>
+                        <SelectItem value={undefined}>Select</SelectItem>
+                        <SelectItem value={1}>1</SelectItem>
+                        <SelectItem value={2}>2</SelectItem>
+                        <SelectItem value={3}>3</SelectItem>
+                        <SelectItem value={4}>4</SelectItem>
+                        <SelectItem value={5}>5</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -1253,9 +1253,7 @@ export default function PostPropertyFree() {
                       <p className="text-base flex items-center">
                         <span className="line-through text-gray-500 mr-2">
                           ₹
-                          {parseInt(
-                            form.getValues().price || "0",
-                          ).toLocaleString()}
+                          {(form.getValues().price || 0).toLocaleString()}
                         </span>
                         <span className="text-red-600 font-semibold">
                           ₹

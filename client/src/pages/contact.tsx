@@ -82,8 +82,7 @@ export default function ContactPage() {
       // Show success message
       toast({
         title: "Message Sent Successfully",
-        description:
-          `Thank you for contacting us! Your message has been sent to srinathballa20@gmail.com. We'll respond to ${data.email} shortly.`,
+        description: `Thank you for contacting us!  We'll respond to ${data.email} shortly.`,
         variant: "default",
       });
 
@@ -149,11 +148,11 @@ export default function ContactPage() {
                 </div>
                 <p className="text-gray-600 mb-2">General Inquiries:</p>
                 <p className="text-primary font-medium mb-3">
-                  contact@urgentsales.in
+                  support@UrgentSales.com
                 </p>
                 <p className="text-gray-600 mb-2">Support:</p>
                 <p className="text-primary font-medium">
-                  contact@urgentsales.in
+                  support@UrgentSales.com
                 </p>
               </div>
 
@@ -165,9 +164,9 @@ export default function ContactPage() {
                   <h3 className="text-xl font-semibold">Call Us</h3>
                 </div>
                 <p className="text-gray-600 mb-2">Customer Support:</p>
-                <p className="text-primary font-medium mb-3">+91 99512 11555</p>
+                <p className="text-primary font-medium mb-3">+91 9032561155</p>
                 <p className="text-gray-600 mb-2">Property Assistance:</p>
-                <p className="text-primary font-medium">+91 99512 11555</p>
+                <p className="text-primary font-medium">+91 9032381155</p>
               </div>
             </div>
           </div>
@@ -206,7 +205,7 @@ export default function ContactPage() {
                       <Phone className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">Urgency Sales Hotline</p>
-                        <p className="text-gray-600">+91 99512 11555</p>
+                        <p className="text-gray-600">+91 9032561155 </p>
                       </div>
                     </div>
 
@@ -214,7 +213,7 @@ export default function ContactPage() {
                       <Mail className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">Urgent Inquiries</p>
-                        <p className="text-gray-600">contact@urgentsales.in</p>
+                        <p className="text-gray-600">support@UrgentSales.com</p>
                       </div>
                     </div>
 
@@ -222,17 +221,7 @@ export default function ContactPage() {
                       <MessageSquare className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
                       <div>
                         <p className="font-medium">WhatsApp Support</p>
-                        <p className="text-gray-600">+91 99512 11555</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start">
-                      <Clock className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Extended Hours</p>
-                        <p className="text-gray-600">
-                          9AM - 9PM, 7 days a week
-                        </p>
+                        <p className="text-gray-600">+91 9032381155</p>
                       </div>
                     </div>
                   </div>
@@ -278,7 +267,7 @@ export default function ContactPage() {
                   </p>
                   <Button
                     className="w-full bg-red-600 hover:bg-red-700 text-white"
-                    onClick={() => (window.location.href = "tel:+919951211555")}
+                    onClick={() => (window.location.href = "tel:+919032561155")}
                   >
                     Book Consultation
                   </Button>

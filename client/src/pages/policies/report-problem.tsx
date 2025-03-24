@@ -74,11 +74,14 @@ export default function ReportProblem() {
         category: data.problemType,
         severity: data.urgency,
         url: window.location.href,
-        description: data.description + 
-          (data.stepsToReproduce ? "\n\nSteps to reproduce:\n" + data.stepsToReproduce : "") +
-          (data.deviceInfo ? "\n\nDevice info:\n" + data.deviceInfo : "")
+        description:
+          data.description +
+          (data.stepsToReproduce
+            ? "\n\nSteps to reproduce:\n" + data.stepsToReproduce
+            : "") +
+          (data.deviceInfo ? "\n\nDevice info:\n" + data.deviceInfo : ""),
       };
-      
+
       // Send the data to the server
       const response = await fetch("/api/report-problem", {
         method: "POST",
@@ -160,8 +163,8 @@ export default function ReportProblem() {
               </h2>
               <p className="text-gray-600 mb-4">
                 We've received your problem report and our technical team will
-                investigate the issue. You'll receive a confirmation email
-                at {form.getValues().email} shortly with details.
+                investigate the issue. You'll receive a confirmation email at{" "}
+                {form.getValues().email} shortly with details.
               </p>
               <p className="text-gray-700 font-medium mb-2">
                 Reference #:{" "}
@@ -379,14 +382,6 @@ export default function ReportProblem() {
                   name="deviceInfo"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Device & Browser Information</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          className="font-mono text-xs"
-                          disabled
-                        />
-                      </FormControl>
                       <FormDescription>
                         This helps our technical team reproduce and fix the
                         issue
@@ -420,15 +415,14 @@ export default function ReportProblem() {
             <div className="flex flex-col space-y-2">
               <p className="flex items-center text-gray-700">
                 <span className="font-medium mr-2">Email:</span>{" "}
-                support@urgentsales.com
+                support@UrgentSales.com
               </p>
               <p className="flex items-center text-gray-700">
-                <span className="font-medium mr-2">Phone:</span> +91 8800123456
-                (Mon-Fri, 9 AM - 6 PM)
+                <span className="font-medium mr-2">Phone:</span> +91 9032561155
               </p>
               <p className="flex items-center text-gray-700">
                 <span className="font-medium mr-2">WhatsApp:</span> +91
-                8800123456
+                9032381155
               </p>
             </div>
           </div>

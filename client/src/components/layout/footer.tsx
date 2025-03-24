@@ -263,6 +263,7 @@ export default function Footer() {
             <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0 text-sm">
               <Link
                 to="/about"
+                onClick={() => window.scrollTo(0, 0)}
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 About Us
@@ -270,6 +271,7 @@ export default function Footer() {
 
               <Link
                 to="/post-property-free"
+                onClick={() => window.scrollTo(0, 0)}
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Post Property Free
