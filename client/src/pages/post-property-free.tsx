@@ -1738,26 +1738,21 @@ export default function PostPropertyFree() {
                           </h3>
 
                           <div className="space-y-4">
-                            <FormField
-                              control={form.control}
-                              name="imageUrlsInput"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Image URLs</FormLabel>
-                                  <FormControl>
-                                    <Textarea
-                                      placeholder="Enter image URLs separated by commas"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormDescription>
-                                    Add URLs to your property images, separated
-                                    by commas
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                            <div className="form-field">
+                              <label className="block text-sm font-medium mb-1">Image URLs (Optional)</label>
+                              <Textarea
+                                placeholder="Enter image URLs separated by commas"
+                                className="min-h-24"
+                                value={form.watch('description') || ''}
+                                onChange={(e) => {
+                                  // Store URLs in description field temporarily
+                                  form.setValue('description', e.target.value);
+                                }}
+                              />
+                              <p className="text-xs text-gray-500 mt-1">
+                                Add external image URLs or use the uploader below
+                              </p>
+                            </div>
 
                             <div className="bg-gray-50 p-4 rounded-lg">
                               <div className="flex items-start">
