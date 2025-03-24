@@ -16,14 +16,16 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
         <div className="relative h-48">
           {property.imageUrls && property.imageUrls.length > 0 ? (
             <div className="h-full w-full overflow-hidden">
-              <img 
-                src={property.imageUrls[0]} 
-                alt={property.title} 
+              <img
+                src={property.imageUrls[0]}
+                alt={property.title}
+                onClick={() => window.scrollTo(0, 0)}
                 className="w-full h-full object-contain transition-transform duration-500 hover:scale-105"
                 onError={(e) => {
                   // Fallback to placeholder on error
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+                  e.currentTarget.src =
+                    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
                 }}
               />
               {property.imageUrls.length > 1 && (
@@ -40,46 +42,60 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
 
           {/* Approval status badge - displays at the top center */}
           {property.approvalStatus && (
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className={`absolute top-2 transform -translate-x-1/2 left-1/2 z-10 ${
-                property.approvalStatus === 'approved' 
-                  ? 'bg-green-500 text-white' 
-                  : property.approvalStatus === 'pending' 
-                  ? 'bg-yellow-500 text-white'
-                  : 'bg-red-500 text-white'
+                property.approvalStatus === "approved"
+                  ? "bg-green-500 text-white"
+                  : property.approvalStatus === "pending"
+                    ? "bg-yellow-500 text-white"
+                    : "bg-red-500 text-white"
               }`}
             >
-              {property.approvalStatus === 'approved' 
-                ? '✓ Approved' 
-                : property.approvalStatus === 'pending' 
-                ? 'Pending' 
-                : 'Rejected'}
+              {property.approvalStatus === "approved"
+                ? "✓ Approved"
+                : property.approvalStatus === "pending"
+                  ? "Pending"
+                  : "Rejected"}
             </Badge>
           )}
 
           {property.premium && (
-            <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-500 text-white">
+            <Badge
+              variant="secondary"
+              className="absolute top-2 right-2 bg-amber-500 text-white"
+            >
               Premium
             </Badge>
           )}
-          
+
           {property.featured && (
-            <Badge variant="secondary" className="absolute top-2 left-2 bg-blue-500 text-white">
+            <Badge
+              variant="secondary"
+              className="absolute top-2 left-2 bg-blue-500 text-white"
+            >
               Featured
             </Badge>
           )}
-          
+
           {property.discountedPrice && (
-            <Badge variant="secondary" className="absolute bottom-2 left-2 bg-red-500 text-white">
-              {Math.round((1 - property.discountedPrice / property.price) * 100)}% Off
+            <Badge
+              variant="secondary"
+              className="absolute bottom-2 left-2 bg-red-500 text-white"
+            >
+              {Math.round(
+                (1 - property.discountedPrice / property.price) * 100,
+              )}
+              % Off
             </Badge>
           )}
         </div>
 
         <CardContent className="p-4">
           <div className="flex justify-between items-start mb-2">
-            <h3 className="font-medium text-lg line-clamp-1">{property.title}</h3>
+            <h3 className="font-medium text-lg line-clamp-1">
+              {property.title}
+            </h3>
             <Badge variant="outline">{property.propertyType}</Badge>
           </div>
 
@@ -106,7 +122,10 @@ export function PropertyCard({ property, isAiRecommended }: PropertyCardProps) {
               {property.price.toLocaleString("en-IN")}
             </span>
             {isAiRecommended && (
-              <Badge variant="secondary" className="bg-indigo-100 text-indigo-800">
+              <Badge
+                variant="secondary"
+                className="bg-indigo-100 text-indigo-800"
+              >
                 AI Recommended
               </Badge>
             )}

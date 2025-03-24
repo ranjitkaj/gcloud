@@ -61,25 +61,6 @@ export default function RecommendedProperties() {
                   Propertiess
                 </p>
               </div>
-              {recommendations.length > 0 && (
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-xs text-gray-500">
-                    Explore our top recommendations, featuring a curated
-                    selection of newly listed properties designed to meet your
-                    highest expectations. Whether you seek a sophisticated urban
-                    residence, a spacious family home, or a prime investment
-                    opportunity, we present the best property for you. Browse
-                    now and secure your ideal space in the market.
-                  </p>
-                  <Button
-                    variant="link"
-                    className="text-xs text-indigo-600 p-0 h-auto"
-                    onClick={() => window.scrollTo(0, 0)}
-                  >
-                    {showAiInfo ? "Hide info" : "Learn how it works"}
-                  </Button>
-                </div>
-              )}
             </div>
           )}
         </div>

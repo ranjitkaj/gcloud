@@ -74,6 +74,7 @@ export default function TopProperties() {
             <Link
               key={categories[0].id}
               href={`/top-properties/${categories[0].id}`}
+              onClick={() => window.scrollTo(0, 0)}
               className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[0].borderColor} ${categories[0].animation} overflow-hidden relative block h-40`}
               style={{
                 backgroundImage: `url(${categories[0].imageUrl})`,
@@ -103,6 +104,7 @@ export default function TopProperties() {
             <Link
               key={categories[1].id}
               href={`/top-properties/${categories[1].id}`}
+              onClick={() => window.scrollTo(0, 0)}
               className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[1].borderColor} ${categories[1].animation} overflow-hidden relative block h-32`}
               style={{
                 backgroundImage: `url(${categories[1].imageUrl})`,
@@ -129,6 +131,7 @@ export default function TopProperties() {
             <Link
               key={categories[2].id}
               href={`/top-properties/${categories[2].id}`}
+              onClick={() => window.scrollTo(0, 0)}
               className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[2].borderColor} ${categories[2].animation} overflow-hidden relative block h-32`}
               style={{
                 backgroundImage: `url(${categories[2].imageUrl})`,
@@ -158,6 +161,7 @@ export default function TopProperties() {
             <Link
               key={categories[3].id}
               href={`/top-properties/${categories[3].id}`}
+              onClick={() => window.scrollTo(0, 0)}
               className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[3].borderColor} ${categories[3].animation} overflow-hidden relative block h-32`}
               style={{
                 backgroundImage: `url(${categories[3].imageUrl})`,
@@ -184,6 +188,7 @@ export default function TopProperties() {
             <Link
               key={categories[4].id}
               href={`/top-properties/${categories[4].id}`}
+              onClick={() => window.scrollTo(0, 0)}
               className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[4].borderColor} ${categories[4].animation} overflow-hidden relative block h-32`}
               style={{
                 backgroundImage: `url(${categories[4].imageUrl})`,
@@ -217,6 +222,7 @@ export default function TopProperties() {
               <Link
                 key={categories[0].id}
                 href={`/top-properties/${categories[0].id}`}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[0].borderColor} ${categories[0].animation} overflow-hidden relative block h-full`}
                 style={{
                   backgroundImage: `url(${categories[0].imageUrl})`,
@@ -246,6 +252,7 @@ export default function TopProperties() {
               <Link
                 key={categories[1].id}
                 href={`/top-properties/${categories[1].id}`}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[1].borderColor} ${categories[1].animation} overflow-hidden relative block h-full`}
                 style={{
                   backgroundImage: `url(${categories[1].imageUrl})`,
@@ -275,6 +282,7 @@ export default function TopProperties() {
               <Link
                 key={categories[3].id}
                 href={`/top-properties/${categories[3].id}`}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[3].borderColor} ${categories[3].animation} overflow-hidden relative block h-full`}
                 style={{
                   backgroundImage: `url(${categories[3].imageUrl})`,
@@ -304,6 +312,7 @@ export default function TopProperties() {
               <Link
                 key={categories[2].id}
                 href={`/top-properties/${categories[2].id}`}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[2].borderColor} ${categories[2].animation} overflow-hidden relative block h-full`}
                 style={{
                   backgroundImage: `url(${categories[2].imageUrl})`,
@@ -333,6 +342,7 @@ export default function TopProperties() {
               <Link
                 key={categories[4].id}
                 href={`/top-properties/${categories[4].id}`}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`rounded-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-2 ${categories[4].borderColor} ${categories[4].animation} overflow-hidden relative block h-full`}
                 style={{
                   backgroundImage: `url(${categories[4].imageUrl})`,

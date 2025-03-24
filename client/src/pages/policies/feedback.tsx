@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Star } from "lucide-react";
 
 const feedbackSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -32,6 +33,7 @@ const feedbackSchema = z.object({
   feedbackType: z.enum(["general", "suggestion", "bug", "complaint", "praise"]),
   subject: z.string().min(5, "Subject must be at least 5 characters"),
   message: z.string().min(10, "Message must be at least 10 characters"),
+  rating: z.number().min(1).max(5),
 });
 
 type FeedbackFormValues = z.infer<typeof feedbackSchema>;
@@ -39,6 +41,7 @@ type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 export default function Feedback() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hoverRating, setHoverRating] = useState(0);
 
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
@@ -48,6 +51,7 @@ export default function Feedback() {
       feedbackType: "general",
       subject: "",
       message: "",
+      rating: 0,
     },
   });
 
@@ -59,8 +63,9 @@ export default function Feedback() {
         name: data.name,
         email: data.email,
         category: data.feedbackType,
-        rating: 5, // Default rating (not in the form)
-        feedback: data.message,
+        subject: data.subject, // Added subject field
+        rating: data.rating,
+        message: data.message, // Changed from feedback to message to match backend expectation
       };
 
       // Send the data to the server
@@ -76,12 +81,17 @@ export default function Feedback() {
         throw new Error("Failed to submit feedback");
       }
 
-      const result = await response.json();
+      const result = await apiRequest({
+        url: "/api/feedback",
+        method: "POST",
+        data: formattedData,
+      });
 
       toast({
         title: "Feedback submitted successfully",
         description:
-          "Thank you for your feedback! We'll review it and respond to " + data.email + " if needed. A copy has been sent to srinathballa20@gmail.com",
+          "Thank you for your feedback! We'll review it and respond to " +
+          data.email,
       });
 
       form.reset();
@@ -96,6 +106,42 @@ export default function Feedback() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Star Rating Component
+  const StarRating = ({
+    value,
+    onChange,
+    onHover,
+    onLeave,
+  }: {
+    value: number;
+    onChange: (rating: number) => void;
+    onHover: (rating: number) => void;
+    onLeave: () => void;
+  }) => {
+    return (
+      <div className="flex space-x-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => onChange(star)}
+            onMouseEnter={() => onHover(star)}
+            onMouseLeave={onLeave}
+            className="focus:outline-none"
+          >
+            <Star
+              className={`h-8 w-8 ${
+                star <= (hoverRating || value)
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-300"
+              } transition-colors`}
+            />
+          </button>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -220,6 +266,35 @@ export default function Feedback() {
                     />
                   </div>
 
+                  {/* Star Rating Field */}
+                  <FormField
+                    control={form.control}
+                    name="rating"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Rate Your Experience</FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col space-y-2">
+                            <StarRating
+                              value={field.value}
+                              onChange={(rating) => field.onChange(rating)}
+                              onHover={setHoverRating}
+                              onLeave={() => setHoverRating(0)}
+                            />
+                            <div className="text-sm text-gray-500">
+                              {field.value === 1 && "Poor"}
+                              {field.value === 2 && "Fair"}
+                              {field.value === 3 && "Good"}
+                              {field.value === 4 && "Very Good"}
+                              {field.value === 5 && "Excellent"}
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="message"
@@ -257,14 +332,12 @@ export default function Feedback() {
               <div className="space-y-4">
                 <div>
                   <h4 className="font-medium text-gray-700">Email Us</h4>
-                  <p className="text-gray-600">feedback@homedirectly.com</p>
+                  <p className="text-gray-600">support@UrgentSales.com</p>
                 </div>
 
                 <div>
                   <h4 className="font-medium text-gray-700">Call Us</h4>
-                  <p className="text-gray-600">
-                    +91 8800123456 (Mon-Fri, 9 AM - 6 PM)
-                  </p>
+                  <p className="text-gray-600">+91-99512 11555</p>
                 </div>
 
                 <div>
@@ -272,9 +345,11 @@ export default function Feedback() {
                     Visit Our Office
                   </h4>
                   <p className="text-gray-600">
-                    123 Tech Park, Whitefield
+                    #301, Madhavaram Towers,
                     <br />
-                    Bangalore - 560066, India
+                    Kukatpally Y Junction, Moosapet,
+                    <br />
+                    Hyderabad-500018,India
                   </p>
                 </div>
 
@@ -282,7 +357,7 @@ export default function Feedback() {
                   <h4 className="font-medium text-gray-700">Social Media</h4>
                   <div className="flex space-x-3 mt-2">
                     <a
-                      href="#"
+                      href="https://www.facebook.com/profile.php?id=61574427475230"
                       className="text-gray-600 hover:text-primary transition-colors"
                     >
                       <span className="sr-only">Facebook</span>
@@ -300,7 +375,7 @@ export default function Feedback() {
                       </svg>
                     </a>
                     <a
-                      href="#"
+                      href="https://x.com/Urgentsales"
                       className="text-gray-600 hover:text-primary transition-colors"
                     >
                       <span className="sr-only">Twitter</span>
@@ -314,7 +389,7 @@ export default function Feedback() {
                       </svg>
                     </a>
                     <a
-                      href="#"
+                      href="https://www.instagram.com/urgentsales/?hl=en"
                       className="text-gray-600 hover:text-primary transition-colors"
                     >
                       <span className="sr-only">Instagram</span>

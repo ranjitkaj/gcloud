@@ -104,17 +104,19 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="/properties?type=apartment"
-                  onClick={() => window.scrollTo(0, 0)}
-                  className="hover:text-white transition-colors"
-                >
-                  Apartments
-                </Link>
+                <li>
+                  <Link
+                    href="/properties?propertyType=apartment"
+                    onClick={() => window.scrollTo(0, 0)}
+                    className="hover:text-white transition-colors"
+                  >
+                    Apartments
+                  </Link>
+                </li>
               </li>
               <li>
                 <Link
-                  href="/properties?type=house"
+                  href="/properties?propertyType=house&propertyType=villa"
                   onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
@@ -123,7 +125,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/properties?type=plot"
+                  href="/properties?propertyType=plot&propertyType=Land"
                   onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
@@ -132,7 +134,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/properties?type=commercial"
+                  href="/properties?propertyType=commercial"
                   onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >
@@ -142,7 +144,7 @@ export default function Footer() {
 
               <li>
                 <Link
-                  href="/properties"
+                  href="/properties?propertyType=farmhouse"
                   onClick={() => window.scrollTo(0, 0)}
                   className="hover:text-white transition-colors"
                 >

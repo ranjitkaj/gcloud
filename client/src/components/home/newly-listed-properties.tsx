@@ -166,6 +166,7 @@ export default function NewlyListedProperties() {
                   <img
                     src={property.image}
                     alt={property.title}
+                    onClick={() => window.scrollTo(0, 0)}
                     className="w-full h-48 object-cover"
                   />
                   <div className="absolute top-2 left-2 flex flex-col gap-2">
