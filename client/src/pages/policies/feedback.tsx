@@ -58,16 +58,30 @@ export default function Feedback() {
   const onSubmit = async (data: FeedbackFormValues) => {
     setIsSubmitting(true);
     try {
+      // Convert the form data to the format expected by the API
       const formattedData = {
         name: data.name,
         email: data.email,
         category: data.feedbackType,
-        subject: data.subject,
+        subject: data.subject, // Added subject field
         rating: data.rating,
-        message: data.message,
+        message: data.message, // Changed from feedback to message to match backend expectation
       };
 
-      await apiRequest({
+      // Send the data to the server
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
+
+      const result = await apiRequest({
         url: "/api/feedback",
         method: "POST",
         data: formattedData,
@@ -75,7 +89,9 @@ export default function Feedback() {
 
       toast({
         title: "Feedback submitted successfully",
-        description: "Thank you for your feedback! We'll review it and respond to " + data.email,
+        description:
+          "Thank you for your feedback! We'll review it and respond to " +
+          data.email,
       });
 
       form.reset();
@@ -83,7 +99,8 @@ export default function Feedback() {
       console.error("Error submitting feedback:", error);
       toast({
         title: "Error submitting feedback",
-        description: "There was an error submitting your feedback. Please try again later.",
+        description:
+          "There was an error submitting your feedback. Please try again later.",
         variant: "destructive",
       });
     } finally {
