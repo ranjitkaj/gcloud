@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Star } from "lucide-react";
 
 const feedbackSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -33,7 +32,6 @@ const feedbackSchema = z.object({
   feedbackType: z.enum(["general", "suggestion", "bug", "complaint", "praise"]),
   subject: z.string().min(5, "Subject must be at least 5 characters"),
   message: z.string().min(10, "Message must be at least 10 characters"),
-  rating: z.number().min(1).max(5),
 });
 
 type FeedbackFormValues = z.infer<typeof feedbackSchema>;
@@ -41,7 +39,6 @@ type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 export default function Feedback() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hoverRating, setHoverRating] = useState(0);
 
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
@@ -51,33 +48,42 @@ export default function Feedback() {
       feedbackType: "general",
       subject: "",
       message: "",
-      rating: 0,
     },
   });
 
   const onSubmit = async (data: FeedbackFormValues) => {
     setIsSubmitting(true);
     try {
+      // Convert the form data to the format expected by the API
       const formattedData = {
         name: data.name,
         email: data.email,
         category: data.feedbackType,
-        subject: data.subject,
-        rating: data.rating,
-        feedback: data.message // Changed to match backend expectation
+        rating: 5, // Default rating (not in the form)
+        feedback: data.message,
       };
 
-      const response = await apiRequest({
-        url: "/api/feedback",
+      // Send the data to the server
+      const response = await fetch("/api/feedback", {
         method: "POST",
-        data: formattedData
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formattedData),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
+
+      const result = await response.json();
 
       toast({
         title: "Feedback submitted successfully",
         description:
           "Thank you for your feedback! We'll review it and respond to " +
-          data.email,
+          data.email +
+          " if needed. A copy has been sent to srinathballa20@gmail.com",
       });
 
       form.reset();
@@ -92,42 +98,6 @@ export default function Feedback() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  // Star Rating Component
-  const StarRating = ({
-    value,
-    onChange,
-    onHover,
-    onLeave,
-  }: {
-    value: number;
-    onChange: (rating: number) => void;
-    onHover: (rating: number) => void;
-    onLeave: () => void;
-  }) => {
-    return (
-      <div className="flex space-x-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => onChange(star)}
-            onMouseEnter={() => onHover(star)}
-            onMouseLeave={onLeave}
-            className="focus:outline-none"
-          >
-            <Star
-              className={`h-8 w-8 ${
-                star <= (hoverRating || value)
-                  ? "text-yellow-400 fill-yellow-400"
-                  : "text-gray-300"
-              } transition-colors`}
-            />
-          </button>
-        ))}
-      </div>
-    );
   };
 
   return (
@@ -251,35 +221,6 @@ export default function Feedback() {
                       )}
                     />
                   </div>
-
-                  {/* Star Rating Field */}
-                  <FormField
-                    control={form.control}
-                    name="rating"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Rate Your Experience</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col space-y-2">
-                            <StarRating
-                              value={field.value}
-                              onChange={(rating) => field.onChange(rating)}
-                              onHover={setHoverRating}
-                              onLeave={() => setHoverRating(0)}
-                            />
-                            <div className="text-sm text-gray-500">
-                              {field.value === 1 && "Poor"}
-                              {field.value === 2 && "Fair"}
-                              {field.value === 3 && "Good"}
-                              {field.value === 4 && "Very Good"}
-                              {field.value === 5 && "Excellent"}
-                            </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <FormField
                     control={form.control}
