@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import StarRating from "@/components/ui/star-rating";
 
 const feedbackSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -32,6 +33,7 @@ const feedbackSchema = z.object({
   feedbackType: z.enum(["general", "suggestion", "bug", "complaint", "praise"]),
   subject: z.string().min(5, "Subject must be at least 5 characters"),
   message: z.string().min(10, "Message must be at least 10 characters"),
+  rating: z.number().min(1, "Please provide a rating").max(5)
 });
 
 type FeedbackFormValues = z.infer<typeof feedbackSchema>;
@@ -39,6 +41,7 @@ type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 export default function Feedback() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rating, setRating] = useState(0);
 
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
@@ -48,8 +51,14 @@ export default function Feedback() {
       feedbackType: "general",
       subject: "",
       message: "",
+      rating: 0
     },
   });
+
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+    form.setValue("rating", newRating);
+  };
 
   const onSubmit = async (data: FeedbackFormValues) => {
     setIsSubmitting(true);
@@ -59,7 +68,7 @@ export default function Feedback() {
         name: data.name,
         email: data.email,
         category: data.feedbackType,
-        rating: 5, // Default rating (not in the form)
+        rating: data.rating,
         feedback: data.message,
       };
 
@@ -86,6 +95,7 @@ export default function Feedback() {
           " if needed. A copy has been sent to srinathballa20@gmail.com",
       });
 
+      setRating(0);
       form.reset();
     } catch (error) {
       console.error("Error submitting feedback:", error);
