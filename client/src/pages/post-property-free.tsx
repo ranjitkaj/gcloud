@@ -113,10 +113,6 @@ const propertySchema = z.object({
   contactPhone: z
     .string()
     .min(10, { message: "Valid phone number is required" }),
-  // Additional fields that might be used in the form but not required by the schema
-  address: z.string().optional(),
-  city: z.string().optional(),
-  imageUrlsInput: z.string().optional(),
 });
 
 type PropertyFormValues = z.infer<typeof propertySchema>;
@@ -1606,18 +1602,22 @@ export default function PostPropertyFree() {
                           </h3>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="form-field">
-                                <label className="block text-sm font-medium mb-1">City</label>
-                                <Input
-                                  placeholder="e.g. Bangalore"
-                                  value={form.watch('location')?.split(',').pop()?.trim() || ''}
-                                  disabled
-                                  className="bg-gray-50"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">
-                                  Auto-detected from your location
-                                </p>
-                              </div>
+                            <FormField
+                              control={form.control}
+                              name="city"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>City</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="e.g. Bangalore"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
                             <FormField
                               control={form.control}
@@ -1637,18 +1637,22 @@ export default function PostPropertyFree() {
                             />
                           </div>
 
-                          <div className="form-field">
-                            <label className="block text-sm font-medium mb-1">Full Address</label>
-                            <Textarea
-                              placeholder="Enter the complete address of the property"
-                              value={form.watch('location')}
-                              onChange={(e) => form.setValue('location', e.target.value)}
-                              className="min-h-24"
-                            />
-                            <p className="text-xs text-gray-500 mt-1">
-                              The complete address will help buyers locate your property easily
-                            </p>
-                          </div>
+                          <FormField
+                            control={form.control}
+                            name="address"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Full Address</FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    placeholder="Enter the complete address of the property"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
                           <Separator className="my-6" />
                           <h3 className="text-lg font-semibold mb-4">
