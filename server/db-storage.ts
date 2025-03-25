@@ -19,6 +19,7 @@ import createPgSession from "connect-pg-simple";
 import pkg from 'pg';
 const { Pool } = pkg;
 import { randomInt } from "crypto";
+import dotenv from 'dotenv';
 
 // Create PostgreSQL session store
 const PgSessionStore = createPgSession(session);
@@ -345,41 +346,6 @@ export class DbStorage implements IStorage {
     return result[0];
   }
 
-  async deleteProperty(id: number): Promise<boolean> {
-    try {
-      // First check if the property exists
-      const property = await this.getProperty(id);
-      if (!property) {
-        return false;
-      }
-      
-      // Delete property views
-      await db.delete(propertyViews)
-        .where(eq(propertyViews.propertyId, id));
-      
-      // Delete saved properties
-      await db.delete(savedProperties)
-        .where(eq(savedProperties.propertyId, id));
-      
-      // Delete property recommendations
-      await db.delete(propertyRecommendations)
-        .where(eq(propertyRecommendations.propertyId, id));
-      
-      // Delete inquiries
-      await db.delete(inquiries)
-        .where(eq(inquiries.propertyId, id));
-      
-      // Finally delete the property
-      const result = await db.delete(properties)
-        .where(eq(properties.id, id));
-        
-      return true;
-    } catch (error) {
-      console.error('Error deleting property:', error);
-      return false;
-    }
-  }
-
   async getAllProperties(): Promise<Property[]> {
     return await db.select().from(properties);
   }
@@ -394,6 +360,29 @@ export class DbStorage implements IStorage {
 
   async getPropertiesByCompany(companyId: number): Promise<Property[]> {
     return await db.select().from(properties).where(eq(properties.companyId, companyId));
+  }
+
+  async getFeaturedProperties(limit: number = 6): Promise<Property[]> {
+    return await db.select().from(properties)
+      .where(eq(properties.featured, true))
+      .limit(limit);
+  }
+
+  async getPremiumProperties(limit: number = 6): Promise<Property[]> {
+    return await db.select().from(properties)
+      .where(eq(properties.premium, true))
+      .limit(limit);
+  }
+
+  async getRecentProperties(limit: number = 10): Promise<Property[]> {
+    return await db.select().from(properties)
+      .orderBy(desc(properties.createdAt))
+      .limit(limit);
+  }
+
+  async getPropertiesByType(type: string): Promise<Property[]> {
+    return await db.select().from(properties)
+      .where(eq(properties.type, type));
   }
 
   async getFeaturedProperties(limit: number = 6): Promise<Property[]> {
@@ -804,52 +793,5 @@ export class DbStorage implements IStorage {
       SET is_read = true 
       WHERE user_id = ${userId} AND is_read = false
     `);
-  }
-
-  async getPropertyCities(): Promise<string[]> {
-    const result = await db.execute(sql`
-      SELECT DISTINCT city FROM properties
-      WHERE approval_status = 'approved' AND city IS NOT NULL
-      ORDER BY city ASC
-    `);
-    
-    return result.rows.map(row => row.city);
-  }
-
-  async getTopProperties(category: string = 'premium', location?: string, limit: number = 10): Promise<Property[]> {
-    let query = sql`
-      SELECT * FROM properties 
-      WHERE approval_status = 'approved'
-    `;
-    
-    // Add location filter if provided
-    if (location) {
-      query = sql`${query} AND LOWER(city) = LOWER(${location})`;
-    }
-    
-    // Apply category-specific filters and sorting
-    switch (category) {
-      case 'premium':
-        query = sql`${query} AND premium = true ORDER BY price DESC LIMIT ${limit}`;
-        break;
-      
-      case 'featured':
-        query = sql`${query} AND featured = true ORDER BY created_at DESC LIMIT ${limit}`;
-        break;
-      
-      case 'urgent':
-        query = sql`${query} AND expires_at IS NOT NULL AND expires_at > NOW() ORDER BY expires_at ASC LIMIT ${limit}`;
-        break;
-      
-      case 'newest':
-        query = sql`${query} ORDER BY created_at DESC LIMIT ${limit}`;
-        break;
-        
-      default:
-        query = sql`${query} ORDER BY created_at DESC LIMIT ${limit}`;
-    }
-    
-    const result = await db.execute(query);
-    return result.rows;
   }
 }

@@ -270,7 +270,7 @@ export default function Footer() {
               </Link>
 
               <Link
-                to="/post-property-free"
+                to="/add-property"
                 onClick={() => window.scrollTo(0, 0)}
                 className="text-gray-400 hover:text-white transition-colors"
               >

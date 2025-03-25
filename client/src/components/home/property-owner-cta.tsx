@@ -20,7 +20,7 @@ export default function PropertyOwnerCTA() {
             className="bg-blue-800 hover:bg-blue-800"
           >
             <Link
-              href="/post-property-free"
+              href="/add-property"
               onClick={() => window.scrollTo(0, 0)}
               className="text-white font-medium"
             >

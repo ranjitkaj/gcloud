@@ -70,7 +70,6 @@ export interface IStorage {
   createProperty(property: InsertProperty): Promise<Property>;
   getProperty(id: number): Promise<Property | undefined>;
   updateProperty(id: number, propertyData: Partial<Property>): Promise<Property | undefined>;
-  deleteProperty(id: number): Promise<boolean>;
   getAllProperties(): Promise<Property[]>;
   getPropertiesByUser(userId: number): Promise<Property[]>;
   getPropertiesByAgent(agentId: number): Promise<Property[]>;
@@ -82,8 +81,6 @@ export interface IStorage {
   getPropertiesByStatus(status: string): Promise<Property[]>;
   getPropertiesByRentOrSale(rentOrSale: string): Promise<Property[]>;
   getUrgentSaleProperties(limit?: number): Promise<Property[]>;
-  getTopProperties(category: string, location?: string, limit?: number): Promise<Property[]>;
-  getPropertyCities(): Promise<string[]>;
   searchProperties(query: {
     city?: string;
     propertyType?: string;
@@ -602,46 +599,6 @@ export class MemStorage implements IStorage {
     return updatedProperty;
   }
 
-  async deleteProperty(id: number): Promise<boolean> {
-    // Check if property exists
-    const property = this.properties.get(id);
-    if (!property) return false;
-
-    // Delete related data
-    // 1. Delete property views
-    for (const [viewKey, view] of this.propertyViews.entries()) {
-      if (view.propertyId === id) {
-        this.propertyViews.delete(viewKey);
-      }
-    }
-
-    // 2. Delete saved properties
-    for (const [savedKey, savedProp] of this.savedProps.entries()) {
-      if (savedProp.propertyId === id) {
-        this.savedProps.delete(savedKey);
-      }
-    }
-
-    // 3. Delete recommendations
-    for (const [recKey, rec] of this.recommendations.entries()) {
-      if (rec.propertyId === id) {
-        this.recommendations.delete(recKey);
-      }
-    }
-
-    // 4. Delete inquiries
-    for (const [inquiryKey, inquiry] of this.inquiries.entries()) {
-      if (inquiry.propertyId === id) {
-        this.inquiries.delete(inquiryKey);
-      }
-    }
-
-    // 5. Delete the property itself
-    this.properties.delete(id);
-    
-    return true;
-  }
-
   async getProperty(id: number): Promise<Property | undefined> {
     return this.properties.get(id);
   }
@@ -668,89 +625,17 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getTopProperties(category: string = 'premium', location?: string, limit: number = 10): Promise<Property[]> {
-    let properties: Property[] = [];
-    const now = new Date();
-    
-    // Filter properties by approval status and availability
-    const approvedProperties = Array.from(this.properties.values())
-      .filter(property => property.approvalStatus === 'approved' && property.status === 'available');
-    
-    // Filter by location if provided
-    const filteredByLocation = location
-      ? approvedProperties.filter(property => 
-          property.city && property.city.toLowerCase() === location.toLowerCase())
-      : approvedProperties;
-    
-    // Apply category-specific filters
-    switch(category) {
-      case 'premium':
-        properties = filteredByLocation
-          .filter(property => property.premium)
-          .sort((a, b) => {
-            // Sort by premium status first, then by price (high to low)
-            return b.price - a.price;
-          });
-        break;
-        
-      case 'featured':
-        properties = filteredByLocation
-          .filter(property => property.featured)
-          .sort((a, b) => {
-            // Sort by creation date (newest first)
-            if (a.createdAt && b.createdAt) {
-              return b.createdAt.getTime() - a.createdAt.getTime();
-            }
-            return 0;
-          });
-        break;
-        
-      case 'urgent':
-        properties = filteredByLocation
-          .filter(property => 
-            property.discountedPrice && 
-            property.expiresAt && 
-            property.expiresAt > now)
-          .sort((a, b) => {
-            // Sort by discount percentage (highest first)
-            const discountA = a.discountedPrice ? (1 - a.discountedPrice / a.price) : 0;
-            const discountB = b.discountedPrice ? (1 - b.discountedPrice / b.price) : 0;
-            return discountB - discountA;
-          });
-        break;
-        
-      case 'newest':
-        properties = filteredByLocation
-          .sort((a, b) => {
-            // Sort by creation date (newest first)
-            if (a.createdAt && b.createdAt) {
-              return b.createdAt.getTime() - a.createdAt.getTime();
-            }
-            return 0;
-          });
-        break;
-        
-      default:
-        // Default sort by price (high to low)
-        properties = filteredByLocation.sort((a, b) => b.price - a.price);
+  async getTopProperties(limit: number = 10, city?: string): Promise<Property[]> {
+    let query = db.select()
+      .from(schema.properties)
+      .where(sql`subscription_level != 'free'`)
+      .orderBy(sql`subscription_amount desc`);
+      
+    if (city) {
+      query = query.where(sql`city = ${city}`);
     }
     
-    return properties.slice(0, limit);
-  }
-  
-  async getPropertyCities(): Promise<string[]> {
-    // Get all unique cities from properties
-    const cities = new Set<string>();
-    
-    Array.from(this.properties.values())
-      .filter(property => property.approvalStatus === 'approved' && property.city)
-      .forEach(property => {
-        if (property.city) {
-          cities.add(property.city);
-        }
-      });
-    
-    return Array.from(cities).sort();
+    return query.limit(limit);
   }
 
   async getFeaturedProperties(limit: number = 6): Promise<Property[]> {

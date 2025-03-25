@@ -150,7 +150,7 @@ export default function Navbar() {
           {/* Post Property Button and Support Icon */}
           <div className="hidden md:flex items-center space-x-3 mr-0">
             <Link
-              to={user ? "/post-property-free" : "/auth"}
+              to={user ? "/add-property" : "/auth"}
               onClick={() => {
                 if (!user) {
                   toast({
@@ -158,6 +158,8 @@ export default function Navbar() {
                     description: "You need to login before posting a property.",
                     variant: "default",
                   });
+                } else {
+                  navigateTo("/add-property");
                 }
               }}
               className="inline-flex bg-blue-700 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"

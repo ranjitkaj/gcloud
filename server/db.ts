@@ -6,6 +6,10 @@ const { Pool } = pkg;
 import { log } from './vite';
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Helper for password hashing
 const scryptAsync = promisify(scrypt);

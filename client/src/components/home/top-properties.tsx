@@ -370,7 +370,7 @@ export default function TopProperties() {
         </div>
       </div>
 
-      <style jsx global>{`
+      {/* <style jsx global>{`
         @keyframes float {
           0% {
             transform: translateY(0px);
@@ -405,7 +405,7 @@ export default function TopProperties() {
         .animate-float-delay-4 {
           animation: float 6s ease-in-out 2s infinite;
         }
-      `}</style>
+      `}</style> */}
     </section>
   );
 }

@@ -130,7 +130,7 @@ export const properties = pgTable("properties", {
   description: text("description").notNull(),
   price: integer("price").notNull(),
   discountedPrice: integer("discounted_price"), // For urgency sales (25% off)
-  rentOrSale: text("rent_or_sale").notNull().default("sale"),
+  rentOrSale: text("rent_or_sale").notNull().default("for_sale"),
   status: text("status").notNull().default("for_sale"), 
   location: text("location").notNull(),
   city: text("city").notNull(),
@@ -264,8 +264,6 @@ export const insertPropertySchema = createInsertSchema(properties).omit({
   amenities: z.array(z.string()).default([]),
   imageUrls: z.array(z.string()).default([]),
   videoUrls: z.array(z.string()).default([]),
-  // Override rentOrSale to only allow "sale"
-  rentOrSale: z.enum(["sale"]).default("sale"),
 });
 
 export const insertInquirySchema = createInsertSchema(inquiries).omit({
